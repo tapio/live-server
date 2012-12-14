@@ -22,6 +22,10 @@
 	"bin": {
 		"live-server": "./live-server.js"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tapio/live-server.git"
+	},
 	"engines": {
 		"node": ">=0.8.0"
 	},
