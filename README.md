@@ -13,16 +13,27 @@ If you don't want/need the live reload, you should probably use something simple
 	python -m SimpleHTTPServer
 
 
-Preparations
+Installation
 ------------
 
 You need node.js and npm. You should probably install this globally.
+
+**Npm way**
+
+	npm install -g live-server
+
+**Manual way**
+
+	git clone https://github.com/tapio/live-server
+	cd live-server
+	npm install # Local dependencies if you want to hack
+	npm install -g # Install globally
 
 
 Usage
 -----
 
-Issue the command `live-server.js` in your project's directory.
+Issue the command `live-server` in your project's directory.
 
 This will automatically launch the default browser (you should have `index.html` present). When you make a change to any file, the browser will reload the page.
 
