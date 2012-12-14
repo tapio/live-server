@@ -18,11 +18,11 @@ function escape(html){
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
 		.replace(/"/g, '&quot;');
-};
+}
 
 // Based on connect.static(), but streamlined and with added code injecter
-function static(root) {
-	return function static(req, res, next) {
+function staticServer(root) {
+	return function(req, res, next) {
 		if ('GET' != req.method && 'HEAD' != req.method) return next();
 		var reqpath = url.parse(req.url).pathname;
 
@@ -40,7 +40,7 @@ function static(root) {
 
 		function inject(stream) {
 			var x = path.extname(reqpath);
-			if (x == "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php") {
+			if (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php") {
 				// We need to modify the length given to browser
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
@@ -56,20 +56,20 @@ function static(root) {
 			.on('directory', directory)
 			.pipe(res);
 	};
-};
+}
 
 function start(port, directory) {
 	port = port || 8080;
 	directory = directory || process.cwd();
 	// Setup a web server
 	var app = connect()
-		.use(static(directory)) // Custom static server
+		.use(staticServer(directory)) // Custom static server
 		.use(connect.logger('dev'));
 	var server = http.createServer(app).listen(port);
 	// WebSocket
 	server.addListener('upgrade', function(request, socket, head) {
 		ws = new WebSocket(request, socket, head);
-		ws.onopen = function() { ws.send('connected'); }
+		ws.onopen = function() { ws.send('connected'); };
 	});
 	// Setup file watcher
 	watchr.watch({

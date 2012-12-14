@@ -19,6 +19,9 @@
 		"watchr": "2.x.x",
 		"faye-websocket": "0.4.x"
 	},
+	"scripts": {
+		"test": "jshint *.js"
+	},
 	"bin": {
 		"live-server": "./live-server.js"
 	},
