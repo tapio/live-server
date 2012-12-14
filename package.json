@@ -1,6 +1,6 @@
 {
 	"name": "live-server",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "simple development http server with live reload capability",
 	"keywords": [
 		"front-end",
