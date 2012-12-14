@@ -10,6 +10,8 @@ var connect = require('connect'),
 	watchr = require('watchr'),
 	ws;
 
+var INJECTED_CODE = require('fs').readFileSync(__dirname + "/injected.html", "utf8");
+
 function escape(html){
 	return String(html)
 		.replace(/&(?!\w+;)/g, '&amp;')
@@ -39,18 +41,11 @@ function static(root) {
 		function inject(stream) {
 			var x = path.extname(reqpath);
 			if (x == "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php") {
-				var code = "<script>\n(function() {\n" +
-					"protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';\n" +
-					"address = protocol + window.location.host + window.location.pathname + '/ws';\n" +
-					"socket = new WebSocket(address);\n" +
-					"socket.onmessage = function(msg) { msg.data == 'reload' && window.location.reload() };\n" +
-					"console.log('Live reload enabled.');\n" +
-				"})();\n</script>";
 				// We need to modify the length given to browser
-				var len = code.length + res.getHeader('Content-Length');
+				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
 				// Write the injected code
-				res.write(code);
+				res.write(INJECTED_CODE);
 			}
 		}
 
@@ -80,8 +75,11 @@ function start(port, directory) {
 	watchr.watch({
 		path: directory,
 		ignorePatterns: true,
-		listener: function(eventName, filePath, fileCurrentStat, filePreviousStat){
-			ws && ws.send('reload');
+		ignoreHiddenFiles: true,
+		listener: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
+			if (!ws) return;
+			if (path.extname(filePath) == ".css") ws.send('refreshcss');
+			else ws.send('reload');
 		}
 	});
 	// Output
