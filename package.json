@@ -1,0 +1,23 @@
+{
+	"name": "live-server",
+	"version": "0.1.0",
+	"description": "A simple development http server with live reload capability.",
+	"keywords": [
+		"front-end",
+		"development",
+		"tool"
+	],
+	"author": "Tapio Vierros",
+	"dependencies": {
+		"connect": "2.x.x",
+		"send": "latest",
+		"colors": "latest",
+		"open": "latest",
+		"watchr": "2.x.x",
+		"faye-websocket": "0.4.x"
+	},
+	"engines": {
+		"node": ">=0.8.0"
+	},
+	"preferGlobal": true
+}
