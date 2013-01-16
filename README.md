@@ -52,6 +52,20 @@ How it works
 The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html and php files. This script establishes the web socket connection and listens to the reload requests.
 
 
+Version history
+---------------
+
+* v0.3.0
+	- Directory listings
+* v0.2.0
+	- On-the-fly CSS refresh (no page reload)
+	- Refactoring
+* v0.1.1
+	- Documentation and meta tweaks
+* v0.1.0
+	- Initial release
+
+
 License
 -------
 
