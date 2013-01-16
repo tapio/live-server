@@ -64,6 +64,7 @@ function start(port, directory) {
 	// Setup a web server
 	var app = connect()
 		.use(staticServer(directory)) // Custom static server
+		.use(connect.directory(directory, { icons: true }))
 		.use(connect.logger('dev'));
 	var server = http.createServer(app).listen(port);
 	// WebSocket
