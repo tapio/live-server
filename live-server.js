@@ -89,4 +89,7 @@ function start(port, directory) {
 	open('http://localhost:' + port);
 }
 
+if (process.argv[2])
+	process.chdir(process.argv[2]);
+
 start(process.env.PORT);
