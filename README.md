@@ -33,7 +33,7 @@ You need node.js and npm. You should probably install this globally.
 Usage
 -----
 
-Issue the command `live-server` in your project's directory.
+Issue the command `live-server` in your project's directory. Alternatively you can add the path to serve as a command line parameter.
 
 This will automatically launch the default browser (you should have `index.html` present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
 
@@ -49,12 +49,14 @@ Open your browser's console: there should be a message at the top stating that l
 How it works
 ------------
 
-The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html and php files. This script establishes the web socket connection and listens to the reload requests.
+The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html file. This script establishes the web socket connection and listens to the reload requests.
 
 
 Version history
 ---------------
 
+* v0.4.0
+	- Allow specifying directory to serve from command line
 * v0.3.0
 	- Directory listings
 * v0.2.0
