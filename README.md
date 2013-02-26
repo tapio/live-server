@@ -55,6 +55,9 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
+* v0.5.0
+	- Watching was broken with new versions of `watchr` > 2.3.3
+	- Added some logging to console
 * v0.4.0
 	- Allow specifying directory to serve from command line
 * v0.3.0
