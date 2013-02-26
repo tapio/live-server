@@ -75,12 +75,24 @@ function start(port, directory) {
 	// Setup file watcher
 	watchr.watch({
 		path: directory,
-		ignorePatterns: true,
+		ignoreCommonPatterns: true,
 		ignoreHiddenFiles: true,
-		listener: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
-			if (!ws) return;
-			if (path.extname(filePath) == ".css") ws.send('refreshcss');
-			else ws.send('reload');
+		preferredMethods: [ 'watchFile', 'watch' ],
+		interval: 1407,
+		listeners: {
+			error: function(err) {
+				console.log("ERROR:".red , err)
+			},
+			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
+				if (!ws) return;
+				if (path.extname(filePath) == ".css") {
+					ws.send('refreshcss');
+					console.log("CSS change detected".magenta);
+				} else {
+					ws.send('reload');
+					console.log("File change detected".cyan);
+				}
+			}
 		}
 	});
 	// Output
