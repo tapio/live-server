@@ -16,7 +16,7 @@
 		"send": "latest",
 		"colors": "latest",
 		"open": "latest",
-		"watchr": "2.x.x",
+		"watchr": "2.3.x",
 		"faye-websocket": "0.4.x"
 	},
 	"scripts": {
