@@ -30,7 +30,7 @@ You need node.js and npm. You should probably install this globally.
 	npm install -g # Install globally
 
 
-Usage
+Usage from command line
 -----
 
 Issue the command `live-server` in your project's directory. Alternatively you can add the path to serve as a command line parameter.
@@ -38,6 +38,19 @@ Issue the command `live-server` in your project's directory. Alternatively you c
 This will automatically launch the default browser (you should have `index.html` present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
 
 You can configure the port to be used by setting `PORT` environment variable prior to launching the server.
+
+
+Usage from node
+-----
+
+```javascript
+var liveServer = require("live-server");
+
+var port = 8181; // Set the server port. Defaults to 8080.
+var dir = "/public"; // Set root of directory that's being server. Defaults to cwd.
+var suppressBrowserLaunch = true; // When true, it won't load your browser by default.
+liveServer.start(port, dir, suppressBrowserLaunch);
+```
 
 
 Troubleshooting
