@@ -31,7 +31,7 @@ You need node.js and npm. You should probably install this globally.
 
 
 Usage from command line
------
+-----------------------
 
 Issue the command `live-server` in your project's directory. Alternatively you can add the path to serve as a command line parameter.
 
@@ -41,7 +41,7 @@ You can configure the port to be used by setting `PORT` environment variable pri
 
 
 Usage from node
------
+---------------
 
 ```javascript
 var liveServer = require("live-server");
