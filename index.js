@@ -51,8 +51,7 @@ function staticServer(root) {
 			}
 		}
 
-		send(req, reqpath)
-			.root(root)
+		send(req, reqpath, { root: root })
 			.on('error', error)
 			.on('stream', inject)
 			.on('directory', directory)
