@@ -68,6 +68,8 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
+* v0.6.2
+	- Fix a deprecation warning from `send`
 * v0.6.1
 	- Republish to fix npm troubles
 * v0.6.0
