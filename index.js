@@ -94,7 +94,7 @@ LiveServer.start = function(port, directory, suppressBrowserLaunch) {
 		interval: 1407,
 		listeners: {
 			error: function(err) {
-				console.log("ERROR:".red , err)
+				console.log("ERROR:".red , err);
 			},
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
 				if (!ws) return;
@@ -115,6 +115,6 @@ LiveServer.start = function(port, directory, suppressBrowserLaunch) {
 	// Launch browser
 	if(!suppressBrowserLaunch)
 		open(browserURL);
-}
+};
 
 module.exports = LiveServer;
