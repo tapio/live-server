@@ -7,6 +7,7 @@ var connect = require('connect'),
 	http = require('http'),
 	send = require('send'),
 	open = require('open'),
+    es = require("event-stream"),
 	watchr = require('watchr'),
 	ws;
 
@@ -25,6 +26,7 @@ function escape(html){
 // Based on connect.static(), but streamlined and with added code injecter
 function staticServer(root) {
 	return function(req, res, next) {
+        
 		if ('GET' != req.method && 'HEAD' != req.method) return next();
 		var reqpath = url.parse(req.url).pathname;
 
@@ -46,8 +48,11 @@ function staticServer(root) {
 				// We need to modify the length given to browser
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
-				// Write the injected code
-				res.write(INJECTED_CODE);
+
+                var originalPipe = stream.pipe;
+                stream.pipe = function(res) {                    
+                    originalPipe.call(stream,es.replace(new RegExp("</body>","i"),INJECTED_CODE+"</body>")).pipe(res);                                        
+                };               
 			}
 		}
 
