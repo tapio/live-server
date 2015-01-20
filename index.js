@@ -9,6 +9,7 @@ var connect = require('connect'),
 	open = require('open'),
 	es = require("event-stream"),
 	watchr = require('watchr'),
+	fp = require("find-free-port"),
 	ws;
 
 var INJECTED_CODE = require('fs').readFileSync(__dirname + "/injected.html", "utf8");
@@ -70,49 +71,60 @@ function staticServer(root) {
  * @param suppressBrowserLaunch
  */
 LiveServer.start = function(port, directory, suppressBrowserLaunch) {
-	port = port || 8080;
-	directory = directory || process.cwd();
+	function startServer(port) {
+		directory = directory || process.cwd();
 
-	// Setup a web server
-	var app = connect()
-		.use(staticServer(directory)) // Custom static server
-		.use(connect.directory(directory, { icons: true }))
-		.use(connect.logger('dev'));
-	var server = http.createServer(app).listen(port);
-	// WebSocket
-	server.addListener('upgrade', function(request, socket, head) {
-		ws = new WebSocket(request, socket, head);
-		ws.onopen = function() { ws.send('connected'); };
-	});
-	// Setup file watcher
-	watchr.watch({
-		path: directory,
-		ignoreCommonPatterns: true,
-		ignoreHiddenFiles: true,
-		preferredMethods: [ 'watchFile', 'watch' ],
-		interval: 1407,
-		listeners: {
-			error: function(err) {
-				console.log("ERROR:".red , err)
-			},
-			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
-				if (!ws) return;
-				if (path.extname(filePath) == ".css") {
-					ws.send('refreshcss');
-					console.log("CSS change detected".magenta);
-				} else {
-					ws.send('reload');
-					console.log("File change detected".cyan);
+		// Setup a web server
+		var app = connect()
+			.use(staticServer(directory)) // Custom static server
+			.use(connect.directory(directory, { icons: true }))
+			.use(connect.logger('dev'));
+		var server = http.createServer(app).listen(port);
+		// WebSocket
+		server.addListener('upgrade', function(request, socket, head) {
+			ws = new WebSocket(request, socket, head);
+			ws.onopen = function() { ws.send('connected'); };
+		});
+		// Setup file watcher
+		watchr.watch({
+			path: directory,
+			ignoreCommonPatterns: true,
+			ignoreHiddenFiles: true,
+			preferredMethods: [ 'watchFile', 'watch' ],
+			interval: 1407,
+			listeners: {
+				error: function(err) {
+					console.log("ERROR:".red , err)
+				},
+				change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
+					if (!ws) return;
+					if (path.extname(filePath) == ".css") {
+						ws.send('refreshcss');
+						console.log("CSS change detected".magenta);
+					} else {
+						ws.send('reload');
+						console.log("File change detected".cyan);
+					}
 				}
 			}
-		}
-	});
-	// Output
-	console.log(('Serving "' + directory + '" at http://localhost:' + port).green);
+		});
+		// Output
+		console.log(('Serving "' + directory + '" at http://localhost:' + port).green);
 
-	// Launch browser
-	if(!suppressBrowserLaunch)
-		open('http://localhost:' + port);
+		// Launch browser
+		if(!suppressBrowserLaunch)
+			open('http://localhost:' + port);
+	}
+
+	port = port || 8080;
+	fp(port, function (err, port) {
+		if (err) {
+			console.log(err);
+			return;
+		}
+
+		startServer(port);
+	});
 }
 
 module.exports = LiveServer;

@@ -18,7 +18,8 @@
 		"open": "latest",
 		"watchr": "2.3.x",
 		"faye-websocket": "0.4.x",
-		"event-stream" : "latest"
+		"event-stream" : "latest",
+		"find-free-port": "~1.0.1"
 	},
 	"scripts": {
 		"test": "jshint *.js"
