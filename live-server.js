@@ -3,14 +3,14 @@ var liveServer = require("./index");
 
 var port = process.env.PORT;
 
-process.argv.forEach(function(v,idx) {
+process.argv.forEach(function(v, idx) {
 	if (v.indexOf("--port=") >- 1) {
 		var portString = v.substring(7); 
-        var portNumber = parseInt(portString, 10);
+		var portNumber = parseInt(portString, 10);
 		if (portNumber == portString) {
 			port = portNumber;
-    		process.argv.splice(idx,1);
-    	}
+			process.argv.splice(idx, 1);
+		}
 	}
 });
 
