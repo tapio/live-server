@@ -37,7 +37,7 @@ Issue the command `live-server` in your project's directory. Alternatively you c
 
 This will automatically launch the default browser (you should have `index.html` present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
 
-You can configure the port to be used by setting `PORT` environment variable prior to launching the server.
+You can configure the port to be used by the server by adding the `--port=<number>` runtime option when invoking live-server, or by setting the `PORT` environment variable prior to running live-server.
 
 
 Usage from node
