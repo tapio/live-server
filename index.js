@@ -69,13 +69,12 @@ function staticServer(root) {
  * @param directory {string} Path to root directory (default to cwd)
  * @param suppressBrowserLaunch
  */
-LiveServer.start = function(port, directory, suppressBrowserLaunch) {
+LiveServer.start = function(app, port, directory, suppressBrowserLaunch) {
 	port = port || 8080;
 	directory = directory || process.cwd();
 
 	// Setup a web server
-	var app = connect()
-		.use(staticServer(directory)) // Custom static server
+	app.use(staticServer(directory)) // Custom static server
 		.use(connect.directory(directory, { icons: true }))
 		.use(connect.logger('dev'));
 	var server = http.createServer(app).listen(port, '0.0.0.0');
