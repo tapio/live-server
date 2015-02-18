@@ -71,7 +71,7 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
-* master (unreleased)
+* v0.6.4
 	- Allow specifying port from the command line: `live-server --port=3000` (@Pomax)
 	- Don't inject script as the first thing so that DOCTYPE remains valid (@wmira)
 	- Be more explicit with listening to all interfaces (@inadarei)
