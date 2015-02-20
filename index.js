@@ -28,6 +28,7 @@ function staticServer(root) {
 	return function(req, res, next) {
 		if ('GET' != req.method && 'HEAD' != req.method) return next();
 		var reqpath = url.parse(req.url).pathname;
+		var hasNoOrigin = !req.headers.origin;
 
 		function directory() {
 			var pathname = url.parse(req.originalUrl).pathname;
@@ -43,7 +44,7 @@ function staticServer(root) {
 
 		function inject(stream) {
 			var x = path.extname(reqpath);
-			if (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php") {
+			if (hasNoOrigin && (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php")) {
 				// We need to modify the length given to browser
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
