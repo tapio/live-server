@@ -74,11 +74,18 @@ LiveServer.start = function(port, directory, suppressBrowserLaunch) {
 	port = port || 8080;
 	directory = directory || process.cwd();
 
+  if (!Array.isArray(directory))
+      directory = [directory];
+
 	// Setup a web server
 	var app = connect()
-		.use(staticServer(directory)) // Custom static server
-		.use(connect.directory(directory, { icons: true }))
 		.use(connect.logger('dev'));
+
+  directory.forEach(function (d) {
+		app.use(staticServer(d)) // Custom static server
+		app.use(connect.directory(d, { icons: true }))
+  });
+
 	var server = http.createServer(app).listen(port, '0.0.0.0');
 	// WebSocket
 	server.addListener('upgrade', function(request, socket, head) {
@@ -87,7 +94,7 @@ LiveServer.start = function(port, directory, suppressBrowserLaunch) {
 	});
 	// Setup file watcher
 	watchr.watch({
-		path: directory,
+		paths: directory,
 		ignoreCommonPatterns: true,
 		ignoreHiddenFiles: true,
 		preferredMethods: [ 'watchFile', 'watch' ],
