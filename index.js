@@ -66,12 +66,14 @@ function staticServer(root) {
 
 /**
  * Start a live server with parameters given as an object
- * @param port {number} Port number (default 8080)
- * @param directory {string} Path to root directory (default to cwd)
+ * @param host {string} Address to bind to (default: 0.0.0.0)
+ * @param port {number} Port number (default: 8080)
+ * @param directory {string} Path to root directory (default: cwd)
  * @param noBrowser
  */
 LiveServer.start = function(options) {
 	options = options || {};
+	var host = options.host || '0.0.0.0';
 	var port = options.port || 8080;
 	var directory = options.directory || process.cwd();
 	var noBrowser = options.noBrowser || false;
@@ -81,7 +83,7 @@ LiveServer.start = function(options) {
 		.use(staticServer(directory)) // Custom static server
 		.use(connect.directory(directory, { icons: true }))
 		.use(connect.logger('dev'));
-	var server = http.createServer(app).listen(port);
+	var server = http.createServer(app).listen(port, host);
 	// WebSocket
 	server.addListener('upgrade', function(request, socket, head) {
 		ws = new WebSocket(request, socket, head);

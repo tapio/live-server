@@ -72,6 +72,8 @@ Version history
 ---------------
 
 * Unreleased master
+	- API BREAKAGE: LiveServer library now takes parameters in an object
+	- Added possibility to specify host to the lib
 	- Only inject to host page when working with web components (e.g. Polymer) (@davej)
 	- Open browser to 127.0.0.1, as 0.0.0.0 has issues
 	- `--no-browser` command line flag to suppress browser launch
