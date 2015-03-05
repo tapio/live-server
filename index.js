@@ -68,20 +68,20 @@ function staticServer(root) {
  * Start a live server with parameters given as an object
  * @param host {string} Address to bind to (default: 0.0.0.0)
  * @param port {number} Port number (default: 8080)
- * @param directory {string} Path to root directory (default: cwd)
+ * @param root {string} Path to root directory (default: cwd)
  * @param noBrowser
  */
 LiveServer.start = function(options) {
 	options = options || {};
 	var host = options.host || '0.0.0.0';
 	var port = options.port || 8080;
-	var directory = options.directory || process.cwd();
+	var root = options.root || process.cwd();
 	var noBrowser = options.noBrowser || false;
 
 	// Setup a web server
 	var app = connect()
-		.use(staticServer(directory)) // Custom static server
-		.use(connect.directory(directory, { icons: true }))
+		.use(staticServer(root)) // Custom static server
+		.use(connect.directory(root, { icons: true }))
 		.use(connect.logger('dev'));
 	var server = http.createServer(app).listen(port, host);
 	// WebSocket
@@ -91,7 +91,7 @@ LiveServer.start = function(options) {
 	});
 	// Setup file watcher
 	watchr.watch({
-		path: directory,
+		path: root,
 		ignoreCommonPatterns: true,
 		ignoreHiddenFiles: true,
 		preferredMethods: [ 'watchFile', 'watch' ],
@@ -114,7 +114,7 @@ LiveServer.start = function(options) {
 	});
 	// Output
 	var browserURL = "http://127.0.0.1:" + port;
-	console.log(('Serving "' + directory + '" at ' + browserURL).green);
+	console.log(('Serving "' + root + '" at ' + browserURL).green);
 
 	// Launch browser
 	if(!noBrowser)
