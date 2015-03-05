@@ -2,19 +2,24 @@
 var liveServer = require("./index");
 
 var port = process.env.PORT;
+var noBrowser = false;
 
-process.argv.forEach(function(v, idx) {
-	if (v.indexOf("--port=") >- 1) {
-		var portString = v.substring(7); 
+for (var i = process.argv.length-1; i >= 0; --i) {
+	var arg = process.argv[i];
+	if (arg.indexOf("--port=") > -1) {
+		var portString = arg.substring(7);
 		var portNumber = parseInt(portString, 10);
 		if (portNumber == portString) {
 			port = portNumber;
-			process.argv.splice(idx, 1);
+			process.argv.splice(i, 1);
 		}
+	} else if (arg == "--no-browser") {
+		noBrowser = true;
+		process.argv.splice(i, 1);
 	}
-});
+}
 
 if (process.argv[2])
 	process.chdir(process.argv[2]);
 
-liveServer.start(port);
+liveServer.start(port, null, noBrowser);
