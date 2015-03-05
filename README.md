@@ -42,6 +42,8 @@ This will automatically launch the default browser (you should have `index.html`
 
 You can configure the port to be used by the server by adding the `--port=<number>` runtime option when invoking live-server, or by setting the `PORT` environment variable prior to running live-server.
 
+Use parameter `--no-browser` to suppress automatic web browser launching.
+
 
 Usage from node
 ---------------
@@ -49,10 +51,13 @@ Usage from node
 ```javascript
 var liveServer = require("live-server");
 
-var port = 8181; // Set the server port. Defaults to 8080.
-var dir = "/public"; // Set root of directory that's being server. Defaults to cwd.
-var suppressBrowserLaunch = true; // When true, it won't load your browser by default.
-liveServer.start(port, dir, suppressBrowserLaunch);
+var params = {
+	port: 8181, // Set the server port. Defaults to 8080.
+	host: "0.0.0.0", // Set the address to bind to. Defaults to 0.0.0.0.
+	root: "/public", // Set root directory that's being server. Defaults to cwd.
+	noBrowser = true // When true, it won't load your browser by default.
+};
+liveServer.start(params);
 ```
 
 
