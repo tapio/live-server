@@ -4,7 +4,7 @@ var liveServer = require("./index");
 var port = process.env.PORT;
 var noBrowser = false;
 
-for (var i = process.argv.length-1; i >= 0; --i) {
+for (var i = process.argv.length-1; i >= 2; --i) {
 	var arg = process.argv[i];
 	if (arg.indexOf("--port=") > -1) {
 		var portString = arg.substring(7);
@@ -16,6 +16,9 @@ for (var i = process.argv.length-1; i >= 0; --i) {
 	} else if (arg == "--no-browser") {
 		noBrowser = true;
 		process.argv.splice(i, 1);
+	} else if (arg == "--help" || arg == "-h") {
+		console.log('Usage: live-server [-h|--help] [--port=PORT] [--no-browser] [PATH]');
+		process.exit();
 	}
 }
 
