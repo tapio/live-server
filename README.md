@@ -71,6 +71,11 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
+* Unreleased master
+	- Only inject to host page when working with web components (e.g. Polymer) (@davej)
+	- Open browser to 127.0.0.1, as 0.0.0.0 has issues
+	- '--no-browser' command line flag to suppress browser launch
+	- '--help' command line flag to display usage
 * v0.6.4
 	- Allow specifying port from the command line: `live-server --port=3000` (@Pomax)
 	- Don't inject script as the first thing so that DOCTYPE remains valid (@wmira)
