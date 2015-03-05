@@ -76,7 +76,7 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
-* Unreleased master
+* v0.7.0
 	- API BREAKAGE: LiveServer library now takes parameters in an object
 	- Added possibility to specify host to the lib
 	- Only inject to host page when working with web components (e.g. Polymer) (@davej)
