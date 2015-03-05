@@ -65,14 +65,16 @@ function staticServer(root) {
 }
 
 /**
- * Start a live server at the given port and directory
+ * Start a live server with parameters given as an object
  * @param port {number} Port number (default 8080)
  * @param directory {string} Path to root directory (default to cwd)
- * @param suppressBrowserLaunch
+ * @param noBrowser
  */
-LiveServer.start = function(port, directory, suppressBrowserLaunch) {
-	port = port || 8080;
-	directory = directory || process.cwd();
+LiveServer.start = function(options) {
+	options = options || {};
+	var port = options.port || 8080;
+	var directory = options.directory || process.cwd();
+	var noBrowser = options.noBrowser || false;
 
 	// Setup a web server
 	var app = connect()
@@ -113,7 +115,7 @@ LiveServer.start = function(port, directory, suppressBrowserLaunch) {
 	console.log(('Serving "' + directory + '" at ' + browserURL).green);
 
 	// Launch browser
-	if(!suppressBrowserLaunch)
+	if(!noBrowser)
 		open(browserURL);
 };
 

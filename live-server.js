@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 var liveServer = require("./index");
 
-var port = process.env.PORT;
-var noBrowser = false;
+var opts = {
+	port: process.env.PORT,
+	noBrowser: false
+};
 
 for (var i = process.argv.length-1; i >= 2; --i) {
 	var arg = process.argv[i];
@@ -10,11 +12,11 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 		var portString = arg.substring(7);
 		var portNumber = parseInt(portString, 10);
 		if (portNumber == portString) {
-			port = portNumber;
+			opts.port = portNumber;
 			process.argv.splice(i, 1);
 		}
 	} else if (arg == "--no-browser") {
-		noBrowser = true;
+		opts.noBrowser = true;
 		process.argv.splice(i, 1);
 	} else if (arg == "--help" || arg == "-h") {
 		console.log('Usage: live-server [-h|--help] [--port=PORT] [--no-browser] [PATH]');
@@ -25,4 +27,4 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 if (process.argv[2])
 	process.chdir(process.argv[2]);
 
-liveServer.start(port, null, noBrowser);
+liveServer.start(opts);
