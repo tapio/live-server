@@ -70,19 +70,22 @@ function staticServer(root) {
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
  * @param noBrowser
+ * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  */
 LiveServer.start = function(options) {
 	options = options || {};
 	var host = options.host || '0.0.0.0';
 	var port = options.port || 8080;
 	var root = options.root || process.cwd();
+	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var noBrowser = options.noBrowser || false;
 
 	// Setup a web server
 	var app = connect()
 		.use(staticServer(root)) // Custom static server
-		.use(connect.directory(root, { icons: true }))
-		.use(connect.logger('dev'));
+		.use(connect.directory(root, { icons: true }));
+	if (logLevel >= 2)
+		app.use(connect.logger('dev'));
 	var server = http.createServer(app).listen(port, host);
 	// WebSocket
 	server.addListener('upgrade', function(request, socket, head) {
@@ -104,17 +107,20 @@ LiveServer.start = function(options) {
 				if (!ws) return;
 				if (path.extname(filePath) == ".css") {
 					ws.send('refreshcss');
-					console.log("CSS change detected".magenta);
+					if (logLevel >= 1)
+						console.log("CSS change detected".magenta);
 				} else {
 					ws.send('reload');
-					console.log("File change detected".cyan);
+					if (logLevel >= 1)
+						console.log("File change detected".cyan);
 				}
 			}
 		}
 	});
 	// Output
 	var browserURL = "http://127.0.0.1:" + port;
-	console.log(('Serving "' + root + '" at ' + browserURL).green);
+	if (logLevel >= 1)
+		console.log(('Serving "' + root + '" at ' + browserURL).green);
 
 	// Launch browser
 	if(!noBrowser)

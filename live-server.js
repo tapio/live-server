@@ -3,7 +3,8 @@ var liveServer = require("./index");
 
 var opts = {
 	port: process.env.PORT,
-	noBrowser: false
+	noBrowser: false,
+	logLevel: 2
 };
 
 for (var i = process.argv.length-1; i >= 2; --i) {
@@ -17,6 +18,9 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 		}
 	} else if (arg == "--no-browser") {
 		opts.noBrowser = true;
+		process.argv.splice(i, 1);
+	} else if (arg == "--quiet" || arg == "-q") {
+		opts.logLevel = 0;
 		process.argv.splice(i, 1);
 	} else if (arg == "--help" || arg == "-h") {
 		console.log('Usage: live-server [-h|--help] [--port=PORT] [--no-browser] [PATH]');

@@ -76,6 +76,9 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
+* master (unreleased)
+	- `logLevel` parameter in library to control amount of console spam
+	- `--quiet` cli option to suppress console spam
 * v0.7.0
 	- API BREAKAGE: LiveServer library now takes parameters in an object
 	- Added possibility to specify host to the lib
