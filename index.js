@@ -65,12 +65,27 @@ function staticServer(root) {
 }
 
 /**
+ * Rewrite request URL and pass it back to the static handler.
+ * @param staticHandler {function} Next handler
+ * @param file {string} Path to the entry point file
+ */
+function entryPoint(staticHandler, file) {
+	if (!file) return function(req, res, next) { next(); };
+
+	return function(req, res, next) {
+		req.url = "/" + file;
+		staticHandler(req, res, next);
+	}
+}
+
+/**
  * Start a live server with parameters given as an object
  * @param host {string} Address to bind to (default: 0.0.0.0)
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
  * @param noBrowser
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
+ * @param file {string} Path to the entry point file
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -79,10 +94,13 @@ LiveServer.start = function(options) {
 	var root = options.root || process.cwd();
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var noBrowser = options.noBrowser || false;
+	var file = options.file;
+	var staticHandler = staticServer(root);
 
 	// Setup a web server
 	var app = connect()
-		.use(staticServer(root)) // Custom static server
+		.use(staticHandler) // Custom static server
+		.use(entryPoint(staticHandler, file))
 		.use(connect.directory(root, { icons: true }));
 	if (logLevel >= 2)
 		app.use(connect.logger('dev'));
