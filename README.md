@@ -44,6 +44,8 @@ You can configure the port to be used by the server by adding the `--port=<numbe
 
 Use parameter `--no-browser` to suppress automatic web browser launching.
 
+If you are developing a single-page application that uses HTML5's history API, you might enable the `--entry-point=<entry file>` option that basically redirects every not found request to this file.
+
 
 Usage from node
 ---------------
@@ -55,7 +57,8 @@ var params = {
 	port: 8181, // Set the server port. Defaults to 8080.
 	host: "0.0.0.0", // Set the address to bind to. Defaults to 0.0.0.0.
 	root: "/public", // Set root directory that's being server. Defaults to cwd.
-	noBrowser = true // When true, it won't load your browser by default.
+	noBrowser: true, // When true, it won't load your browser by default.
+	file: "index.html" // When set, redirect every 404 to this file (useful for single-page applications)
 };
 liveServer.start(params);
 ```

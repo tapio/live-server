@@ -16,6 +16,12 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 			opts.port = portNumber;
 			process.argv.splice(i, 1);
 		}
+	} else if (arg.indexOf("--entry-point=") > -1) {
+		var file = arg.substring(14);
+		if (file.length) {
+			opts.file = file;
+			process.argv.splice(i, 1);
+		}
 	} else if (arg == "--no-browser") {
 		opts.noBrowser = true;
 		process.argv.splice(i, 1);
@@ -23,7 +29,7 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
 	} else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-h|--help] [--port=PORT] [--no-browser] [PATH]');
+		console.log('Usage: live-server [-h|--help] [-q|--quiet] [--port=PORT] [--no-browser] [--entry-point=ENTRYPOINT] [PATH]');
 		process.exit();
 	}
 }
