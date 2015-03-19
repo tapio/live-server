@@ -22,8 +22,15 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 	} else if (arg == "--quiet" || arg == "-q") {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
+	} else if (arg.indexOf("--timeout=") > -1) {
+		var timeoutString = arg.substring(10);
+		var timeoutNumber = parseInt(timeoutString, 10);
+		if (timeoutNumber == timeoutString) {
+			opts.timeout = timeoutNumber;
+			process.argv.splice(i, 1);
+		}
 	} else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-h|--help] [--port=PORT] [--no-browser] [PATH]');
+		console.log('Usage: live-server [-h|--help] [--port=PORT] [--no-browser] [--timeout=MILLISECONDS] [PATH]');
 		process.exit();
 	}
 }

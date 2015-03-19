@@ -79,6 +79,8 @@ LiveServer.start = function(options) {
 	var root = options.root || process.cwd();
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var noBrowser = options.noBrowser || false;
+	var timeout = options.timeout || 0;
+	var timer;
 
 	// Setup a web server
 	var app = connect()
@@ -110,7 +112,14 @@ LiveServer.start = function(options) {
 					if (logLevel >= 1)
 						console.log("CSS change detected".magenta);
 				} else {
-					ws.send('reload');
+					if (timer) {
+						clearTimeout(timer);
+					}
+
+					timer = setTimeout(function() {
+						ws.send('reload');
+					}, timeout);
+
 					if (logLevel >= 1)
 						console.log("File change detected".cyan);
 				}
