@@ -118,7 +118,7 @@ LiveServer.start = function(options) {
 		}
 	});
 	// Output
-	var browserURL = "http://127.0.0.1:" + port;
+	var browserURL = "http://127.0.0.1:" + port + (options.open || '');
 	if (logLevel >= 1)
 		console.log(('Serving "' + root + '" at ' + browserURL).green);
 
