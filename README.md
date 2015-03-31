@@ -80,6 +80,7 @@ Version history
 	- `logLevel` parameter in library to control amount of console spam
 	- `--quiet` cli option to suppress console spam
 	- `--open=PATH` cli option to launch browser in specified path instead of root (@richardgoater)
+	- Library's `noBrowser: true` option is deprecated in favor of `open: false`
 * v0.7.0
 	- API BREAKAGE: LiveServer library now takes parameters in an object
 	- Added possibility to specify host to the lib
