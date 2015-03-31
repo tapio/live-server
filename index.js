@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-var connect = require('connect'),
+var fs = require('fs'),
+	connect = require('connect'),
 	colors = require('colors'),
 	WebSocket = require('faye-websocket'),
 	path = require('path'),
@@ -11,7 +12,7 @@ var connect = require('connect'),
 	watchr = require('watchr'),
 	ws;
 
-var INJECTED_CODE = require('fs').readFileSync(__dirname + "/injected.html", "utf8");
+var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
 
 var LiveServer = {};
 
@@ -29,6 +30,7 @@ function staticServer(root) {
 		if ('GET' != req.method && 'HEAD' != req.method) return next();
 		var reqpath = url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
+		var doInject = false;
 
 		function directory() {
 			var pathname = url.parse(req.originalUrl).pathname;
@@ -37,18 +39,25 @@ function staticServer(root) {
 			res.end('Redirecting to ' + escape(pathname) + '/');
 		}
 
+		function file(filepath, stat) {
+			var x = path.extname(filepath);
+			if (hasNoOrigin && (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php")) {
+				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
+				var contents = fs.readFileSync(filepath, "utf8");
+				doInject = contents.indexOf("</body>") > -1;
+			}
+		}
+
 		function error(err) {
 			if (404 == err.status) return next();
 			next(err);
 		}
 
 		function inject(stream) {
-			var x = path.extname(reqpath);
-			if (hasNoOrigin && (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php")) {
+			if (doInject) {
 				// We need to modify the length given to browser
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
-
 				var originalPipe = stream.pipe;
 				stream.pipe = function(res) {
 					originalPipe.call(stream, es.replace(new RegExp("</body>","i"), INJECTED_CODE + "</body>")).pipe(res);
@@ -58,8 +67,9 @@ function staticServer(root) {
 
 		send(req, reqpath, { root: root })
 			.on('error', error)
-			.on('stream', inject)
 			.on('directory', directory)
+			.on('file', file)
+			.on('stream', inject)
 			.pipe(res);
 	};
 }
