@@ -123,8 +123,8 @@ LiveServer.start = function(options) {
 		console.log(('Serving "' + root + '" at ' + browserURL).green);
 
 	// Launch browser
-	if(!noBrowser)
-		open(browserURL);
+	if (!noBrowser)
+		open(browserURL + (options.open || ''));
 };
 
 module.exports = LiveServer;
