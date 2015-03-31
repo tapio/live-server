@@ -69,7 +69,7 @@ function staticServer(root) {
  * @param host {string} Address to bind to (default: 0.0.0.0)
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
- * @param noBrowser
+ * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  */
 LiveServer.start = function(options) {
@@ -78,7 +78,9 @@ LiveServer.start = function(options) {
 	var port = options.port || 8080;
 	var root = options.root || process.cwd();
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
-	var noBrowser = options.noBrowser || false;
+	var openPath = (options.open === undefined || options.open === true) ?
+		"" : ((options.open === null || options.open === false) ? null : options.open);
+	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 
 	// Setup a web server
 	var app = connect()
@@ -118,13 +120,13 @@ LiveServer.start = function(options) {
 		}
 	});
 	// Output
-	var browserURL = "http://127.0.0.1:" + port;
+	var serveURL = "http://127.0.0.1:" + port;
 	if (logLevel >= 1)
-		console.log(('Serving "' + root + '" at ' + browserURL).green);
+		console.log(('Serving "' + root + '" at ' + serveURL).green);
 
 	// Launch browser
-	if (!noBrowser)
-		open(browserURL + (options.open || ''));
+	if (openPath !== null)
+		open(serveURL + openPath);
 };
 
 module.exports = LiveServer;

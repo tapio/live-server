@@ -3,7 +3,7 @@ var liveServer = require("./index");
 
 var opts = {
 	port: process.env.PORT,
-	noBrowser: false,
+	open: true,
 	logLevel: 2
 };
 
@@ -26,7 +26,7 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg == "--no-browser") {
-		opts.noBrowser = true;
+		opts.open = false;
 		process.argv.splice(i, 1);
 	} else if (arg == "--quiet" || arg == "-q") {
 		opts.logLevel = 0;
