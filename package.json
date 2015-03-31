@@ -17,7 +17,7 @@
 		"colors": "latest",
 		"open": "latest",
 		"watchr": "2.3.x",
-		"faye-websocket": "0.4.x",
+		"faye-websocket": "0.9.x",
 		"event-stream" : "latest"
 	},
 	"scripts": {
