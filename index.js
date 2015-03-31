@@ -118,13 +118,13 @@ LiveServer.start = function(options) {
 		}
 	});
 	// Output
-	var browserURL = "http://127.0.0.1:" + port + (options.open || '');
+	var browserURL = "http://127.0.0.1:" + port;
 	if (logLevel >= 1)
 		console.log(('Serving "' + root + '" at ' + browserURL).green);
 
 	// Launch browser
-	if(!noBrowser)
-		open(browserURL);
+	if (!noBrowser)
+		open(browserURL + (options.open || ''));
 };
 
 module.exports = LiveServer;
