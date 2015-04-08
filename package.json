@@ -1,7 +1,7 @@
 {
-	"name": "live-server",
-	"version": "0.7.1",
-	"description": "simple development http server with live reload capability",
+	"name": "jspm-server",
+	"version": "0.0.1",
+	"description": "prototype JSPM development server",
 	"keywords": [
 		"front-end",
 		"development",
@@ -10,7 +10,7 @@
 		"http",
 		"cli"
 	],
-	"author": "Tapio Vierros",
+	"author": "Glen Maddern",
 	"dependencies": {
 		"connect": "2.x.x",
 		"send": "latest",
@@ -24,11 +24,11 @@
 		"test": "jshint *.js"
 	},
 	"bin": {
-		"live-server": "./live-server.js"
+		"jspm-server": "./jspm-server.js"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tapio/live-server.git"
+		"url": "https://github.com/tapio/jspm-server.git"
 	},
 	"engines": {
 		"node": ">=0.8.0"
