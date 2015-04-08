@@ -1,6 +1,11 @@
 [![view on npm](http://img.shields.io/npm/v/jspm-server.svg)](https://www.npmjs.org/package/jspm-server)
 [![npm module downloads per month](http://img.shields.io/npm/dm/jspm-server.svg)](https://www.npmjs.org/package/jspm-server)
 
+To dev on this:
+```
+watchify injected.src.js -t babelify --outfile injected.js
+```
+
 JSPM Server
 ===========
 
