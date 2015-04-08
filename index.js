@@ -12,7 +12,7 @@ var fs = require('fs'),
 	watchr = require('watchr'),
 	ws;
 
-var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
+var INJECTED_CODE = "<script>" + fs.readFileSync(__dirname + "/injected.js", "utf8") + "</script>";
 
 var LiveServer = {};
 
@@ -102,7 +102,7 @@ LiveServer.start = function(options) {
 	// WebSocket
 	server.addListener('upgrade', function(request, socket, head) {
 		ws = new WebSocket(request, socket, head);
-		ws.onopen = function() { ws.send('connected'); };
+		ws.onopen = function() { ws.send(JSON.stringify({type: 'connected'})); };
 	});
 	// Setup file watcher
 	watchr.watch({
@@ -117,15 +117,8 @@ LiveServer.start = function(options) {
 			},
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
 				if (!ws) return;
-				if (path.extname(filePath) == ".css") {
-					ws.send('refreshcss');
-					if (logLevel >= 1)
-						console.log("CSS change detected".magenta);
-				} else {
-					ws.send('reload');
-					if (logLevel >= 1)
-						console.log("File change detected".cyan);
-				}
+				ws.send(JSON.stringify({type: 'change', path: path.relative(root, filePath)}))
+        if (logLevel >= 1) console.log("File change detected".cyan);
 			}
 		}
 	});

@@ -1,38 +1,43 @@
 {
-	"name": "jspm-server",
-	"version": "0.0.1",
-	"description": "prototype JSPM development server",
-	"keywords": [
-		"front-end",
-		"development",
-		"tool",
-		"server",
-		"http",
-		"cli"
-	],
-	"author": "Glen Maddern",
-	"dependencies": {
-		"connect": "2.x.x",
-		"send": "latest",
-		"colors": "latest",
-		"open": "latest",
-		"watchr": "2.3.x",
-		"faye-websocket": "0.9.x",
-		"event-stream" : "latest"
-	},
-	"scripts": {
-		"test": "jshint *.js"
-	},
-	"bin": {
-		"jspm-server": "./jspm-server.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/tapio/jspm-server.git"
-	},
-	"engines": {
-		"node": ">=0.8.0"
-	},
-	"preferGlobal": true,
-	"license": "MIT"
+  "name": "jspm-server",
+  "version": "0.0.1",
+  "description": "prototype JSPM development server",
+  "keywords": [
+    "front-end",
+    "development",
+    "tool",
+    "server",
+    "http",
+    "cli"
+  ],
+  "author": "Glen Maddern",
+  "dependencies": {
+    "connect": "2.x.x",
+    "send": "latest",
+    "colors": "latest",
+    "open": "latest",
+    "watchr": "2.3.x",
+    "faye-websocket": "0.9.x",
+    "event-stream": "latest"
+  },
+  "scripts": {
+    "start": "watchify injected.src.js -t babelify --outfile injected.js"
+  },
+  "bin": {
+    "jspm-server": "./jspm-server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tapio/jspm-server.git"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "preferGlobal": true,
+  "license": "MIT",
+  "devDependencies": {
+    "babelify": "~6.0.2",
+    "browserify": "~9.0.7",
+    "watchify": "~3.1.0"
+  }
 }
