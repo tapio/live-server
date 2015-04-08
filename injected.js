@@ -49,6 +49,8 @@ var ChangeHandler = (function () {
   }, {
     key: "fileChanged",
     value: function fileChanged(path) {
+      var _this2 = this;
+
       this.updateModuleMap();
 
       if (!this.moduleMap.has(path)) {
@@ -56,18 +58,26 @@ var ChangeHandler = (function () {
         return;
       }
 
-      var plugin = this.moduleMap.get(path);
-      if (!plugin) {
+      var pluginName = this.moduleMap.get(path);
+      if (!pluginName) {
         this.reload(path, "Default plugin cannot hot-swap");
         return;
       }
 
-      if (!plugin.reload) {
-        this.reload(path, "Plugin '" + plugin + "' does not define a reload handler");
-        return;
-      }
+      this.System.load(pluginName).then(function (plugin) {
+        if (!plugin.reloadable) {
+          _this2.reload(path, "Plugin '" + pluginName + "' does not define a reload handler");
+          return;
+        }
 
-      plugin.reload(path);
+        // At the moment, with only one plugin, it's just a matter of calling
+        // System.load again. The reloading of the CSS is a side effect of this
+        // process.
+        console.log("Reloading " + path);
+        _this2.System.load("" + path + "?" + new Date().valueOf() + "!" + pluginName).then(function (source) {
+          console.log("Reloaded " + path + "!");
+        });
+      });
     }
   }, {
     key: "reload",
@@ -77,9 +87,6 @@ var ChangeHandler = (function () {
       setTimeout(function () {
         return console.log("1...");
       }, 1000);
-      setTimeout(function () {
-        return window.location.reload();
-      }, 2000);
     }
   }]);
 
@@ -88,6 +95,7 @@ var ChangeHandler = (function () {
 
 exports["default"] = ChangeHandler;
 module.exports = exports["default"];
+//setTimeout(() => window.location.reload(), 2000)
 
 },{}],3:[function(require,module,exports){
 'use strict';
