@@ -65,7 +65,8 @@ var ChangeHandler = (function () {
       }
 
       this.System.load(pluginName).then(function (plugin) {
-        if (!plugin.reloadable) {
+        console.log(plugin);
+        if (!plugin.hotReload) {
           _this2.reload(path, "Plugin '" + pluginName + "' does not define a reload handler");
           return;
         }
@@ -73,7 +74,8 @@ var ChangeHandler = (function () {
         // At the moment, with only one plugin, it's just a matter of calling
         // System.load again. The reloading of the CSS is a side effect of this
         // process.
-        _this2.System.load("" + path + "?" + new Date().valueOf() + "!" + pluginName).then(function (source) {
+        _this2.System["import"]("" + path + "?" + new Date().valueOf() + "!" + pluginName).then(function (module) {
+          plugin.hotReload(module);
           console.log("Reloaded " + path);
         });
       });
