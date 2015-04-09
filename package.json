@@ -18,7 +18,8 @@
     "open": "latest",
     "watchr": "2.3.x",
     "faye-websocket": "0.9.x",
-    "event-stream": "latest"
+    "event-stream": "latest",
+    "chokidar": "~1.0.1"
   },
   "scripts": {
     "start": "watchify injected.src.js -t babelify --outfile injected.js"

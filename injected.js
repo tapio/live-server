@@ -73,9 +73,8 @@ var ChangeHandler = (function () {
         // At the moment, with only one plugin, it's just a matter of calling
         // System.load again. The reloading of the CSS is a side effect of this
         // process.
-        console.log("Reloading " + path);
         _this2.System.load("" + path + "?" + new Date().valueOf() + "!" + pluginName).then(function (source) {
-          console.log("Reloaded " + path + "!");
+          console.log("Reloaded " + path);
         });
       });
     }
