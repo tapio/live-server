@@ -117,8 +117,9 @@ LiveServer.start = function(options) {
 			},
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
 				if (!ws) return;
-				ws.send(JSON.stringify({type: 'change', path: path.relative(root, filePath)}))
-        if (logLevel >= 1) console.log("File change detected".cyan);
+        var relativePath = path.relative(root, filePath);
+        ws.send(JSON.stringify({type: 'change', path: relativePath}))
+        if (logLevel >= 1) console.log(("Change detected: " + relativePath).cyan);
 			}
 		}
 	});

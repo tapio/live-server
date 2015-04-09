@@ -87,6 +87,9 @@ var ChangeHandler = (function () {
       setTimeout(function () {
         return console.log("1...");
       }, 1000);
+      setTimeout(function () {
+        return window.location.reload();
+      }, 2000);
     }
   }]);
 
@@ -95,7 +98,6 @@ var ChangeHandler = (function () {
 
 exports["default"] = ChangeHandler;
 module.exports = exports["default"];
-//setTimeout(() => window.location.reload(), 2000)
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -134,7 +136,7 @@ var _ChangeHandler2 = _interopRequireWildcard(_ChangeHandler);
 exports['default'] = function (message) {
   var changeHandler = undefined;
   if (message.type == 'connected') {
-    console.log('JSPM watching enabled!!');
+    console.log('JSPM watching enabled!');
   } else if (message.type == 'change') {
     // Make sure SystemJS is fully loaded
     if (!changeHandler && window.System && window.System._loader && window.System._loader.modules) {
