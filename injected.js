@@ -65,7 +65,6 @@ var ChangeHandler = (function () {
       }
 
       this.System.load(pluginName).then(function (plugin) {
-        console.log(plugin);
         if (!plugin.hotReload) {
           _this2.reload(path, "Plugin '" + pluginName + "' does not define a reload handler");
           return;
