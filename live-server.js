@@ -3,7 +3,7 @@ var liveServer = require("./index");
 
 var opts = {
 	port: process.env.PORT,
-	noBrowser: false,
+	open: true,
 	logLevel: 2
 };
 
@@ -16,8 +16,17 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 			opts.port = portNumber;
 			process.argv.splice(i, 1);
 		}
-	} else if (arg == "--no-browser") {
-		opts.noBrowser = true;
+	}
+	else if (arg.indexOf("--open=") > -1) {
+		var path = arg.substring(7);
+		if (path.indexOf('/') != 0) {
+			path = '/' + path;
+		}
+		opts.open = path;
+		process.argv.splice(i, 1);
+	}
+	else if (arg == "--no-browser") {
+		opts.open = false;
 		process.argv.splice(i, 1);
 	} else if (arg == "--quiet" || arg == "-q") {
 		opts.logLevel = 0;
@@ -30,12 +39,13 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 			process.argv.splice(i, 1);
 		}
 	} else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-h|--help] [--port=PORT] [--no-browser] [--timeout=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--timeout=MILLISECONDS] [PATH]');
 		process.exit();
 	}
 }
 
-if (process.argv[2])
+if (process.argv[2]) {
 	process.chdir(process.argv[2]);
+}
 
 liveServer.start(opts);
