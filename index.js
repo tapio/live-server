@@ -81,6 +81,7 @@ function staticServer(root) {
  * @param root {string} Path to root directory (default: cwd)
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
+ * @param timeout {number} number of ms the server will wait to reload the browser
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -91,6 +92,9 @@ LiveServer.start = function(options) {
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
+
+	var timeout = options.timeout || 0;
+	var timer;
 
 	// Setup a web server
 	var app = connect()
@@ -122,7 +126,14 @@ LiveServer.start = function(options) {
 					if (logLevel >= 1)
 						console.log("CSS change detected".magenta);
 				} else {
-					ws.send('reload');
+					if (timer) {
+						clearTimeout(timer);
+					}
+
+					timer = setTimeout(function() {
+						ws.send('reload');
+					}, timeout);
+
 					if (logLevel >= 1)
 						console.log("File change detected".cyan);
 				}
