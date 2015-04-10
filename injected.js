@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // Code injected by jspm-server
 'use strict';
 
@@ -82,14 +82,7 @@ var ChangeHandler = (function () {
   }, {
     key: "reload",
     value: function reload(path, reason) {
-      console.info("Change detected in " + path + " that cannot be handled gracefully: " + reason);
-      console.log("Reloading in 2 seconds...");
-      setTimeout(function () {
-        return console.log("1...");
-      }, 1000);
-      setTimeout(function () {
-        return window.location.reload();
-      }, 2000);
+      window.location.reload();
     }
   }]);
 
@@ -98,6 +91,10 @@ var ChangeHandler = (function () {
 
 exports["default"] = ChangeHandler;
 module.exports = exports["default"];
+//console.info(`Change detected in ${path} that cannot be handled gracefully: ${reason}`)
+//console.log(`Reloading in 2 seconds...`)
+//setTimeout(() => console.log(`1...`), 1000)
+//setTimeout(() => window.location.reload(), 1000)
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -150,4 +147,4 @@ exports['default'] = function (message) {
 
 module.exports = exports['default'];
 
-},{"./change-handler":2}]},{},[1])
+},{"./change-handler":2}]},{},[1]);
