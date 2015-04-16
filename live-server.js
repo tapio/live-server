@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+var path = require('path');
+var fs = require('fs');
+var assign = require('object-assign');
 var liveServer = require("./index");
 
 var opts = {
@@ -6,6 +9,12 @@ var opts = {
 	open: true,
 	logLevel: 2
 };
+
+var configPath = path.join(process.env.HOME, '.live-server.json');
+if (fs.existsSync(configPath)) {
+	var userConfig = fs.readFileSync(configPath, 'utf8');
+	assign(opts, JSON.parse(userConfig));
+}
 
 for (var i = process.argv.length-1; i >= 2; --i) {
 	var arg = process.argv[i];
