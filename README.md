@@ -48,6 +48,10 @@ Additional parameters:
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
 
+Default options:
+
+If a file `~/.live-server.json` exists it will be loaded and used as default options for live-server on the command line. See "Usage from node" for option names.
+
 
 Usage from node
 ---------------
