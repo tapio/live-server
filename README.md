@@ -48,6 +48,8 @@ This is a variant of `live-server` that uses a payload of [SystemJS](https://git
 Version history
 ---------------
 
+* v0.0.2
+	- Added a `html5mode`, where if a `200.html` is present in the root directory, any url that doesn't contain a `.` will serve it instead. Enables single-page apps nicely.
 * v0.0.1
 	- Forked from v0.7.1 of [live-server](https://github.com/tapio/live-server)
 
