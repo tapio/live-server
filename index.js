@@ -26,10 +26,13 @@ function escape(html) {
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root) {
+function staticServer(root, html5mode) {
   return function (req, res, next) {
     if ('GET' != req.method && 'HEAD' != req.method) return next();
     var reqpath = url.parse(req.url).pathname;
+    if (html5mode && !reqpath.match(/\./)) {
+      req.url = reqpath = "/200.html"
+    }
     var hasNoOrigin = !req.headers.origin;
     var doInject = false;
 
@@ -92,10 +95,14 @@ LiveServer.start = function (options) {
   var openPath = (options.open === undefined || options.open === true) ?
     "" : ((options.open === null || options.open === false) ? null : options.open);
   if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
+  var html5mode = fs.existsSync(root + "/200.html")
+  if (html5mode) {
+    console.log(("200.html detected, serving it for all URLs that have no '.' (html5mode)").yellow)
+  }
 
   // Setup a web server
   var app = connect()
-    .use(staticServer(root)) // Custom static server
+    .use(staticServer(root, html5mode)) // Custom static server
     .use(connect.directory(root, {icons: true}));
   if (logLevel >= 2)
     app.use(connect.logger('dev'));
