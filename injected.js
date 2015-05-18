@@ -70,10 +70,13 @@ var ChangeHandler = (function () {
           return;
         }
 
+        var systemPath = "" + path + "!" + pluginName;
+        _this2.System["delete"](systemPath);
         // At the moment, with only one plugin, it's just a matter of calling
         // System.load again. The reloading of the CSS is a side effect of this
         // process.
-        _this2.System["import"]("" + path + "?" + new Date().valueOf() + "!" + pluginName).then(function (module) {
+        _this2.System["import"](systemPath).then(function (module) {
+          console.log("100% new code");
           plugin.hotReload(module);
           console.log("Reloaded " + path);
         });
