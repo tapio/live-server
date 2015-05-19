@@ -70,7 +70,6 @@ var ChangeHandler = (function () {
             _this2.depMap.get(path).push(m.split('!')[0]);
           });
         });
-        console.log(this.depMap);
       }
     }
   }, {
@@ -80,7 +79,6 @@ var ChangeHandler = (function () {
 
       var reloadPageIfNeeded = arguments[1] === undefined ? true : arguments[1];
 
-      console.log('PATH CHANGED ' + path);
       this.updateModuleMap();
       this.updateDepMap();
 
@@ -105,7 +103,6 @@ var ChangeHandler = (function () {
         _this3.System['delete'](systemPath);
         _this3.System['import'](systemPath).then(function (module) {
           plugin.hotReload(module);
-          console.log('Reloaded ' + path);
           var deps = _this3.depMap.get(path);
           if (deps) deps.forEach(function (dep) {
             return _this3.fileChanged(dep, false);
@@ -116,15 +113,7 @@ var ChangeHandler = (function () {
   }, {
     key: 'reload',
     value: function reload(path, reason) {
-      //window.location.reload()
-      console.info('Change detected in ' + path + ' that cannot be handled gracefully: ' + reason);
-      console.log('Reloading in 2 seconds...');
-      setTimeout(function () {
-        return console.log('1...');
-      }, 1000);
-      setTimeout(function () {
-        return window.location.reload();
-      }, 1000);
+      window.location.reload();
     }
   }]);
 
@@ -133,6 +122,10 @@ var ChangeHandler = (function () {
 
 exports['default'] = ChangeHandler;
 module.exports = exports['default'];
+//console.info(`Change detected in ${path} that cannot be handled gracefully: ${reason}`)
+//console.log(`Reloading in 2 seconds...`)
+//setTimeout(() => console.log(`1...`), 1000)
+//setTimeout(() => window.location.reload(), 1000)
 
 },{}],3:[function(require,module,exports){
 'use strict';
