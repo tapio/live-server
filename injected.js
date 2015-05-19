@@ -53,7 +53,7 @@ var ChangeHandler = (function () {
     value: function updateDepMap() {
       var _this2 = this;
 
-      var modules = Object.keys(this.System.loads);
+      var modules = Object.keys(this.System.loads || {});
       if (modules.length != this.depMap.size) {
         this.depMap.clear();
         modules.forEach(function (m) {
@@ -103,6 +103,7 @@ var ChangeHandler = (function () {
         _this3.System['delete'](systemPath);
         _this3.System['import'](systemPath).then(function (module) {
           plugin.hotReload(module);
+          console.log('Reloaded ' + path);
           var deps = _this3.depMap.get(path);
           if (deps) deps.forEach(function (dep) {
             return _this3.fileChanged(dep, false);

@@ -48,6 +48,9 @@ This is a variant of `live-server` that uses a payload of [SystemJS](https://git
 Version history
 ---------------
 
+* v0.0.3
+	- Added dependency-tracking, once a file has been live-reloaded, attempt to live-reload all of its dependents.
+	  Note: requires `System.trace = true` to be in your project ahead of your initial `System.import` to take effect.
 * v0.0.2
 	- Added a `html5mode`, where if a `200.html` is present in the root directory, any url that doesn't contain a `.` will serve it instead. Enables single-page apps nicely.
 * v0.0.1
