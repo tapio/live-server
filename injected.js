@@ -5,15 +5,15 @@
 require('./lib');
 
 },{"./lib":3}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
+var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } };
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
@@ -23,11 +23,13 @@ var ChangeHandler = (function () {
 
     this.System = System;
     this.moduleMap = new Map();
+    this.depMap = new Map();
     this.updateModuleMap();
+    this.updateDepMap();
   }
 
   _createClass(ChangeHandler, [{
-    key: "updateModuleMap",
+    key: 'updateModuleMap',
     value: function updateModuleMap() {
       var _this = this;
 
@@ -35,7 +37,7 @@ var ChangeHandler = (function () {
       if (modules.length != this.moduleMap.size) {
         this.moduleMap.clear();
         modules.forEach(function (m) {
-          var _m$split = m.split("!");
+          var _m$split = m.split('!');
 
           var _m$split2 = _slicedToArray(_m$split, 2);
 
@@ -47,57 +49,90 @@ var ChangeHandler = (function () {
       }
     }
   }, {
-    key: "fileChanged",
-    value: function fileChanged(path) {
+    key: 'updateDepMap',
+    value: function updateDepMap() {
       var _this2 = this;
 
+      var modules = Object.keys(this.System.loads);
+      if (modules.length != this.depMap.size) {
+        this.depMap.clear();
+        modules.forEach(function (m) {
+          var deps = _this2.System.loads[m].depMap;
+          Object.keys(deps).forEach(function (dep) {
+            var _deps$dep$split = deps[dep].split('!');
+
+            var _deps$dep$split2 = _slicedToArray(_deps$dep$split, 2);
+
+            var path = _deps$dep$split2[0];
+            var plugin = _deps$dep$split2[1];
+
+            if (!_this2.depMap.get(path)) _this2.depMap.set(path, []);
+            _this2.depMap.get(path).push(m.split('!')[0]);
+          });
+        });
+        console.log(this.depMap);
+      }
+    }
+  }, {
+    key: 'fileChanged',
+    value: function fileChanged(path) {
+      var _this3 = this;
+
+      var reloadPageIfNeeded = arguments[1] === undefined ? true : arguments[1];
+
+      console.log('PATH CHANGED ' + path);
       this.updateModuleMap();
+      this.updateDepMap();
 
       if (!this.moduleMap.has(path)) {
-        this.reload(path, "Change occurred to a file outside SystemJS loading");
+        if (reloadPageIfNeeded) this.reload(path, 'Change occurred to a file outside SystemJS loading');
         return;
       }
 
       var pluginName = this.moduleMap.get(path);
       if (!pluginName) {
-        this.reload(path, "Default plugin cannot hot-swap");
+        if (reloadPageIfNeeded) this.reload(path, 'Default plugin cannot hot-swap');
         return;
       }
 
       this.System.load(pluginName).then(function (plugin) {
         if (!plugin.hotReload) {
-          _this2.reload(path, "Plugin '" + pluginName + "' does not define a reload handler");
+          if (reloadPageIfNeeded) _this3.reload(path, 'Plugin \'' + pluginName + '\' does not define a reload handler');
           return;
         }
 
-        var systemPath = "" + path + "!" + pluginName;
-        _this2.System["delete"](systemPath);
-        // At the moment, with only one plugin, it's just a matter of calling
-        // System.load again. The reloading of the CSS is a side effect of this
-        // process.
-        _this2.System["import"](systemPath).then(function (module) {
-          console.log("100% new code");
+        var systemPath = '' + path + '!' + pluginName;
+        _this3.System['delete'](systemPath);
+        _this3.System['import'](systemPath).then(function (module) {
           plugin.hotReload(module);
-          console.log("Reloaded " + path);
+          console.log('Reloaded ' + path);
+          var deps = _this3.depMap.get(path);
+          if (deps) deps.forEach(function (dep) {
+            return _this3.fileChanged(dep, false);
+          });
         });
       });
     }
   }, {
-    key: "reload",
+    key: 'reload',
     value: function reload(path, reason) {
-      window.location.reload();
+      //window.location.reload()
+      console.info('Change detected in ' + path + ' that cannot be handled gracefully: ' + reason);
+      console.log('Reloading in 2 seconds...');
+      setTimeout(function () {
+        return console.log('1...');
+      }, 1000);
+      setTimeout(function () {
+        return window.location.reload();
+      }, 1000);
     }
   }]);
 
   return ChangeHandler;
 })();
 
-exports["default"] = ChangeHandler;
-module.exports = exports["default"];
-//console.info(`Change detected in ${path} that cannot be handled gracefully: ${reason}`)
-//console.log(`Reloading in 2 seconds...`)
-//setTimeout(() => console.log(`1...`), 1000)
-//setTimeout(() => window.location.reload(), 1000)
+exports['default'] = ChangeHandler;
+module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){
 'use strict';
