@@ -93,7 +93,8 @@ var ChangeHandler = (function () {
         return;
       }
 
-      this.System.load(pluginName).then(function (plugin) {
+      this.System.load(pluginName).then(function (imported) {
+        var plugin = imported['default'] || imported;
         if (!plugin.hotReload) {
           if (reloadPageIfNeeded) _this3.reload(path, 'Plugin \'' + pluginName + '\' does not define a reload handler');
           return;
@@ -114,6 +115,7 @@ var ChangeHandler = (function () {
   }, {
     key: 'reload',
     value: function reload(path, reason) {
+      //console.info(`Change detected in ${path} that cannot be handled gracefully: ${reason}`)
       window.location.reload();
     }
   }]);
@@ -123,10 +125,6 @@ var ChangeHandler = (function () {
 
 exports['default'] = ChangeHandler;
 module.exports = exports['default'];
-//console.info(`Change detected in ${path} that cannot be handled gracefully: ${reason}`)
-//console.log(`Reloading in 2 seconds...`)
-//setTimeout(() => console.log(`1...`), 1000)
-//setTimeout(() => window.location.reload(), 1000)
 
 },{}],3:[function(require,module,exports){
 'use strict';
