@@ -106,7 +106,7 @@ var ChangeHandler = (function () {
           if (oldModule.__hotReload === true) {
             console.log('DEFAULT RELOAD STRATEGY');
           } else if (typeof oldModule.__hotReload === 'function') {
-            oldModule.__hotReload(loader, newModule);
+            oldModule.__hotReload.call(oldModule, loader, newModule);
           }
           //loader.hotReload(module)
           console.log('Reloaded ' + path);
