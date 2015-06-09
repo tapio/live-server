@@ -38,7 +38,7 @@ var ChangeHandler = (function () {
         this.moduleMap.clear();
         modules.forEach(function (moduleName) {
           var meta = _this.System.loads[moduleName].metadata,
-              path = meta.pluginArgument || meta.loaderArgument || moduleName;
+              path = meta.pluginArgument || meta.loaderArgument || moduleName + '.js';
           _this.moduleMap.set(path, { moduleName: moduleName, loader: meta.plugin || meta.loaderModule });
         });
       }
@@ -86,25 +86,33 @@ var ChangeHandler = (function () {
       }
 
       var moduleInfo = this.moduleMap.get(path);
-      if (!moduleInfo.loader) {
-        if (reloadPageIfNeeded) this.reload(path, 'Default loader cannot hot-swap');
-        return;
-      }
 
-      var loader = moduleInfo.loader['default'] || moduleInfo.loader;
-      if (!loader.hotReload) {
-        if (reloadPageIfNeeded) this.reload(path, 'Loader \'' + loader + '\' does not define a reload handler');
-        return;
-      }
+      this.System['import'](moduleInfo.moduleName).then(function (oldModule) {
+        console.log(oldModule);
+        if (!oldModule.__hotReload) {
+          return Promise.reject('' + path + ' is not hot reloadable!');
+        }
+        //if (!moduleInfo.loader) {
+        //  return Promise.reject("Default loader cannot hot-swap")
+        //}
+        //
+        var loader = moduleInfo.loader && (moduleInfo.loader['default'] || moduleInfo.loader);
+        //if (!loader.hotReload) {
+        //  return Promise.reject(`Loader '${loader}' does not define a reload handler`)
+        //}
 
-      this.System['delete'](moduleInfo.moduleName);
-      this.System['import'](moduleInfo.moduleName).then(function (module) {
-        loader.hotReload(module);
-        console.log('Reloaded ' + path);
-        var deps = _this3.depMap.get(path);
-        if (deps) deps.forEach(function (dep) {
-          return _this3.fileChanged(dep, false);
+        _this3.System['delete'](moduleInfo.moduleName);
+        _this3.System['import'](moduleInfo.moduleName).then(function (newModule) {
+          if (oldModule.__hotReload === true) {
+            console.log('DEFAULT RELOAD STRATEGY');
+          } else if (typeof oldModule.__hotReload === 'function') {
+            oldModule.__hotReload(loader, newModule);
+          }
+          //loader.hotReload(module)
+          console.log('Reloaded ' + path);
         });
+      })['catch'](function (reason) {
+        if (reloadPageIfNeeded) _this3.reload(path, reason);
       });
     }
   }, {
@@ -119,6 +127,8 @@ var ChangeHandler = (function () {
 
 exports['default'] = ChangeHandler;
 module.exports = exports['default'];
+//let deps = this.depMap.get(path)
+//if (deps) deps.forEach(dep => this.fileChanged(dep, false))
 //window.location.reload()
 
 },{}],3:[function(require,module,exports){
