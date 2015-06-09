@@ -38,8 +38,8 @@ var ChangeHandler = (function () {
         this.moduleMap.clear();
         modules.forEach(function (moduleName) {
           var meta = _this.System.loads[moduleName].metadata,
-              path = meta.loaderArgument || moduleName;
-          _this.moduleMap.set(path, { moduleName: moduleName, loader: meta.loaderModule });
+              path = meta.pluginArgument || meta.loaderArgument || moduleName;
+          _this.moduleMap.set(path, { moduleName: moduleName, loader: meta.plugin || meta.loaderModule });
         });
       }
     }
