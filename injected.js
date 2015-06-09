@@ -33,18 +33,13 @@ var ChangeHandler = (function () {
     value: function updateModuleMap() {
       var _this = this;
 
-      var modules = Object.keys(this.System._loader.modules);
+      var modules = Object.keys(this.System.loads || {});
       if (modules.length != this.moduleMap.size) {
         this.moduleMap.clear();
-        modules.forEach(function (m) {
-          var _m$split = m.split('!');
-
-          var _m$split2 = _slicedToArray(_m$split, 2);
-
-          var path = _m$split2[0];
-          var plugin = _m$split2[1];
-
-          _this.moduleMap.set(path, plugin);
+        modules.forEach(function (moduleName) {
+          var meta = _this.System.loads[moduleName].metadata,
+              path = meta.loaderArgument || moduleName;
+          _this.moduleMap.set(path, { moduleName: moduleName, loader: meta.loaderModule });
         });
       }
     }
@@ -64,7 +59,7 @@ var ChangeHandler = (function () {
             var _deps$dep$split2 = _slicedToArray(_deps$dep$split, 2);
 
             var path = _deps$dep$split2[0];
-            var plugin = _deps$dep$split2[1];
+            var loader = _deps$dep$split2[1];
 
             if (!_this2.depMap.get(path)) _this2.depMap.set(path, []);
             _this2.depMap.get(path).push(m.split('!')[0]);
@@ -81,42 +76,41 @@ var ChangeHandler = (function () {
 
       this.updateModuleMap();
       this.updateDepMap();
+      console.log(path);
+      console.log(this.moduleMap);
+      console.log(this.depMap);
 
       if (!this.moduleMap.has(path)) {
         if (reloadPageIfNeeded) this.reload(path, 'Change occurred to a file outside SystemJS loading');
         return;
       }
 
-      var pluginName = this.moduleMap.get(path);
-      if (!pluginName) {
-        if (reloadPageIfNeeded) this.reload(path, 'Default plugin cannot hot-swap');
+      var moduleInfo = this.moduleMap.get(path);
+      if (!moduleInfo.loader) {
+        if (reloadPageIfNeeded) this.reload(path, 'Default loader cannot hot-swap');
         return;
       }
 
-      this.System.load(pluginName).then(function (imported) {
-        var plugin = imported['default'] || imported;
-        if (!plugin.hotReload) {
-          if (reloadPageIfNeeded) _this3.reload(path, 'Plugin \'' + pluginName + '\' does not define a reload handler');
-          return;
-        }
+      var loader = moduleInfo.loader['default'] || moduleInfo.loader;
+      if (!loader.hotReload) {
+        if (reloadPageIfNeeded) this.reload(path, 'Loader \'' + loader + '\' does not define a reload handler');
+        return;
+      }
 
-        var systemPath = '' + path + '!' + pluginName;
-        _this3.System['delete'](systemPath);
-        _this3.System['import'](systemPath).then(function (module) {
-          plugin.hotReload(module);
-          console.log('Reloaded ' + path);
-          var deps = _this3.depMap.get(path);
-          if (deps) deps.forEach(function (dep) {
-            return _this3.fileChanged(dep, false);
-          });
+      this.System['delete'](moduleInfo.moduleName);
+      this.System['import'](moduleInfo.moduleName).then(function (module) {
+        loader.hotReload(module);
+        console.log('Reloaded ' + path);
+        var deps = _this3.depMap.get(path);
+        if (deps) deps.forEach(function (dep) {
+          return _this3.fileChanged(dep, false);
         });
       });
     }
   }, {
     key: 'reload',
     value: function reload(path, reason) {
-      //console.info(`Change detected in ${path} that cannot be handled gracefully: ${reason}`)
-      window.location.reload();
+      console.info('Change detected in ' + path + ' that cannot be handled gracefully: ' + reason);
     }
   }]);
 
@@ -125,6 +119,7 @@ var ChangeHandler = (function () {
 
 exports['default'] = ChangeHandler;
 module.exports = exports['default'];
+//window.location.reload()
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -139,12 +134,14 @@ var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
 var address = protocol + window.location.host + window.location.pathname + '/ws';
 var socket = new WebSocket(address);
 socket.onmessage = function (msg) {
+  var data = undefined;
   try {
-    _messageHandler2['default'](JSON.parse(msg.data));
+    data = JSON.parse(msg.data);
   } catch (e) {
     console.error('Non-JSON response received: ' + JSON.stringify(msg));
     throw e;
   }
+  _messageHandler2['default'](data);
 };
 
 },{"./message-handler":4}],4:[function(require,module,exports){
