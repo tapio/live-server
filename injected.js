@@ -103,13 +103,25 @@ var ChangeHandler = (function () {
 
         _this3.System['delete'](moduleInfo.moduleName);
         _this3.System['import'](moduleInfo.moduleName).then(function (newModule) {
+          var propagate = undefined;
           if (oldModule.__hotReload === true) {
             console.log('DEFAULT RELOAD STRATEGY');
+            propagate = true;
           } else if (typeof oldModule.__hotReload === 'function') {
-            oldModule.__hotReload.call(oldModule, loader, newModule);
+            propagate = oldModule.__hotReload.call(oldModule, loader, newModule);
           }
           //loader.hotReload(module)
           console.log('Reloaded ' + path);
+
+          if (propagate) {
+            var deps = _this3.depMap.get(path.replace(/\.js$/, ''));
+            console.log(deps);
+            if (deps) deps.forEach(function (dep) {
+              return _this3.fileChanged(dep);
+            });
+          } else {
+            console.log('No need to propagate');
+          }
         });
       })['catch'](function (reason) {
         if (reloadPageIfNeeded) _this3.reload(path, reason);
@@ -127,8 +139,6 @@ var ChangeHandler = (function () {
 
 exports['default'] = ChangeHandler;
 module.exports = exports['default'];
-//let deps = this.depMap.get(path)
-//if (deps) deps.forEach(dep => this.fileChanged(dep, false))
 //window.location.reload()
 
 },{}],3:[function(require,module,exports){
