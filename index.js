@@ -1,77 +1,81 @@
 #!/usr/bin/env node
 var fs = require('fs'),
-	connect = require('connect'),
-	colors = require('colors'),
-	WebSocket = require('faye-websocket'),
-	path = require('path'),
-	url = require('url'),
-	http = require('http'),
-	send = require('send'),
-	open = require('open'),
-	es = require("event-stream"),
-	watchr = require('watchr'),
-	ws;
+  connect = require('connect'),
+  colors = require('colors'),
+  WebSocket = require('faye-websocket'),
+  path = require('path'),
+  url = require('url'),
+  http = require('http'),
+  send = require('send'),
+  open = require('open'),
+  es = require("event-stream"),
+  watchr = require('watchr'),
+  chokidar = require('chokidar'),
+  ws;
 
-var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
+var INJECTED_CODE = "<script>" + fs.readFileSync(__dirname + "/injected.js", "utf8") + "</script>";
 
 var LiveServer = {};
 
-function escape(html){
-	return String(html)
-		.replace(/&(?!\w+;)/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;');
+function escape(html) {
+  return String(html)
+    .replace(/&(?!\w+;)/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root) {
-	return function(req, res, next) {
-		if ('GET' != req.method && 'HEAD' != req.method) return next();
-		var reqpath = url.parse(req.url).pathname;
-		var hasNoOrigin = !req.headers.origin;
-		var doInject = false;
+function staticServer(root, html5mode) {
+  return function (req, res, next) {
+    if ('GET' != req.method && 'HEAD' != req.method) return next();
+    var reqpath = url.parse(req.url).pathname;
+    if (html5mode && !reqpath.match(/\./)) {
+      req.url = reqpath = "/200.html"
+    }
+    var hasNoOrigin = !req.headers.origin;
+    var doInject = false;
 
-		function directory() {
-			var pathname = url.parse(req.originalUrl).pathname;
-			res.statusCode = 301;
-			res.setHeader('Location', pathname + '/');
-			res.end('Redirecting to ' + escape(pathname) + '/');
-		}
+    function directory() {
+      var pathname = url.parse(req.originalUrl).pathname;
+      res.statusCode = 301;
+      res.setHeader('Location', pathname + '/');
+      res.end('Redirecting to ' + escape(pathname) + '/');
+    }
 
-		function file(filepath, stat) {
-			var x = path.extname(filepath);
-			if (hasNoOrigin && (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php")) {
-				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
-				var contents = fs.readFileSync(filepath, "utf8");
-				doInject = contents.indexOf("</body>") > -1;
-			}
-		}
+    function file(filepath, stat) {
+      var x = path.extname(filepath);
+      if (hasNoOrigin && (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php")) {
+        // TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
+        var contents = fs.readFileSync(filepath, "utf8");
+        doInject = contents.indexOf("</body>") > -1;
+      }
+    }
 
-		function error(err) {
-			if (404 == err.status) return next();
-			next(err);
-		}
+    function error(err) {
+      if (404 == err.status) return next();
+      next(err);
+    }
 
-		function inject(stream) {
-			if (doInject) {
-				// We need to modify the length given to browser
-				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
-				res.setHeader('Content-Length', len);
-				var originalPipe = stream.pipe;
-				stream.pipe = function(res) {
-					originalPipe.call(stream, es.replace(new RegExp("</body>","i"), INJECTED_CODE + "</body>")).pipe(res);
-				};
-			}
-		}
+    function inject(stream) {
+      if (doInject) {
+        // We need to modify the length given to browser
+        var len = INJECTED_CODE.length + res.getHeader('Content-Length');
+        res.setHeader('Content-Length', len);
+        var originalPipe = stream.pipe;
+        stream.pipe = function (res) {
+          originalPipe.call(stream, es.replace(new RegExp("</body>", "i"), INJECTED_CODE + "</body>")).pipe(res);
+        };
+      }
+    }
 
-		send(req, reqpath, { root: root })
-			.on('error', error)
-			.on('directory', directory)
-			.on('file', file)
-			.on('stream', inject)
-			.pipe(res);
-	};
+    send(req, reqpath, {root: root})
+      .on('error', error)
+      .on('directory', directory)
+      .on('file', file)
+      .on('stream', inject)
+      .pipe(res);
+  };
 }
 
 /**
@@ -82,61 +86,57 @@ function staticServer(root) {
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  */
-LiveServer.start = function(options) {
-	options = options || {};
-	var host = options.host || '0.0.0.0';
-	var port = options.port || 8080;
-	var root = options.root || process.cwd();
-	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
-	var openPath = (options.open === undefined || options.open === true) ?
-		"" : ((options.open === null || options.open === false) ? null : options.open);
-	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
+LiveServer.start = function (options) {
+  options = options || {};
+  var host = options.host || '0.0.0.0';
+  var port = options.port || 8080;
+  var root = options.root || process.cwd();
+  var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
+  var openPath = (options.open === undefined || options.open === true) ?
+    "" : ((options.open === null || options.open === false) ? null : options.open);
+  if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
+  var html5mode = fs.existsSync(root + "/200.html")
+  if (html5mode) {
+    console.log(("200.html detected, serving it for all URLs that have no '.' (html5mode)").yellow)
+  }
 
-	// Setup a web server
-	var app = connect()
-		.use(staticServer(root)) // Custom static server
-		.use(connect.directory(root, { icons: true }));
-	if (logLevel >= 2)
-		app.use(connect.logger('dev'));
-	var server = http.createServer(app).listen(port, host);
-	// WebSocket
-	server.addListener('upgrade', function(request, socket, head) {
-		ws = new WebSocket(request, socket, head);
-		ws.onopen = function() { ws.send('connected'); };
-	});
-	// Setup file watcher
-	watchr.watch({
-		path: root,
-		ignoreCommonPatterns: true,
-		ignoreHiddenFiles: true,
-		preferredMethods: [ 'watchFile', 'watch' ],
-		interval: 1407,
-		listeners: {
-			error: function(err) {
-				console.log("ERROR:".red , err);
-			},
-			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
-				if (!ws) return;
-				if (path.extname(filePath) == ".css") {
-					ws.send('refreshcss');
-					if (logLevel >= 1)
-						console.log("CSS change detected".magenta);
-				} else {
-					ws.send('reload');
-					if (logLevel >= 1)
-						console.log("File change detected".cyan);
-				}
-			}
-		}
-	});
-	// Output
-	var serveURL = "http://127.0.0.1:" + port;
-	if (logLevel >= 1)
-		console.log(('Serving "' + root + '" at ' + serveURL).green);
+  // Setup a web server
+  var app = connect()
+    .use(staticServer(root, html5mode)) // Custom static server
+    .use(connect.directory(root, {icons: true}));
+  if (logLevel >= 2)
+    app.use(connect.logger('dev'));
+  var server = http.createServer(app).listen(port, host);
+  // WebSocket
+  server.addListener('upgrade', function (request, socket, head) {
+    ws = new WebSocket(request, socket, head);
+    ws.onopen = function () {
+      ws.send(JSON.stringify({type: 'connected'}));
+    };
+  });
+  // Setup file watcher
+  chokidar.watch(root, {
+    ignored: /[\/\\]\./,
+    ignoreInitial: true,
+    ignorePermissionErrors: true
+  }).on('all', function (event, filePathOrErr) {
+    if (event == 'error') {
+      console.log("ERROR:".red, filePathOrErr);
+    } else {
+      if (!ws) return;
+      var relativePath = path.relative(root, filePathOrErr);
+      ws.send(JSON.stringify({type: 'change', path: relativePath}))
+      if (logLevel >= 1) console.log(("Change detected: " + relativePath).cyan);
+    }
+  });
+  // Output
+  var serveURL = "http://127.0.0.1:" + port;
+  if (logLevel >= 1)
+    console.log(('Serving "' + root + '" at ' + serveURL).green);
 
-	// Launch browser
-	if (openPath !== null)
-		open(serveURL + openPath);
+  // Launch browser
+  if (openPath !== null)
+    open(serveURL + openPath);
 };
 
 module.exports = LiveServer;

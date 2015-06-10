@@ -1,19 +1,17 @@
-[![view on npm](http://img.shields.io/npm/v/live-server.svg)](https://www.npmjs.org/package/live-server)
-[![npm module downloads per month](http://img.shields.io/npm/dm/live-server.svg)](https://www.npmjs.org/package/live-server)
+[![view on npm](http://img.shields.io/npm/v/jspm-server.svg)](https://www.npmjs.org/package/jspm-server)
+[![npm module downloads per month](http://img.shields.io/npm/dm/jspm-server.svg)](https://www.npmjs.org/package/jspm-server)
 
-Live Server
+To dev on this:
+```
+watchify injected.src.js -t babelify --outfile injected.js
+```
+
+JSPM Server
 ===========
 
-This is a little development server with live reload capability. Use it for hacking your HTML/JavaScript/CSS files, but not for deploying the final site.
+This is a little development server for devving on JSPM sites. It's based on (and owes 99% of its smarts) to @tapio's excellent [live-server](https://github.com/tapio/live-server).
 
-There are two reasons for using this:
-
-1. AJAX requests don't work with the `file://` protocol due to security restrictions, i.e. you need a server if your site fetches content through JavaScript.
-2. Having the page reload automatically after changes to files can accelerate development.
-
-If you don't want/need the live reload, you should probably use something simpler, like the following Python-based one-liner:
-
-	python -m SimpleHTTPServer
+If you don't need JSPM stuff, use live-server, and if you don't need live-reloading at all, use [http-server](https://www.npmjs.com/package/http-server) or `python -m SimpleHTTPServer` 
 
 
 Installation
@@ -23,24 +21,14 @@ You need node.js and npm. You should probably install this globally.
 
 **Npm way**
 
-	npm install -g live-server
-
-**Manual way**
-
-	git clone https://github.com/tapio/live-server
-	cd live-server
-	npm install # Local dependencies if you want to hack
-	npm install -g # Install globally
-
+	npm install -g jspm-server
 
 Usage from command line
 -----------------------
 
-Issue the command `live-server` in your project's directory. Alternatively you can add the path to serve as a command line parameter.
+Issue the command `jspm-server` in your project's directory. Alternatively you can add the path to serve as a command line parameter.
 
-This will automatically launch the default browser (you should have `index.html` present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
-
-You can configure the port to be used by the server by adding the `--port=<number>` runtime option when invoking live-server, or by setting the `PORT` environment variable prior to running live-server.
+You can configure the port to be used by the server by adding the `--port=<number>` runtime option when invoking jspm-server, or by setting the `PORT` environment variable prior to running jspm-server.
 
 Additional parameters:
 
@@ -48,88 +36,33 @@ Additional parameters:
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
 
-
-Usage from node
----------------
-
-```javascript
-var liveServer = require("live-server");
-
-var params = {
-	port: 8181, // Set the server port. Defaults to 8080.
-	host: "0.0.0.0", // Set the address to bind to. Defaults to 0.0.0.0.
-	root: "/public", // Set root directory that's being server. Defaults to cwd.
-	open: false // When false, it won't load your browser by default.
-};
-liveServer.start(params);
-```
-
-
-Troubleshooting
----------------
-
-Open your browser's console: there should be a message at the top stating that live reload is enabled. If there are errors, deal with them. You will need a browser that supports WebSockets.
-
-
 How it works
 ------------
 
-The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html file. This script establishes the web socket connection and listens to the reload requests.
+This is a variant of `live-server` that uses a payload of [SystemJS](https://github.com/systemjs/systemjs)-aware hooks, and looks for plugins that export a `hotReload` function. It then cache-busts the resource and `System.import`s it. The logic all lives in [ChangeHandler](https://github.com/geelen/jspm-server/blob/master/lib/change-handler.js). At the moment, there are two plugins that support live-reloading, and they're mega hacks (both of them reload as a side-effect, and aren't properly wired into the SystemJS loader). They are:
+
+- [postcss](https://github.com/geelen/plugin-postcss)
+- [jsx](https://github.com/geelen/typeslab/blob/master/src/jsx.js)
 
 
 Version history
 ---------------
 
-* v0.7.1
-	- Fix hang caused by trying to inject into fragment html files without `</body>`
-	- `logLevel` parameter in library to control amount of console spam
-	- `--quiet` cli option to suppress console spam
-	- `--open=PATH` cli option to launch browser in specified path instead of root (@richardgoater)
-	- Library's `noBrowser: true` option is deprecated in favor of `open: false`
-* v0.7.0
-	- API BREAKAGE: LiveServer library now takes parameters in an object
-	- Added possibility to specify host to the lib
-	- Only inject to host page when working with web components (e.g. Polymer) (@davej)
-	- Open browser to 127.0.0.1, as 0.0.0.0 has issues
-	- `--no-browser` command line flag to suppress browser launch
-	- `--help` command line flag to display usage
-* v0.6.4
-	- Allow specifying port from the command line: `live-server --port=3000` (@Pomax)
-	- Don't inject script as the first thing so that DOCTYPE remains valid (@wmira)
-	- Be more explicit with listening to all interfaces (@inadarei)
-* v0.6.3
-	- Fix multiple _cacheOverride parameters polluting css requests
-	- Don't create global variables in the injected script
-* v0.6.2
-	- Fix a deprecation warning from `send`
-* v0.6.1
-	- Republish to fix npm troubles
-* v0.6.0
-	- Support for using as node library (@dpgraham)
-* v0.5.0
-	- Watching was broken with new versions of `watchr` > 2.3.3
-	- Added some logging to console
-* v0.4.0
-	- Allow specifying directory to serve from command line
-* v0.3.0
-	- Directory listings
-* v0.2.0
-	- On-the-fly CSS refresh (no page reload)
-	- Refactoring
-* v0.1.1
-	- Documentation and meta tweaks
-* v0.1.0
-	- Initial release
+* v0.0.3
+	- Added dependency-tracking, once a file has been live-reloaded, attempt to live-reload all of its dependents.
+	  Note: requires `System.trace = true` to be in your project ahead of your initial `System.import` to take effect.
+* v0.0.2
+	- Added a `html5mode`, where if a `200.html` is present in the root directory, any url that doesn't contain a `.` will serve it instead. Enables single-page apps nicely.
+* v0.0.1
+	- Forked from v0.7.1 of [live-server](https://github.com/tapio/live-server)
 
 
 License
 -------
 
-Uses MIT licensed code from [Connect](https://github.com/senchalabs/connect/) and  [Roots](https://github.com/jenius/roots).
+Uses MIT licensed code from [live-server](https://github.com/tapio/live-server), [Connect](https://github.com/senchalabs/connect/) and  [Roots](https://github.com/jenius/roots).
 
 (MIT License)
-
-Copyright (c) 2012 Tapio Vierros
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
