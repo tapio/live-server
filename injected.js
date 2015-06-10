@@ -19,26 +19,9 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _F = require('fkit');
+var _ModuleDiffer = require('./module-differ');
 
-var _F2 = _interopRequireWildcard(_F);
-
-var notChecked = function notChecked(pair) {
-  return !(pair[0] == 'default' || /^__/.exec(pair[0]));
-},
-    pairsEqual = function pairsEqual(pairs) {
-  var _pairs = _slicedToArray(pairs, 2);
-
-  var pairA = _pairs[0];
-  var pairB = _pairs[1];
-
-  return pairA[0] === pairB[0] && pairA[1] === pairB[1];
-},
-    compareModules = function compareModules(moduleA, moduleB) {
-  var a = _F2['default'].filter(notChecked, _F2['default'].pairs(moduleA)).concat(_F2['default'].pairs(moduleA['default'] || {})),
-      b = _F2['default'].filter(notChecked, _F2['default'].pairs(moduleB)).concat(_F2['default'].pairs(moduleB['default'] || {}));
-  return a.length == b.length && _F2['default'].all(pairsEqual, _F2['default'].zip(a, b));
-};
+var _ModuleDiffer2 = _interopRequireWildcard(_ModuleDiffer);
 
 var ChangeHandler = (function () {
   function ChangeHandler(System) {
@@ -99,62 +82,63 @@ var ChangeHandler = (function () {
     value: function fileChanged(_path) {
       var _this3 = this;
 
-      var reloadPageIfNeeded = arguments[1] === undefined ? true : arguments[1];
+      var path = _path.replace(/\.js$/, ''); // .js extensions are implicit in 0.16.x
 
+      // Make sure our knowledge of the modules is up to date
       this.updateModuleMap();
       this.updateDepMap();
-      var path = _path.replace(/\.js$/, '');
 
+      // If the change occurs to a file we don't have a record of
+      // e.g. a HTML file, reload the browser window
       if (!this.moduleMap.has(path)) {
-        if (reloadPageIfNeeded) this.reload(path, 'Change occurred to a file outside SystemJS loading');
+        this.reload(path, 'Change occurred to a file outside SystemJS loading');
         return;
       }
 
+      // Import our existing copy of the file that just changed, to inspect it
       var moduleInfo = this.moduleMap.get(path);
-
       this.System['import'](moduleInfo.moduleName).then(function (oldModule) {
+        // If __hotReload is false or undefined, bail out immediately
         if (!oldModule.__hotReload) {
           return Promise.reject('' + path + ' is not hot reloadable!');
         }
-        //if (!moduleInfo.loader) {
-        //  return Promise.reject("Default loader cannot hot-swap")
-        //}
-        //
-        var loader = moduleInfo.loader && (moduleInfo.loader['default'] || moduleInfo.loader);
-        //if (!loader.hotReload) {
-        //  return Promise.reject(`Loader '${loader}' does not define a reload handler`)
-        //}
 
+        // Grab the loader if there is one for this file
+        var loader = moduleInfo.loader && (moduleInfo.loader['default'] || moduleInfo.loader);
+
+        // Remove the module from the registry and call import again.
+        // The changed file will be fetched and reinterpreted
         _this3.System['delete'](moduleInfo.moduleName);
         _this3.System['import'](moduleInfo.moduleName).then(function (newModule) {
-          var propagate = undefined;
-          if (oldModule.__hotReload === true) {
-            propagate = true;
-          } else if (typeof oldModule.__hotReload === 'function') {
-            propagate = oldModule.__hotReload.call(oldModule, loader, newModule);
-          }
           console.log('Reloaded ' + path);
 
-          console.log(oldModule['default'] || oldModule);
-          console.log(newModule['default'] || newModule);
-          console.log(compareModules(oldModule, newModule));
-          if (propagate && !compareModules(oldModule, newModule)) {
+          // Now the new module is loaded, we need to handle the old one and
+          // potentially propagate the event up the dependency chain.
+          var propagateIfNeeded = undefined;
+          if (oldModule.__hotReload === true) {
+            propagateIfNeeded = true;
+          } else if (typeof oldModule.__hotReload === 'function') {
+            propagateIfNeeded = oldModule.__hotReload.call(oldModule, loader, newModule);
+          }
+
+          // Propagate if the exports from the old and new module differ, or if we've
+          // returned false from our __hotReload handler.
+          if (propagateIfNeeded && !_ModuleDiffer2['default'].shallowEqual(oldModule, newModule)) {
             var deps = _this3.depMap.get(path);
             if (deps) deps.forEach(function (dep) {
               return _this3.fileChanged(dep);
             });
-          } else {
-            console.log('No need to propagate');
           }
         });
       })['catch'](function (reason) {
-        if (reloadPageIfNeeded) _this3.reload(path, reason);
+        return _this3.reload(path, reason);
       });
     }
   }, {
     key: 'reload',
     value: function reload(path, reason) {
-      console.info('Change detected in ' + path + ' that cannot be handled gracefully: ' + reason);
+      //console.info( `Change detected in ${path} that cannot be handled gracefully: ${reason}` )
+      window.location.reload();
     }
   }]);
 
@@ -163,9 +147,8 @@ var ChangeHandler = (function () {
 
 exports['default'] = ChangeHandler;
 module.exports = exports['default'];
-//window.location.reload()
 
-},{"fkit":5}],3:[function(require,module,exports){
+},{"./module-differ":5}],3:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -207,7 +190,6 @@ exports['default'] = function (message) {
   if (message.type == 'connected') {
     console.log('JSPM watching enabled!');
   } else if (message.type == 'change') {
-    console.log('WHAHAHAH');
     // Make sure SystemJS is fully loaded
     if (!changeHandler && window.System && window.System._loader && window.System._loader.modules) {
       changeHandler = new _ChangeHandler2['default'](window.System);
@@ -221,6 +203,50 @@ exports['default'] = function (message) {
 module.exports = exports['default'];
 
 },{"./change-handler":2}],5:[function(require,module,exports){
+"use strict";
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
+
+var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _F = require("fkit");
+
+var _F2 = _interopRequireWildcard(_F);
+
+var notChecked = function notChecked(pair) {
+  return !(pair[0] == "default" && typeof pair[1] === "object" || /^__/.exec(pair[0]));
+},
+    getPairs = function getPairs(module) {
+  var pairs = _F2["default"].filter(notChecked, _F2["default"].pairs(module));
+  if (typeof module["default"] === "object") {
+    return pairs.concat(_F2["default"].pairs(module["default"]));
+  } else {
+    return pairs;
+  }
+},
+    pairsEqual = function pairsEqual(pairs) {
+  var _pairs = _slicedToArray(pairs, 2);
+
+  var pairA = _pairs[0];
+  var pairB = _pairs[1];
+
+  return pairA[0] === pairB[0] && pairA[1] === pairB[1];
+};
+
+exports["default"] = {
+  shallowEqual: function shallowEqual(moduleA, moduleB) {
+    var a = getPairs(moduleA),
+        b = getPairs(moduleB);
+    return a.length == b.length && _F2["default"].all(pairsEqual, _F2["default"].zip(a, b));
+  }
+};
+module.exports = exports["default"];
+
+},{"fkit":6}],6:[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -243,7 +269,7 @@ module.exports = util.extend({}, [
   require('./string'),
 ]);
 
-},{"./fn":6,"./list":7,"./logic":17,"./math":18,"./obj":19,"./string":20,"./util":21}],6:[function(require,module,exports){
+},{"./fn":7,"./list":8,"./logic":18,"./math":19,"./obj":20,"./string":21,"./util":22}],7:[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -592,7 +618,7 @@ self = module.exports = {
   }),
 };
 
-},{"./util":21}],7:[function(require,module,exports){
+},{"./util":22}],8:[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -632,7 +658,7 @@ module.exports = util.extend({}, [
   require('./list/zip'),
 ]);
 
-},{"./list/base":8,"./list/build":9,"./list/fold":10,"./list/map":11,"./list/search":12,"./list/set":13,"./list/sort":14,"./list/sublist":15,"./list/zip":16,"./util":21}],8:[function(require,module,exports){
+},{"./list/base":9,"./list/build":10,"./list/fold":11,"./list/map":12,"./list/search":13,"./list/set":14,"./list/sort":15,"./list/sublist":16,"./list/zip":17,"./util":22}],9:[function(require,module,exports){
 'use strict';
 
 var fn = require('../fn');
@@ -887,7 +913,7 @@ self = module.exports = {
   },
 };
 
-},{"../fn":6}],9:[function(require,module,exports){
+},{"../fn":7}],10:[function(require,module,exports){
 'use strict';
 
 var base    = require('./base'),
@@ -1041,7 +1067,7 @@ self = module.exports = {
   },
 };
 
-},{"../fn":6,"../math":18,"./base":8,"./fold":10,"./sublist":15}],10:[function(require,module,exports){
+},{"../fn":7,"../math":19,"./base":9,"./fold":11,"./sublist":16}],11:[function(require,module,exports){
 'use strict';
 
 var base = require('./base'),
@@ -1325,7 +1351,7 @@ self = module.exports = {
   product: function(as) { return self.fold(math.mul, 1, as); },
 };
 
-},{"../fn":6,"../math":18,"./base":8}],11:[function(require,module,exports){
+},{"../fn":7,"../math":19,"./base":9}],12:[function(require,module,exports){
 'use strict';
 
 var base = require('./base'),
@@ -1410,7 +1436,7 @@ module.exports = {
   }),
 };
 
-},{"../fn":6,"./base":8,"./fold":10}],12:[function(require,module,exports){
+},{"../fn":7,"./base":9,"./fold":11}],13:[function(require,module,exports){
 'use strict';
 
 var base  = require('./base'),
@@ -1762,7 +1788,7 @@ self = module.exports = {
   }),
 };
 
-},{"../fn":6,"../logic":17,"./base":8,"./fold":10,"./map":11}],13:[function(require,module,exports){
+},{"../fn":7,"../logic":18,"./base":9,"./fold":11,"./map":12}],14:[function(require,module,exports){
 'use strict';
 
 var base   = require('./base'),
@@ -2048,7 +2074,7 @@ self = module.exports = {
   },
 };
 
-},{"../fn":6,"./base":8,"./build":9,"./fold":10,"./map":11,"./search":12}],14:[function(require,module,exports){
+},{"../fn":7,"./base":9,"./build":10,"./fold":11,"./map":12,"./search":13}],15:[function(require,module,exports){
 'use strict';
 
 var base = require('./base'),
@@ -2101,7 +2127,7 @@ self = module.exports = {
   }),
 };
 
-},{"../fn":6,"../util":21,"./base":8}],15:[function(require,module,exports){
+},{"../fn":7,"../util":22,"./base":9}],16:[function(require,module,exports){
 'use strict';
 
 var base = require('./base'),
@@ -2313,7 +2339,7 @@ self = module.exports = {
   }),
 };
 
-},{"../fn":6,"./base":8,"./fold":10}],16:[function(require,module,exports){
+},{"../fn":7,"./base":9,"./fold":11}],17:[function(require,module,exports){
 'use strict';
 
 var base  = require('./base'),
@@ -2394,7 +2420,7 @@ self = module.exports = {
   },
 };
 
-},{"../fn":6,"./base":8,"./build":9}],17:[function(require,module,exports){
+},{"../fn":7,"./base":9,"./build":10}],18:[function(require,module,exports){
 'use strict';
 
 var fn  = require('./fn'),
@@ -2512,7 +2538,7 @@ self = module.exports = {
   }),
 };
 
-},{"./fn":6,"./list/map":11}],18:[function(require,module,exports){
+},{"./fn":7,"./list/map":12}],19:[function(require,module,exports){
 'use strict';
 
 var fn = require('./fn');
@@ -2757,7 +2783,7 @@ module.exports = {
   }),
 };
 
-},{"./fn":6}],19:[function(require,module,exports){
+},{"./fn":7}],20:[function(require,module,exports){
 'use strict';
 
 var fn   = require('./fn'),
@@ -3042,7 +3068,7 @@ self = module.exports = {
   },
 };
 
-},{"./fn":6,"./list/set":13,"./util":21}],20:[function(require,module,exports){
+},{"./fn":7,"./list/set":14,"./util":22}],21:[function(require,module,exports){
 'use strict';
 
 var fn = require('./fn');
@@ -3093,7 +3119,7 @@ module.exports = {
   }),
 };
 
-},{"./fn":6}],21:[function(require,module,exports){
+},{"./fn":7}],22:[function(require,module,exports){
 'use strict';
 
 module.exports = {
