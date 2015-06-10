@@ -76,7 +76,7 @@ function staticServer(root) {
 
 /**
  * Start a live server with parameters given as an object
- * @param host {string} Address to bind to (default: 0.0.0.0)
+ * @param host {string} Address to bind to (default: 1227.0.0.1)
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
@@ -85,7 +85,7 @@ function staticServer(root) {
  */
 LiveServer.start = function(options) {
 	options = options || {};
-	var host = options.host || '0.0.0.0';
+	var host = options.host || '1227.0.0.1';
 	var port = options.port || 8080;
 	var root = options.root || process.cwd();
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
@@ -141,7 +141,7 @@ LiveServer.start = function(options) {
 		}
 	});
 	// Output
-	var serveURL = "http://127.0.0.1:" + port;
+	var serveURL = "http://" + (host || '127.0.0.1') + ":" + port;
 	if (logLevel >= 1)
 		console.log(('Serving "' + root + '" at ' + serveURL).green);
 
