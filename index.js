@@ -9,8 +9,7 @@ var fs = require('fs'),
 	send = require('send'),
 	open = require('open'),
 	es = require("event-stream"),
-	watchr = require('watchr'),
-	ws;
+	watchr = require('watchr');
 
 var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
 
@@ -100,9 +99,16 @@ LiveServer.start = function(options) {
 		app.use(connect.logger('dev'));
 	var server = http.createServer(app).listen(port, host);
 	// WebSocket
+	var clients = [];
 	server.addListener('upgrade', function(request, socket, head) {
-		ws = new WebSocket(request, socket, head);
+		var ws = new WebSocket(request, socket, head);
 		ws.onopen = function() { ws.send('connected'); };
+		clients.push(ws);
+		ws.onclose = function() {
+			clients = clients.filter(function (x) {
+				return x !== ws;
+			});
+		}
 	});
 	// Setup file watcher
 	watchr.watch({
@@ -116,16 +122,18 @@ LiveServer.start = function(options) {
 				console.log("ERROR:".red , err);
 			},
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
-				if (!ws) return;
-				if (path.extname(filePath) == ".css") {
-					ws.send('refreshcss');
-					if (logLevel >= 1)
-						console.log("CSS change detected".magenta);
-				} else {
-					ws.send('reload');
-					if (logLevel >= 1)
-						console.log("File change detected".cyan);
-				}
+				clients.forEach(function (ws) {
+					if (!ws) return;
+					if (path.extname(filePath) == ".css") {
+						clientsws.send('refreshcss');
+						if (logLevel >= 1)
+							console.log("CSS change detected".magenta);
+					} else {
+						ws.send('reload');
+						if (logLevel >= 1)
+							console.log("File change detected".cyan);
+					}
+				});
 			}
 		}
 	});
