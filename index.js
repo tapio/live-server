@@ -182,6 +182,7 @@ LiveServer.start = function(options) {
 	// Setup file watcher
 	watchr.watch({
 		path: root,
+		ignorePaths: options.ignore || false,
 		ignoreCommonPatterns: true,
 		ignoreHiddenFiles: true,
 		preferredMethods: [ 'watchFile', 'watch' ],
