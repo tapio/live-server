@@ -98,12 +98,44 @@ LiveServer.start = function(options) {
 		.use(connect.directory(root, { icons: true }));
 	if (logLevel >= 2)
 		app.use(connect.logger('dev'));
-	var server = http.createServer(app).listen(port, host);
+	var server = http.createServer(app);
+
+	// handle server startup errors
+	server.addListener('error', function (e) {
+	  if (e.code == 'EADDRINUSE') {
+		var serveURL = 'http://' + host + ':' +  port;
+	    console.log('%s is already in use. Trying another port.'.red, serveURL);
+	    setTimeout(function () {
+	      server.close();
+	      server.listen(0, host);
+	    }, 1000);
+	  }
+	});
+
+	// handle successful server
+	server.addListener('listening', function(e) {
+		var address = server.address(),
+			serveURL = 'http://' + address.address + ':' +  address.port;
+
+		// Output
+		if (logLevel >= 1) {
+			console.log(("Serving \"%s\" at %s").green, root, serveURL);
+		}
+
+		// Launch browser
+		if (openPath !== null)
+			open(serveURL + openPath);
+	});
+
+	// setup server to listen at port
+	server.listen(port, host);
+
 	// WebSocket
 	server.addListener('upgrade', function(request, socket, head) {
 		ws = new WebSocket(request, socket, head);
 		ws.onopen = function() { ws.send('connected'); };
 	});
+
 	// Setup file watcher
 	watchr.watch({
 		path: root,
@@ -129,14 +161,6 @@ LiveServer.start = function(options) {
 			}
 		}
 	});
-	// Output
-	var serveURL = "http://127.0.0.1:" + port;
-	if (logLevel >= 1)
-		console.log(('Serving "' + root + '" at ' + serveURL).green);
-
-	// Launch browser
-	if (openPath !== null)
-		open(serveURL + openPath);
 };
 
 module.exports = LiveServer;
