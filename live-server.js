@@ -19,11 +19,11 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 		}
 	}
 	else if (arg.indexOf("--open=") > -1) {
-		var path = arg.substring(7);
-		if (path.indexOf('/') != 0) {
-			path = '/' + path;
+		var open = arg.substring(7);
+		if (open.indexOf('/') != 0) {
+			open = '/' + open;
 		}
-		opts.open = path;
+		opts.open = open;
 		process.argv.splice(i, 1);
 	}
 	else if (arg.indexOf("--ignore=") > -1) {
