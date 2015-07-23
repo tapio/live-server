@@ -61,7 +61,8 @@ var params = {
 	host: "0.0.0.0", // Set the address to bind to. Defaults to 0.0.0.0.
 	root: "/public", // Set root directory that's being server. Defaults to cwd.
 	open: false, // When false, it won't load your browser by default.
-	file: "index.html" // When set, serve this file for every 404 (useful for single-page applications)
+	file: "index.html", // When set, serve this file for every 404 (useful for single-page applications)
+	timeout: 1000 // Sets the timeout in milliseconds before reloading the browser. Defaults to 0.
 };
 liveServer.start(params);
 ```
