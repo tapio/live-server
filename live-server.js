@@ -37,15 +37,15 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 	} else if (arg == "--quiet" || arg == "-q") {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
-	} else if (arg.indexOf("--timeout=") > -1) {
-		var timeoutString = arg.substring(10);
-		var timeoutNumber = parseInt(timeoutString, 10);
-		if (timeoutNumber == timeoutString) {
-			opts.timeout = timeoutNumber;
+	} else if (arg.indexOf("--wait=") > -1) {
+		var waitString = arg.substring(7);
+		var waitNumber = parseInt(waitString, 10);
+		if (waitNumber == waitString) {
+			opts.wait = waitNumber;
 			process.argv.splice(i, 1);
 		}
 	} else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--entry-file=PATH] [--timeout=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
 	}
 }

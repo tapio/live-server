@@ -96,7 +96,7 @@ function entryPoint(staticHandler, file) {
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  * @param file {string} Path to the entry point file
- * @param timeout {number} number of ms the server will wait to reload the browser
+ * @param wait {number} Server will wait for all changes, before reloading
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -110,8 +110,8 @@ LiveServer.start = function(options) {
 	var file = options.file;
 	var staticServerHandler = staticServer(root);
 
-	var timeout = options.timeout || 0;
-	var timer;
+	var wait = options.wait || 0;
+	var waitTimeout;
 
 	// Setup a web server
 	var app = connect()
@@ -176,13 +176,13 @@ LiveServer.start = function(options) {
 					if (logLevel >= 1)
 						console.log("CSS change detected".magenta);
 				} else {
-					if (timer) {
-						clearTimeout(timer);
+					if (waitTimeout) {
+						clearTimeout(waitTimeout);
 					}
 
-					timer = setTimeout(function() {
+					waitTimeout = setTimeout(function() {
 						ws.send('reload');
-					}, timeout);
+					}, wait);
 
 					if (logLevel >= 1)
 						console.log("File change detected".cyan);
