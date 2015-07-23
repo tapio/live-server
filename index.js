@@ -109,9 +109,7 @@ LiveServer.start = function(options) {
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
 	var staticServerHandler = staticServer(root);
-
 	var wait = options.wait || 0;
-	var waitTimeout;
 
 	// Setup a web server
 	var app = connect()
@@ -156,6 +154,19 @@ LiveServer.start = function(options) {
 	server.addListener('upgrade', function(request, socket, head) {
 		ws = new WebSocket(request, socket, head);
 		ws.onopen = function() { ws.send('connected'); };
+
+		if (wait > 0) {
+			var wssend = ws.send,
+				waitTimeout;
+				
+			ws.send = function(){
+				var args = arguments;
+				if (waitTimeout) clearTimeout(waitTimeout);
+				waitTimeout = setTimeout(function(){
+					wssend.apply(ws, args);
+				}, wait);
+			};
+		}
 	});
 
 	// Setup file watcher
@@ -176,14 +187,7 @@ LiveServer.start = function(options) {
 					if (logLevel >= 1)
 						console.log("CSS change detected".magenta);
 				} else {
-					if (waitTimeout) {
-						clearTimeout(waitTimeout);
-					}
-
-					waitTimeout = setTimeout(function() {
-						ws.send('reload');
-					}, wait);
-
+					ws.send('reload');
 					if (logLevel >= 1)
 						console.log("File change detected".cyan);
 				}

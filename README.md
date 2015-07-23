@@ -48,7 +48,7 @@ Additional parameters:
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
-* `--wait=MILLISECONDS` - wait for all changes, before reloading
+* `--wait=MILLISECONDS` - (optional) wait for all changes, before reloading
 
 
 Usage from node
@@ -63,7 +63,7 @@ var params = {
 	root: "/public", // Set root directory that's being server. Defaults to cwd.
 	open: false, // When false, it won't load your browser by default.
 	file: "index.html", // When set, serve this file for every 404 (useful for single-page applications)
-	wait: 1000 // Waits for all changes, before reloading. Defaults to 1 sec.
+	wait: 1000 // Waits for all changes, before reloading. Defaults to 0 sec.
 };
 liveServer.start(params);
 ```
