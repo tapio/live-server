@@ -47,8 +47,7 @@ Additional parameters:
 * `--no-browser` - suppress automatic web browser launching
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
-
-If you are developing a single-page application that uses HTML5's history API, you might enable the `--entry-point=<entry file>` option that basically redirects every not found request to this file.
+* `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
 
 
 Usage from node
@@ -62,7 +61,7 @@ var params = {
 	host: "0.0.0.0", // Set the address to bind to. Defaults to 0.0.0.0.
 	root: "/public", // Set root directory that's being server. Defaults to cwd.
 	open: false, // When false, it won't load your browser by default.
-	file: "index.html" // When set, redirect every 404 to this file (useful for single-page applications)
+	file: "index.html" // When set, serve this file for every 404 (useful for single-page applications)
 };
 liveServer.start(params);
 ```
