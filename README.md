@@ -40,16 +40,15 @@ Issue the command `live-server` in your project's directory. Alternatively you c
 
 This will automatically launch the default browser (you should have `index.html` present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
 
-You can configure the port to be used by the server by adding the `--port=<number>` runtime option when invoking live-server, or by setting the `PORT` environment variable prior to running live-server.
+Command line parameters:
 
-Additional parameters:
-
+* `--port=NUMBER` - select port to use (can also be done with PORT environment variable)
 * `--no-browser` - suppress automatic web browser launching
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--ignore=PATH` - comma-separated string of paths to ignore
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
-* `--wait=MILLISECONDS` - (optional) wait for all changes, before reloading
+* `--wait=MILLISECONDS` - wait for all changes, before reloading
 
 
 Usage from node
