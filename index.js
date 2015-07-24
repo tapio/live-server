@@ -119,7 +119,7 @@ LiveServer.start = function(options) {
 		app.use(connect.logger('dev'));
 	var server = http.createServer(app);
 
-	// handle server startup errors
+	// Handle server startup errors
 	server.addListener('error', function(e) {
 		if (e.code == 'EADDRINUSE') {
 			var serveURL = 'http://' + host + ':' +  port;
@@ -130,7 +130,7 @@ LiveServer.start = function(options) {
 		}
 	});
 
-	// handle successful server
+	// Handle successful server
 	server.addListener('listening', function(e) {
 		var address = server.address(),
 			serveURL = 'http://' + address.address + ':' +  address.port;
@@ -145,7 +145,7 @@ LiveServer.start = function(options) {
 			open(serveURL + openPath);
 	});
 
-	// setup server to listen at port
+	// Setup server to listen at port
 	server.listen(port, host);
 
 	// WebSocket
