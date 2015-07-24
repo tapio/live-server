@@ -39,23 +39,27 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 	else if (arg == "--no-browser") {
 		opts.open = false;
 		process.argv.splice(i, 1);
-	} else if (arg.indexOf("--entry-file=") > -1) {
+	}
+	else if (arg.indexOf("--entry-file=") > -1) {
 		var file = arg.substring(13);
 		if (file.length) {
 			opts.file = file;
 			process.argv.splice(i, 1);
 		}
-	} else if (arg == "--quiet" || arg == "-q") {
+	}
+	else if (arg == "--quiet" || arg == "-q") {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
-	} else if (arg.indexOf("--wait=") > -1) {
+	}
+	else if (arg.indexOf("--wait=") > -1) {
 		var waitString = arg.substring(7);
 		var waitNumber = parseInt(waitString, 10);
 		if (waitNumber == waitString) {
 			opts.wait = waitNumber;
 			process.argv.splice(i, 1);
 		}
-	} else if (arg == "--help" || arg == "-h") {
+	}
+	else if (arg == "--help" || arg == "-h") {
 		console.log('Usage: live-server [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
 	}
