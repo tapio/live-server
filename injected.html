@@ -2,7 +2,7 @@
 	// Code injected by live-server
 	(function() {
 		function refreshCSS() {
-			var sheets = document.getElementsByTagName("link");
+			var sheets = [].slice.call(document.getElementsByTagName("link"));
 			var head = document.getElementsByTagName("head")[0];
 			for (var i = 0; i < sheets.length; ++i) {
 				var elem = sheets[i];
