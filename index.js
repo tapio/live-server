@@ -191,10 +191,10 @@ LiveServer.start = function(options) {
 				console.log("ERROR:".red , err);
 			},
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
-				clients.forEach(function (ws) {
+				clients.forEach(function(ws) {
 					if (!ws) return;
 					if (path.extname(filePath) == ".css") {
-						clientsws.send('refreshcss');
+						ws.send('refreshcss');
 						if (logLevel >= 1)
 							console.log("CSS change detected".magenta);
 					} else {
