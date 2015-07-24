@@ -6,6 +6,7 @@ var fs = require('fs'),
 	path = require('path'),
 	url = require('url'),
 	http = require('http'),
+	httpProxy = require('http-proxy'),
 	send = require('send'),
 	open = require('open'),
 	es = require("event-stream"),
@@ -14,7 +15,7 @@ var fs = require('fs'),
 var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
 
 var LiveServer = {};
-
+var proxy = httpProxy.createProxyServer();
 function escape(html){
 	return String(html)
 		.replace(/&(?!\w+;)/g, '&amp;')
@@ -23,13 +24,29 @@ function escape(html){
 		.replace(/"/g, '&quot;');
 }
 
+proxy.on('error', function(err, req, res) {
+    console.log(err);
+});
+
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root) {
+function staticServer(root,proxyPathMap) {
 	return function(req, res, next) {
 		if ('GET' != req.method && 'HEAD' != req.method) return next();
 		var reqpath = url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
 		var doInject = false;
+		var proxyToServerPath = findPathOnProxyPath(reqpath);
+
+		function findPathOnProxyPath(currentPath) {
+			var match = false;
+			Object.keys(proxyPathMap||{}).forEach( function(pathKey) {
+				if ( currentPath.indexOf(pathKey) === 0 ) {
+					//e.g. if currentPath(/some/where/out/there) starts with pathKey( /some )
+					match = proxyPathMap[pathKey];
+				}
+			});
+			return match;
+		}
 
 		function directory() {
 			var pathname = url.parse(req.originalUrl).pathname;
@@ -62,6 +79,15 @@ function staticServer(root) {
 					originalPipe.call(stream, es.replace(new RegExp("</body>","i"), INJECTED_CODE + "</body>")).pipe(res);
 				};
 			}
+		}
+
+
+		if ( proxyToServerPath ) {
+			console.log("proxying: "+ reqpath + " -> " + proxyToServerPath);
+			proxy.web(req, res, {
+				target: proxyToServerPath
+			});
+			return;
 		}
 
 		send(req, reqpath, { root: root })
@@ -107,8 +133,23 @@ LiveServer.start = function(options) {
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
-	var staticServerHandler = staticServer(root);
+
 	var wait = options.wait || 0;
+	var proxyPathArr = ( options.proxyPath || "" ).split(":");
+	var proxyPathMap;
+
+	if ( proxyPathArr && proxyPathArr.length === 2 ) {
+		proxyPathMap = (proxyPathArr||[""])[0].split(",").reduce(function(prev,current) {
+			prev[current] = 'http://' + host + ':' +  proxyPathArr[1];
+			return prev;
+		},{});
+	}
+	var staticServerHandler = staticServer(root,proxyPathMap);
+
+	if ( proxyPathMap ) {
+		console.log("Proxy Path Configuration-->");
+		console.log(proxyPathMap);
+	}
 
 	// Setup a web server
 	var app = connect()
