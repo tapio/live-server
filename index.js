@@ -125,7 +125,6 @@ LiveServer.start = function(options) {
 			var serveURL = 'http://' + host + ':' +  port;
 			console.log('%s is already in use. Trying another port.'.red, serveURL);
 			setTimeout(function() {
-				server.close();
 				server.listen(0, host);
 			}, 1000);
 		}
