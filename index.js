@@ -9,8 +9,7 @@ var fs = require('fs'),
 	send = require('send'),
 	open = require('open'),
 	es = require("event-stream"),
-	watchr = require('watchr'),
-	ws;
+	watchr = require('watchr');
 
 var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
 
@@ -75,12 +74,28 @@ function staticServer(root) {
 }
 
 /**
+ * Rewrite request URL and pass it back to the static handler.
+ * @param staticHandler {function} Next handler
+ * @param file {string} Path to the entry point file
+ */
+function entryPoint(staticHandler, file) {
+	if (!file) return function(req, res, next) { next(); };
+
+	return function(req, res, next) {
+		req.url = "/" + file;
+		staticHandler(req, res, next);
+	}
+}
+
+/**
  * Start a live server with parameters given as an object
  * @param host {string} Address to bind to (default: 0.0.0.0)
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
+ * @param file {string} Path to the entry point file
+ * @param wait {number} Server will wait for all changes, before reloading
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -91,22 +106,83 @@ LiveServer.start = function(options) {
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
+	var file = options.file;
+	var staticServerHandler = staticServer(root);
+	var wait = options.wait || 0;
 
 	// Setup a web server
 	var app = connect()
-		.use(staticServer(root)) // Custom static server
+		.use(staticServerHandler) // Custom static server
+		.use(entryPoint(staticServerHandler, file))
 		.use(connect.directory(root, { icons: true }));
 	if (logLevel >= 2)
 		app.use(connect.logger('dev'));
-	var server = http.createServer(app).listen(port, host);
-	// WebSocket
-	server.addListener('upgrade', function(request, socket, head) {
-		ws = new WebSocket(request, socket, head);
-		ws.onopen = function() { ws.send('connected'); };
+	var server = http.createServer(app);
+
+	// handle server startup errors
+	server.addListener('error', function (e) {
+	  if (e.code == 'EADDRINUSE') {
+		var serveURL = 'http://' + host + ':' +  port;
+	    console.log('%s is already in use. Trying another port.'.red, serveURL);
+	    setTimeout(function () {
+	      server.close();
+	      server.listen(0, host);
+	    }, 1000);
+	  }
 	});
+
+	// handle successful server
+	server.addListener('listening', function(e) {
+		var address = server.address(),
+			serveURL = 'http://' + address.address + ':' +  address.port;
+
+		// Output
+		if (logLevel >= 1) {
+			console.log(("Serving \"%s\" at %s").green, root, serveURL);
+		}
+
+		// Launch browser
+		if (openPath !== null)
+			open(serveURL + openPath);
+	});
+
+	// setup server to listen at port
+	server.listen(port, host);
+
+	// WebSocket
+	var clients = [];
+	server.addListener('upgrade', function(request, socket, head) {
+		var ws = new WebSocket(request, socket, head);
+		ws.onopen = function() { ws.send('connected'); };
+
+		if (wait > 0) {
+			(function(ws){
+				var wssend = ws.send,
+					waitTimeout;
+
+				ws.send = function(){
+					var args = arguments;
+					if (waitTimeout) clearTimeout(waitTimeout);
+					waitTimeout = setTimeout(function(){
+						wssend.apply(ws, args);
+					}, wait);
+				};
+			})(ws);
+		}
+
+		ws.onclose = function() {
+			clients = clients.filter(function (x) {
+				return x !== ws;
+			});
+		}
+
+		clients.push(ws);
+	});
+
 	// Setup file watcher
 	watchr.watch({
 		path: root,
+		ignorePaths: options.ignore || false,
 		ignoreCommonPatterns: true,
 		ignoreHiddenFiles: true,
 		preferredMethods: [ 'watchFile', 'watch' ],
@@ -116,27 +192,21 @@ LiveServer.start = function(options) {
 				console.log("ERROR:".red , err);
 			},
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
-				if (!ws) return;
-				if (path.extname(filePath) == ".css") {
-					ws.send('refreshcss');
-					if (logLevel >= 1)
-						console.log("CSS change detected".magenta);
-				} else {
-					ws.send('reload');
-					if (logLevel >= 1)
-						console.log("File change detected".cyan);
-				}
+				clients.forEach(function (ws) {
+					if (!ws) return;
+					if (path.extname(filePath) == ".css") {
+						clientsws.send('refreshcss');
+						if (logLevel >= 1)
+							console.log("CSS change detected".magenta);
+					} else {
+						ws.send('reload');
+						if (logLevel >= 1)
+							console.log("File change detected".cyan);
+					}
+				});
 			}
 		}
 	});
-	// Output
-	var serveURL = "http://127.0.0.1:" + port;
-	if (logLevel >= 1)
-		console.log(('Serving "' + root + '" at ' + serveURL).green);
-
-	// Launch browser
-	if (openPath !== null)
-		open(serveURL + openPath);
 };
 
 module.exports = LiveServer;
