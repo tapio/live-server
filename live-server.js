@@ -58,6 +58,10 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 			opts.wait = waitNumber;
 			process.argv.splice(i, 1);
 		}
+	} else if ( arg.indexOf("--proxyPath=") > -1 ) {
+		var proxyPath =  arg.substring(12);
+		opts.proxyPath = proxyPath;
+		process.argv.splice(i, 1);
 	}
 	else if (arg == "--help" || arg == "-h") {
 		console.log('Usage: live-server [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
