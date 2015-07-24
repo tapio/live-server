@@ -120,15 +120,15 @@ LiveServer.start = function(options) {
 	var server = http.createServer(app);
 
 	// handle server startup errors
-	server.addListener('error', function (e) {
-	  if (e.code == 'EADDRINUSE') {
-		var serveURL = 'http://' + host + ':' +  port;
-	    console.log('%s is already in use. Trying another port.'.red, serveURL);
-	    setTimeout(function () {
-	      server.close();
-	      server.listen(0, host);
-	    }, 1000);
-	  }
+	server.addListener('error', function(e) {
+		if (e.code == 'EADDRINUSE') {
+			var serveURL = 'http://' + host + ':' +  port;
+			console.log('%s is already in use. Trying another port.'.red, serveURL);
+			setTimeout(function() {
+				server.close();
+				server.listen(0, host);
+			}, 1000);
+		}
 	});
 
 	// handle successful server
@@ -156,11 +156,11 @@ LiveServer.start = function(options) {
 		ws.onopen = function() { ws.send('connected'); };
 
 		if (wait > 0) {
-			(function(ws){
-				var wssend = ws.send,
-					waitTimeout;
+			(function(ws) {
+				var wssend = ws.send;
+				var waitTimeout;
 
-				ws.send = function(){
+				ws.send = function() {
 					var args = arguments;
 					if (waitTimeout) clearTimeout(waitTimeout);
 					waitTimeout = setTimeout(function(){
