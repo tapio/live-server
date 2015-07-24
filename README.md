@@ -40,13 +40,15 @@ Issue the command `live-server` in your project's directory. Alternatively you c
 
 This will automatically launch the default browser (you should have `index.html` present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
 
-You can configure the port to be used by the server by adding the `--port=<number>` runtime option when invoking live-server, or by setting the `PORT` environment variable prior to running live-server.
+Command line parameters:
 
-Additional parameters:
-
+* `--port=NUMBER` - select port to use (can also be done with PORT environment variable)
 * `--no-browser` - suppress automatic web browser launching
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
+* `--ignore=PATH` - comma-separated string of paths to ignore
+* `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
+* `--wait=MILLISECONDS` - wait for all changes, before reloading
 
 Default options:
 
@@ -63,7 +65,10 @@ var params = {
 	port: 8181, // Set the server port. Defaults to 8080.
 	host: "0.0.0.0", // Set the address to bind to. Defaults to 0.0.0.0.
 	root: "/public", // Set root directory that's being server. Defaults to cwd.
-	open: false // When false, it won't load your browser by default.
+	open: false, // When false, it won't load your browser by default.
+	ignore: 'scss,my/templates', // comma-separated string for paths to ignore
+	file: "index.html", // When set, serve this file for every 404 (useful for single-page applications)
+	wait: 1000 // Waits for all changes, before reloading. Defaults to 0 sec.
 };
 liveServer.start(params);
 ```
@@ -84,6 +89,13 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
+* master (unreleased)
+	- Support multiple clients simultaneously (@dvv)
+	- Pick a random available port if the default is in use (@oliverzy, @harrytruong)
+	- Fix Chrome sometimes not applying CSS changes (@harrytruong)
+	- `--ignore=PATH` command line option to not watch given paths (@richardgoater)
+	- `--entry-file=PATH` command line flag to specify file to use when request is not found (@izeau)
+	- `--wait=MSECS` command line flag to wait specified time before reloading (@leolower, @harrytruong)
 * v0.7.1
 	- Fix hang caused by trying to inject into fragment html files without `</body>`
 	- `logLevel` parameter in library to control amount of console spam
