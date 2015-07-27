@@ -87,7 +87,7 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
-* master (unreleased)
+* v0.8.1
 	- Add `--version / -v` command line flags to display version
 	- Add `--host` cli option to mirror the API parameter
 	- Once again use 127.0.0.1 instead of 0.0.0.0 as the browser URL
