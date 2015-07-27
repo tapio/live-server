@@ -84,7 +84,7 @@ function entryPoint(staticHandler, file) {
 	return function(req, res, next) {
 		req.url = "/" + file;
 		staticHandler(req, res, next);
-	}
+	};
 }
 
 /**
@@ -173,7 +173,7 @@ LiveServer.start = function(options) {
 			clients = clients.filter(function (x) {
 				return x !== ws;
 			});
-		}
+		};
 
 		clients.push(ws);
 	});
