@@ -88,7 +88,9 @@ Version history
 ---------------
 
 * master (unreleased)
-	- Add --version / -v command line flags to display version
+	- Add `--version / -v` command line flags to display version
+	- Add `--host` cli option to mirror the API parameter
+	- Once again use 127.0.0.1 instead of 0.0.0.0 as the browser URL
 * v0.8.0
 	- Support multiple clients simultaneously (@dvv)
 	- Pick a random available port if the default is in use (@oliverzy, @harrytruong)

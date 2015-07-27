@@ -18,6 +18,10 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 			process.argv.splice(i, 1);
 		}
 	}
+	else if (arg.indexOf("--host=") > -1) {
+		opts.host = arg.substring(7);
+		process.argv.splice(i, 1);
+	}
 	else if (arg.indexOf("--open=") > -1) {
 		var open = arg.substring(7);
 		if (open.indexOf('/') !== 0) {
@@ -60,7 +64,7 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 		process.exit();
 	}
 	else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
 	}
 }
