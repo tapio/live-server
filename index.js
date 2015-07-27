@@ -132,8 +132,9 @@ LiveServer.start = function(options) {
 
 	// Handle successful server
 	server.addListener('listening', function(e) {
-		var address = server.address(),
-			serveURL = 'http://' + address.address + ':' +  address.port;
+		var address = server.address();
+		var serveHost = address.address == "0.0.0.0" ? "127.0.0.1" : address.address;
+		var serveURL = 'http://' + serveHost + ':' +  address.port;
 
 		// Output
 		if (logLevel >= 1) {
