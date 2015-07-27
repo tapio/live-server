@@ -7,7 +7,7 @@ var fs = require('fs'),
 	url = require('url'),
 	http = require('http'),
 	send = require('send'),
-	open = require('open'),
+	open = require('opn'),
 	es = require("event-stream"),
 	watchr = require('watchr');
 

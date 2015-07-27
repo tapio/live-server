@@ -15,7 +15,7 @@
 		"connect": "2.x.x",
 		"send": "latest",
 		"colors": "latest",
-		"open": "latest",
+		"opn": "latest",
 		"watchr": "2.3.x",
 		"faye-websocket": "0.9.x",
 		"event-stream" : "latest"
