@@ -85,13 +85,13 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
-* master (unreleased)
+* v0.8.0
 	- Support multiple clients simultaneously (@dvv)
 	- Pick a random available port if the default is in use (@oliverzy, @harrytruong)
 	- Fix Chrome sometimes not applying CSS changes (@harrytruong)
-	- `--ignore=PATH` command line option to not watch given paths (@richardgoater)
-	- `--entry-file=PATH` command line flag to specify file to use when request is not found (@izeau)
-	- `--wait=MSECS` command line flag to wait specified time before reloading (@leolower, @harrytruong)
+	- `--ignore=PATH` cli option to not watch given server root relative paths (@richardgoater)
+	- `--entry-file=PATH` cli option to specify file to use when request is not found (@izeau)
+	- `--wait=MSECS` cli option to wait specified time before reloading (@leolower, @harrytruong)
 * v0.7.1
 	- Fix hang caused by trying to inject into fragment html files without `</body>`
 	- `logLevel` parameter in library to control amount of console spam
