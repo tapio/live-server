@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var liveServer = require("./index");
+var liveServer = require("../lib");
 var path = require('path');
 
 var opts = {

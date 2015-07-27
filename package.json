@@ -21,11 +21,9 @@
 		"event-stream" : "latest"
 	},
 	"scripts": {
-		"test": "jshint *.js; eslint *.js"
+		"test": "jshint bin/* lib/*.js; eslint bin/* lib/*.js"
 	},
-	"bin": {
-		"live-server": "./live-server.js"
-	},
+	"bin": "bin/live-server",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tapio/live-server.git"
@@ -35,6 +33,10 @@
 	},
 	"preferGlobal": true,
 	"license": "MIT",
+	"files": [
+		"bin",
+		"lib"
+	],
 	"eslintConfig": {
 		"env": {
 			"node": true
