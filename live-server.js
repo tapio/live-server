@@ -20,20 +20,15 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 	}
 	else if (arg.indexOf("--open=") > -1) {
 		var open = arg.substring(7);
-		if (open.indexOf('/') != 0) {
+		if (open.indexOf('/') !== 0) {
 			open = '/' + open;
 		}
 		opts.open = open;
 		process.argv.splice(i, 1);
 	}
 	else if (arg.indexOf("--ignore=") > -1) {
-		var cwd = process.cwd();
-		opts.ignore =
-			arg.substring(9).
-				split(",").
-				map(function (relativePath) {
-					return path.join(cwd, relativePath);
-				});
+		// Will be modified later when cwd is known
+		opts.ignore = arg.substring(9).split(",");
 		process.argv.splice(i, 1);
 	}
 	else if (arg == "--no-browser") {
@@ -67,6 +62,13 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 
 if (process.argv[2]) {
 	process.chdir(process.argv[2]);
+}
+
+if (opts.ignore) { // Patch ignore paths
+	var cwd = process.cwd();
+	opts.ignore = opts.ignore.map(function(relativePath) {
+		return path.join(cwd, relativePath);
+	});
 }
 
 liveServer.start(opts);
