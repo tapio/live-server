@@ -8,7 +8,7 @@ var opts = {
 	logLevel: 2
 };
 
-for (var i = process.argv.length-1; i >= 2; --i) {
+for (var i = process.argv.length - 1; i >= 2; --i) {
 	var arg = process.argv[i];
 	if (arg.indexOf("--port=") > -1) {
 		var portString = arg.substring(7);

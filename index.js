@@ -26,7 +26,7 @@ function escape(html){
 // Based on connect.static(), but streamlined and with added code injecter
 function staticServer(root) {
 	return function(req, res, next) {
-		if ('GET' != req.method && 'HEAD' != req.method) return next();
+		if (req.method != "GET" && req.method != "HEAD") return next();
 		var reqpath = url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
 		var doInject = false;
@@ -48,7 +48,7 @@ function staticServer(root) {
 		}
 
 		function error(err) {
-			if (404 == err.status) return next();
+			if (err.status == 404) return next();
 			next(err);
 		}
 
@@ -59,7 +59,7 @@ function staticServer(root) {
 				res.setHeader('Content-Length', len);
 				var originalPipe = stream.pipe;
 				stream.pipe = function(res) {
-					originalPipe.call(stream, es.replace(new RegExp("</body>","i"), INJECTED_CODE + "</body>")).pipe(res);
+					originalPipe.call(stream, es.replace(new RegExp("</body>", "i"), INJECTED_CODE + "</body>")).pipe(res);
 				};
 			}
 		}
@@ -122,7 +122,7 @@ LiveServer.start = function(options) {
 	// Handle server startup errors
 	server.addListener('error', function(e) {
 		if (e.code == 'EADDRINUSE') {
-			var serveURL = 'http://' + host + ':' +  port;
+			var serveURL = 'http://' + host + ':' + port;
 			console.log('%s is already in use. Trying another port.'.red, serveURL);
 			setTimeout(function() {
 				server.listen(0, host);
@@ -134,7 +134,7 @@ LiveServer.start = function(options) {
 	server.addListener('listening', function(e) {
 		var address = server.address();
 		var serveHost = address.address == "0.0.0.0" ? "127.0.0.1" : address.address;
-		var serveURL = 'http://' + serveHost + ':' +  address.port;
+		var serveURL = 'http://' + serveHost + ':' + address.port;
 
 		// Output
 		if (logLevel >= 1) {
@@ -189,7 +189,7 @@ LiveServer.start = function(options) {
 		interval: 1407,
 		listeners: {
 			error: function(err) {
-				console.log("ERROR:".red , err);
+				console.log("ERROR:".red, err);
 			},
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
 				clients.forEach(function(ws) {

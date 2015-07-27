@@ -21,7 +21,7 @@
 		"event-stream" : "latest"
 	},
 	"scripts": {
-		"test": "jshint *.js"
+		"test": "jshint *.js; eslint *.js"
 	},
 	"bin": {
 		"live-server": "./live-server.js"
@@ -34,5 +34,18 @@
 		"node": ">=0.8.0"
 	},
 	"preferGlobal": true,
-	"license": "MIT"
+	"license": "MIT",
+	"eslintConfig": {
+		"env": {
+			"node": true
+		},
+		"rules": {
+			"quotes": 0,
+			"curly": 0,
+			"strict": 0,
+			"no-process-exit": 0,
+			"eqeqeq": 1,
+			"no-unused-vars": 1
+		}
+	}
 }
