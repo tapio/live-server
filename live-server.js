@@ -59,8 +59,8 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 		}
 	}
 	else if (arg == "--version" || arg == "-v") {
-		var package = require('./package.json');
-		console.log(package.name, package.version);
+		var packageJson = require('./package.json');
+		console.log(packageJson.name, packageJson.version);
 		process.exit();
 	}
 	else if (arg == "--help" || arg == "-h") {
