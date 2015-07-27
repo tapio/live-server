@@ -54,8 +54,13 @@ for (var i = process.argv.length-1; i >= 2; --i) {
 			process.argv.splice(i, 1);
 		}
 	}
+	else if (arg == "--version" || arg == "-v") {
+		var package = require('./package.json');
+		console.log(package.name, package.version);
+		process.exit();
+	}
 	else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
 	}
 }

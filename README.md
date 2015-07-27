@@ -49,6 +49,8 @@ Command line parameters:
 * `--ignore=PATH` - comma-separated string of paths to ignore
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
+* `--help | -h` - display terse usage hint and exit
+* `--version | -v` - display version and exit
 
 
 Usage from node
@@ -85,6 +87,8 @@ The server is a simple node app that serves the working directory and its subdir
 Version history
 ---------------
 
+* master (unreleased)
+	- Add --version / -v command line flags to display version
 * v0.8.0
 	- Support multiple clients simultaneously (@dvv)
 	- Pick a random available port if the default is in use (@oliverzy, @harrytruong)
@@ -100,7 +104,7 @@ Version history
 	- Library's `noBrowser: true` option is deprecated in favor of `open: false`
 * v0.7.0
 	- API BREAKAGE: LiveServer library now takes parameters in an object
-	- Added possibility to specify host to the lib
+	- Add possibility to specify host to the lib
 	- Only inject to host page when working with web components (e.g. Polymer) (@davej)
 	- Open browser to 127.0.0.1, as 0.0.0.0 has issues
 	- `--no-browser` command line flag to suppress browser launch
