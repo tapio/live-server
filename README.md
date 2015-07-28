@@ -76,7 +76,7 @@ liveServer.start(params);
 Troubleshooting
 ---------------
 
-Open your browser's console: there should be a message at the top stating that live reload is enabled. If there are errors, deal with them. You will need a browser that supports WebSockets.
+Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, [file an issue](https://github.com/tapio/live-server/issues).
 
 
 How it works
@@ -85,9 +85,17 @@ How it works
 The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html file. This script establishes the web socket connection and listens to the reload requests.
 
 
+Contributing
+------------
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+
 Version history
 ---------------
 
+* master (unreleased)
+	- Switched to a more maintained browser opening library
 * v0.8.1
 	- Add `--version / -v` command line flags to display version
 	- Add `--host` cli option to mirror the API parameter
