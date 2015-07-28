@@ -43,6 +43,7 @@ This will automatically launch the default browser (you should have `index.html`
 Command line parameters:
 
 * `--port=NUMBER` - select port to use (can also be done with PORT environment variable)
+* `--host=ADDRESS` - select host address to bind to, default: 0.0.0.0 ("any address")
 * `--no-browser` - suppress automatic web browser launching
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
