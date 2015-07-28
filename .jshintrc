@@ -1,0 +1,15 @@
+{
+    "predef": [
+        "console",
+        "describe",
+        "it",
+        "after",
+        "afterEach",
+        "before",
+        "beforeEach"
+    ],
+
+    "indent": 4,
+    "node": true,
+    "devel": true
+}
