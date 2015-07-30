@@ -1,10 +1,283 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>Live-server</title>
-		<meta http-equiv="refresh" content="0; url=https://github.com/tapio/live-server">
-	</head>
-	<body>
-		WIP
-	</body>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Live-server by tapio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Live-server</h1>
+      <h2 class="project-tagline">A simple development http server with live reload capability.</h2>
+      <a href="https://github.com/tapio/live-server" class="btn">View on GitHub</a>
+      <a href="https://github.com/tapio/live-server/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/tapio/live-server/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><a href="https://www.npmjs.org/package/live-server"><img src="http://img.shields.io/npm/v/live-server.svg" alt="view on npm"></a>
+<a href="https://www.npmjs.org/package/live-server"><img src="http://img.shields.io/npm/dm/live-server.svg" alt="npm module downloads per month"></a></p>
+
+<h1>
+<a id="live-server" class="anchor" href="#live-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>Live Server</h1>
+
+<p>This is a little development server with live reload capability. Use it for hacking your HTML/JavaScript/CSS files, but not for deploying the final site.</p>
+
+<p>There are two reasons for using this:</p>
+
+<ol>
+<li>AJAX requests don't work with the <code>file://</code> protocol due to security restrictions, i.e. you need a server if your site fetches content through JavaScript.</li>
+<li>Having the page reload automatically after changes to files can accelerate development.</li>
+</ol>
+
+<p>If you don't want/need the live reload, you should probably use something simpler, like the following Python-based one-liner:</p>
+
+<pre><code>python -m SimpleHTTPServer
+</code></pre>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>You need node.js and npm. You should probably install this globally.</p>
+
+<p><strong>Npm way</strong></p>
+
+<pre><code>npm install -g live-server
+</code></pre>
+
+<p><strong>Manual way</strong></p>
+
+<pre><code>git clone https://github.com/tapio/live-server
+cd live-server
+npm install # Local dependencies if you want to hack
+npm install -g # Install globally
+</code></pre>
+
+<h2>
+<a id="usage-from-command-line" class="anchor" href="#usage-from-command-line" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage from command line</h2>
+
+<p>Issue the command <code>live-server</code> in your project's directory. Alternatively you can add the path to serve as a command line parameter.</p>
+
+<p>This will automatically launch the default browser (you should have <code>index.html</code> present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.</p>
+
+<p>Command line parameters:</p>
+
+<ul>
+<li>
+<code>--port=NUMBER</code> - select port to use (can also be done with PORT environment variable)</li>
+<li>
+<code>--host=ADDRESS</code> - select host address to bind to, default: 0.0.0.0 ("any address")</li>
+<li>
+<code>--no-browser</code> - suppress automatic web browser launching</li>
+<li>
+<code>--quiet</code> - suppress logging</li>
+<li>
+<code>--open=PATH</code> - launch browser to PATH instead of server root</li>
+<li>
+<code>--ignore=PATH</code> - comma-separated string of paths to ignore</li>
+<li>
+<code>--entry-file=PATH</code> - serve this file in place of missing files (useful for single page apps)</li>
+<li>
+<code>--wait=MILLISECONDS</code> - wait for all changes, before reloading</li>
+<li>
+<code>--help | -h</code> - display terse usage hint and exit</li>
+<li>
+<code>--version | -v</code> - display version and exit</li>
+</ul>
+
+<h2>
+<a id="usage-from-node" class="anchor" href="#usage-from-node" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage from node</h2>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> liveServer <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>live-server<span class="pl-pds">"</span></span>);
+
+<span class="pl-k">var</span> params <span class="pl-k">=</span> {
+    port<span class="pl-k">:</span> <span class="pl-c1">8181</span>, <span class="pl-c">// Set the server port. Defaults to 8080.</span>
+    host<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>0.0.0.0<span class="pl-pds">"</span></span>, <span class="pl-c">// Set the address to bind to. Defaults to 0.0.0.0.</span>
+    root<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>/public<span class="pl-pds">"</span></span>, <span class="pl-c">// Set root directory that's being server. Defaults to cwd.</span>
+    open<span class="pl-k">:</span> <span class="pl-c1">false</span>, <span class="pl-c">// When false, it won't load your browser by default.</span>
+    ignore<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>scss,my/templates<span class="pl-pds">'</span></span>, <span class="pl-c">// comma-separated string for paths to ignore</span>
+    file<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>index.html<span class="pl-pds">"</span></span>, <span class="pl-c">// When set, serve this file for every 404 (useful for single-page applications)</span>
+    wait<span class="pl-k">:</span> <span class="pl-c1">1000</span> <span class="pl-c">// Waits for all changes, before reloading. Defaults to 0 sec.</span>
+};
+liveServer.<span class="pl-c1">start</span>(params);</pre></div>
+
+<h2>
+<a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Troubleshooting</h2>
+
+<p>Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, <a href="https://github.com/tapio/live-server/issues">file an issue</a>.</p>
+
+<h2>
+<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span class="octicon octicon-link"></span></a>How it works</h2>
+
+<p>The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html file. This script establishes the web socket connection and listens to the reload requests.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>We welcome contributions! See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for details.</p>
+
+<h2>
+<a id="version-history" class="anchor" href="#version-history" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version history</h2>
+
+<ul>
+<li>master (unreleased)
+
+<ul>
+<li>Switched to a more maintained browser opening library</li>
+</ul>
+</li>
+<li>v0.8.1
+
+<ul>
+<li>Add <code>--version / -v</code> command line flags to display version</li>
+<li>Add <code>--host</code> cli option to mirror the API parameter</li>
+<li>Once again use 127.0.0.1 instead of 0.0.0.0 as the browser URL</li>
+</ul>
+</li>
+<li>v0.8.0
+
+<ul>
+<li>Support multiple clients simultaneously (<a href="https://github.com/dvv" class="user-mention">@dvv</a>)</li>
+<li>Pick a random available port if the default is in use (<a href="https://github.com/oliverzy" class="user-mention">@oliverzy</a>, <a href="https://github.com/harrytruong" class="user-mention">@harrytruong</a>)</li>
+<li>Fix Chrome sometimes not applying CSS changes (<a href="https://github.com/harrytruong" class="user-mention">@harrytruong</a>)</li>
+<li>
+<code>--ignore=PATH</code> cli option to not watch given server root relative paths (<a href="https://github.com/richardgoater" class="user-mention">@richardgoater</a>)</li>
+<li>
+<code>--entry-file=PATH</code> cli option to specify file to use when request is not found (<a href="https://github.com/izeau" class="user-mention">@izeau</a>)</li>
+<li>
+<code>--wait=MSECS</code> cli option to wait specified time before reloading (<a href="https://github.com/leolower" class="user-mention">@leolower</a>, <a href="https://github.com/harrytruong" class="user-mention">@harrytruong</a>)</li>
+</ul>
+</li>
+<li>v0.7.1
+
+<ul>
+<li>Fix hang caused by trying to inject into fragment html files without <code>&lt;/body&gt;</code>
+</li>
+<li>
+<code>logLevel</code> parameter in library to control amount of console spam</li>
+<li>
+<code>--quiet</code> cli option to suppress console spam</li>
+<li>
+<code>--open=PATH</code> cli option to launch browser in specified path instead of root (<a href="https://github.com/richardgoater" class="user-mention">@richardgoater</a>)</li>
+<li>Library's <code>noBrowser: true</code> option is deprecated in favor of <code>open: false</code>
+</li>
+</ul>
+</li>
+<li>v0.7.0
+
+<ul>
+<li>API BREAKAGE: LiveServer library now takes parameters in an object</li>
+<li>Add possibility to specify host to the lib</li>
+<li>Only inject to host page when working with web components (e.g. Polymer) (<a href="https://github.com/davej" class="user-mention">@davej</a>)</li>
+<li>Open browser to 127.0.0.1, as 0.0.0.0 has issues</li>
+<li>
+<code>--no-browser</code> command line flag to suppress browser launch</li>
+<li>
+<code>--help</code> command line flag to display usage</li>
+</ul>
+</li>
+<li>v0.6.4
+
+<ul>
+<li>Allow specifying port from the command line: <code>live-server --port=3000</code> (<a href="https://github.com/Pomax" class="user-mention">@Pomax</a>)</li>
+<li>Don't inject script as the first thing so that DOCTYPE remains valid (<a href="https://github.com/wmira" class="user-mention">@wmira</a>)</li>
+<li>Be more explicit with listening to all interfaces (<a href="https://github.com/inadarei" class="user-mention">@inadarei</a>)</li>
+</ul>
+</li>
+<li>v0.6.3
+
+<ul>
+<li>Fix multiple _cacheOverride parameters polluting css requests</li>
+<li>Don't create global variables in the injected script</li>
+</ul>
+</li>
+<li>v0.6.2
+
+<ul>
+<li>Fix a deprecation warning from <code>send</code>
+</li>
+</ul>
+</li>
+<li>v0.6.1
+
+<ul>
+<li>Republish to fix npm troubles</li>
+</ul>
+</li>
+<li>v0.6.0
+
+<ul>
+<li>Support for using as node library (<a href="https://github.com/dpgraham" class="user-mention">@dpgraham</a>)</li>
+</ul>
+</li>
+<li>v0.5.0
+
+<ul>
+<li>Watching was broken with new versions of <code>watchr</code> &gt; 2.3.3</li>
+<li>Added some logging to console</li>
+</ul>
+</li>
+<li>v0.4.0
+
+<ul>
+<li>Allow specifying directory to serve from command line</li>
+</ul>
+</li>
+<li>v0.3.0
+
+<ul>
+<li>Directory listings</li>
+</ul>
+</li>
+<li>v0.2.0
+
+<ul>
+<li>On-the-fly CSS refresh (no page reload)</li>
+<li>Refactoring</li>
+</ul>
+</li>
+<li>v0.1.1
+
+<ul>
+<li>Documentation and meta tweaks</li>
+</ul>
+</li>
+<li>v0.1.0
+
+<ul>
+<li>Initial release</li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Uses MIT licensed code from <a href="https://github.com/senchalabs/connect/">Connect</a> and  <a href="https://github.com/jenius/roots">Roots</a>.</p>
+
+<p>(MIT License)</p>
+
+<p>Copyright (c) 2012 Tapio Vierros</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/tapio/live-server">Live-server</a> is maintained by <a href="https://github.com/tapio">tapio</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
 </html>
+
