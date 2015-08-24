@@ -15,12 +15,20 @@ var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
 
 var LiveServer = {};
 
-function escape(html){
+function escape(html) {
 	return String(html)
 		.replace(/&(?!\w+;)/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
 		.replace(/"/g, '&quot;');
+}
+
+function prefixSlash(path) {
+	if (!path || !path.length)
+		return "/";
+	else if (path[0] !== '/')
+		return "/" + path;
+	return path;
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
@@ -74,6 +82,24 @@ function staticServer(root) {
 }
 
 /**
+ * Check that the URL contains the required base and rewrite without it.
+ * @param staticHandler {function} Next handler
+ * @param base {string} Path prefix
+ */
+function baseHandler(staticHandler, base) {
+	if (!base) return staticHandler;
+	base = prefixSlash(base);
+	return function(req, res, next) {
+		if (req.url.lastIndexOf(base, 0) === 0) {
+			req.url = prefixSlash(req.url.substring(base.length));
+			staticHandler(req, res, next);
+			return;
+		}
+		next();
+	};
+}
+
+/**
  * Rewrite request URL and pass it back to the static handler.
  * @param staticHandler {function} Next handler
  * @param file {string} Path to the entry point file
@@ -102,6 +128,7 @@ LiveServer.start = function(options) {
 	var host = options.host || '0.0.0.0';
 	var port = options.port || 8080;
 	var root = options.root || process.cwd();
+	var base = options.base || null;
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
@@ -112,7 +139,7 @@ LiveServer.start = function(options) {
 
 	// Setup a web server
 	var app = connect()
-		.use(staticServerHandler) // Custom static server
+		.use(baseHandler(staticServerHandler, base)) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
 		.use(connect.directory(root, { icons: true }));
 	if (logLevel >= 2)

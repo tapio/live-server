@@ -32,6 +32,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.host = arg.substring(7);
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--base=") > -1) {
+		opts.base = arg.substring(7);
+		process.argv.splice(i, 1);
+	}
 	else if (arg.indexOf("--open=") > -1) {
 		var open = arg.substring(7);
 		if (open.indexOf('/') !== 0) {
