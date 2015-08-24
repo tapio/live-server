@@ -12,13 +12,14 @@
 	],
 	"author": "Tapio Vierros",
 	"dependencies": {
-		"connect": "2.x.x",
-		"send": "latest",
 		"colors": "latest",
-		"opn": "latest",
-		"watchr": "2.3.x",
+		"connect": "2.x.x",
+		"event-stream": "latest",
 		"faye-websocket": "0.9.x",
-		"event-stream" : "latest"
+		"object-assign": "^2.0.0",
+		"opn": "latest",
+		"send": "latest",
+		"watchr": "2.3.x"
 	},
 	"scripts": {
 		"test": "jshint *.js; eslint *.js"
