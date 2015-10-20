@@ -98,7 +98,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
-* master (unreleased)
+* v0.8.2
+	- Load initial settings from `~/.live-server.json` if exists (@mikker)
 	- Allow `--port=0` to select random port (@viqueen)
 	- Fix injecting when file extension is not lower case (@gusgard)
 	- Fail gracefully if browser does not support WebSockets (@mattymaloney)
