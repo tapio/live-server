@@ -39,8 +39,9 @@ function staticServer(root) {
 		}
 
 		function file(filepath, stat) {
-			var x = path.extname(filepath);
-			if (hasNoOrigin && (x === "" || x == ".html" || x == ".htm" || x == ".xhtml" || x == ".php")) {
+			var x = path.extname(filepath).toLocaleLowerCase(),
+					possibleExtensions = ["" , ".html", ".htm", ".xhtml", ".php"];
+			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
 				doInject = contents.indexOf("</body>") > -1;
@@ -121,7 +122,7 @@ LiveServer.start = function(options) {
 
 	// Handle server startup errors
 	server.addListener('error', function(e) {
-		if (e.code == 'EADDRINUSE') {
+		if (e.code === 'EADDRINUSE') {
 			var serveURL = 'http://' + host + ':' + port;
 			console.log('%s is already in use. Trying another port.'.red, serveURL);
 			setTimeout(function() {
@@ -133,7 +134,7 @@ LiveServer.start = function(options) {
 	// Handle successful server
 	server.addListener('listening', function(e) {
 		var address = server.address();
-		var serveHost = address.address == "0.0.0.0" ? "127.0.0.1" : address.address;
+		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
 		var serveURL = 'http://' + serveHost + ':' + address.port;
 
 		// Output
@@ -194,7 +195,7 @@ LiveServer.start = function(options) {
 			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
 				clients.forEach(function(ws) {
 					if (!ws) return;
-					if (path.extname(filePath) == ".css") {
+					if (path.extname(filePath) === ".css") {
 						ws.send('refreshcss');
 						if (logLevel >= 1)
 							console.log("CSS change detected".magenta);
