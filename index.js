@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 var fs = require('fs'),
 	connect = require('connect'),
-	colors = require('colors'),
 	WebSocket = require('faye-websocket'),
 	path = require('path'),
 	url = require('url'),
@@ -10,8 +9,9 @@ var fs = require('fs'),
 	open = require('opn'),
 	es = require("event-stream"),
 	watchr = require('watchr');
+require('colors');
 
-var INJECTED_CODE = fs.readFileSync(__dirname + "/injected.html", "utf8");
+var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
 
 var LiveServer = {};
 
@@ -26,7 +26,7 @@ function escape(html){
 // Based on connect.static(), but streamlined and with added code injecter
 function staticServer(root) {
 	return function(req, res, next) {
-		if (req.method != "GET" && req.method != "HEAD") return next();
+		if (req.method !== "GET" && req.method !== "HEAD") return next();
 		var reqpath = url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
 		var doInject = false;
@@ -40,7 +40,7 @@ function staticServer(root) {
 
 		function file(filepath, stat) {
 			var x = path.extname(filepath).toLocaleLowerCase(),
-					possibleExtensions = ["" , ".html", ".htm", ".xhtml", ".php"];
+					possibleExtensions = ["", ".html", ".htm", ".xhtml", ".php"];
 			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
@@ -49,7 +49,7 @@ function staticServer(root) {
 		}
 
 		function error(err) {
-			if (err.status == 404) return next();
+			if (err.status === 404) return next();
 			next(err);
 		}
 

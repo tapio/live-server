@@ -3,7 +3,6 @@ var path = require('path');
 var fs = require('fs');
 var assign = require('object-assign');
 var liveServer = require("./index");
-var path = require('path');
 
 var opts = {
 	port: process.env.PORT,
@@ -11,7 +10,7 @@ var opts = {
 	logLevel: 2
 };
 
-var homeDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
+var homeDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 var configPath = path.join(homeDir, '.live-server.json');
 if (fs.existsSync(configPath)) {
 	var userConfig = fs.readFileSync(configPath, 'utf8');
