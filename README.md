@@ -99,6 +99,9 @@ Version history
 ---------------
 
 * master (unreleased)
+	- Allow `--port=0` to select random port (@viqueen)
+	- Fix injecting when file extension is not lower case (@gusgard)
+	- Fail gracefully if browser does not support WebSockets (@mattymaloney)
 	- Switched to a more maintained browser opening library
 * v0.8.1
 	- Add `--version / -v` command line flags to display version
