@@ -49,6 +49,7 @@ Command line parameters:
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--ignore=PATH` - comma-separated string of paths to ignore
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
+* `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
@@ -72,6 +73,7 @@ var params = {
 	ignore: 'scss,my/templates', // comma-separated string for paths to ignore
 	file: "index.html", // When set, serve this file for every 404 (useful for single-page applications)
 	wait: 1000 // Waits for all changes, before reloading. Defaults to 0 sec.
+	mount: [['/components', './node_modules']] // Mount a directory to a route.
 };
 liveServer.start(params);
 ```

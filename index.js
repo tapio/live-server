@@ -94,6 +94,7 @@ function entryPoint(staticHandler, file) {
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
+ * @param mount {array} Mount directories onto a route, e.g. [['/components', './node_modules']].
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
@@ -103,6 +104,7 @@ LiveServer.start = function(options) {
 	var host = options.host || '0.0.0.0';
 	var port = options.port !== undefined ? options.port : 8080; // 0 means random
 	var root = options.root || process.cwd();
+	var watchPaths = [root];
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
@@ -112,8 +114,13 @@ LiveServer.start = function(options) {
 	var wait = options.wait || 0;
 
 	// Setup a web server
-	var app = connect()
-		.use(staticServerHandler) // Custom static server
+	var app = connect(); 
+	options.mount.forEach(function(mountRule) {
+		var mountPath = path.resolve(process.cwd(), mountRule[1]);
+		watchPaths.push(mountPath);
+		app.use(mountRule[0], staticServer(mountPath));
+	});
+	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
 		.use(connect.directory(root, { icons: true }));
 	if (logLevel >= 2)
@@ -182,7 +189,7 @@ LiveServer.start = function(options) {
 
 	// Setup file watcher
 	watchr.watch({
-		path: root,
+		paths: watchPaths,
 		ignorePaths: options.ignore || false,
 		ignoreCommonPatterns: true,
 		ignoreHiddenFiles: true,
