@@ -208,6 +208,8 @@ LiveServer.start = function(options) {
 			}
 		}
 	});
+
+	return server;
 };
 
 module.exports = LiveServer;
