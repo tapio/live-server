@@ -1,4 +1,4 @@
-var liveServer = require('../../examples/basic');
+var liveServer = require('../examples/basic');
 var request = require('supertest');
 
 describe('css reload example', function(){

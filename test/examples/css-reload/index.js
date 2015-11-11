@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var LiveServer = require('../..');
+var LiveServer = require('../../..');
 
 var server = LiveServer.start({
 	root: __dirname,
