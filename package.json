@@ -21,6 +21,10 @@
 		"send": "latest",
 		"watchr": "2.3.x"
 	},
+	"devDependencies": {
+    "mocha": "^2.3.3",
+    "supertest": "1.0.1"
+  },
 	"scripts": {
 		"test": "jshint *.js; eslint *.js"
 	},
