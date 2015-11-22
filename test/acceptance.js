@@ -1,7 +1,11 @@
-var liveServer = require('../examples/basic');
 var request = require('supertest');
+var path = require('path');
+var liveServer = require('..').start({
+	root: path.join(__dirname, "data"),
+	open: false
+});
 
-describe('css reload example', function(){
+describe('basic functional tests', function(){
 	describe('[GET /]', function(){
 		it('should respond with index.html', function(done){
 			request(liveServer)
