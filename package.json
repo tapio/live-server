@@ -22,12 +22,12 @@
 		"watchr": "2.3.x"
 	},
 	"devDependencies": {
-    "mocha": "^2.3.3",
-    "supertest": "1.0.1"
-  },
+		"mocha": "^2.3.3",
+		"supertest": "1.0.1"
+	},
 	"scripts": {
-    "test": "mocha test",
-    "lint": "jshint *.js; eslint *.js"
+	"test": "mocha test",
+	"lint": "jshint *.js; eslint *.js"
 	},
 	"bin": {
 		"live-server": "./live-server.js"
