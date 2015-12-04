@@ -56,20 +56,23 @@ function staticServer(root) {
 		}
 
 		function inject(stream) {
-			if (doInject || doInjectSvg) {
+			if (doInject) {
 				// We need to modify the length given to browser
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
 				var originalPipe = stream.pipe;
-				if(doInjectSvg) {
-					stream.pipe = function(res) {
-						originalPipe.call(stream, es.replace(new RegExp("</svg>", "i"), wrapToSvg(INJECTED_CODE) + "</svg>")).pipe(res);
-					};
-				} else {
-					stream.pipe = function(res) {
-						originalPipe.call(stream, es.replace(new RegExp("</body>", "i"), INJECTED_CODE + "</body>")).pipe(res);
-					};
-				}
+				stream.pipe = function(res) {
+					originalPipe.call(stream, es.replace(new RegExp("</body>", "i"), INJECTED_CODE + "</body>")).pipe(res);
+				};
+			} else if(doInjectSvg) {
+				// We need to modify the length given to browser
+				var WRAPPED_INJECTED_CODE = wrapToSvg(INJECTED_CODE);
+				var len = WRAPPED_INJECTED_CODE.length + res.getHeader('Content-Length');
+				res.setHeader('Content-Length', len);
+				var originalPipe = stream.pipe;
+				stream.pipe = function(res) {
+					originalPipe.call(stream, es.replace(/<\/svg>/i, WRAPPED_INJECTED_CODE + "</svg>")).pipe(res);
+				};
 			}
 		}
 		
