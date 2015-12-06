@@ -119,6 +119,8 @@ LiveServer.start = function(options) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		watchPaths.push(mountPath);
 		app.use(mountRule[0], staticServer(mountPath));
+		if (logLevel >= 1)
+			console.log('Mapping %s to "%s"', mountRule[0], mountPath);
 	});
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
