@@ -84,6 +84,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
 	}
+	else if (arg.indexOf("--browser=") > -1) {
+		opts.browser = arg.substring(10).split(",");
+		process.argv.splice(i, 1);
+	}
 }
 
 if (process.argv[2]) {
