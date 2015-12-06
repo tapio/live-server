@@ -7,6 +7,7 @@ var liveServer = require("./index");
 var opts = {
 	port: process.env.PORT,
 	open: true,
+	mount: [],
 	logLevel: 2
 };
 
@@ -59,6 +60,13 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--mount=") > -1) {
+		// e.g. "--mount=/components:./node_modules" will be ['/components', '<process.cwd()>/node_modules']
+		var mountRule = arg.substring(8).split(":");
+		mountRule[1] = path.resolve(process.cwd(), mountRule[1]); 
+		opts.mount.push(mountRule);
+		process.argv.splice(i, 1);
+	}
 	else if (arg.indexOf("--wait=") > -1) {
 		var waitString = arg.substring(7);
 		var waitNumber = parseInt(waitString, 10);
@@ -73,7 +81,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.exit();
 	}
 	else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--wait=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--ignore=PATH] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
 	}
 }
