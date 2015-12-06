@@ -104,6 +104,7 @@ LiveServer.start = function(options) {
 	var host = options.host || '0.0.0.0';
 	var port = options.port !== undefined ? options.port : 8080; // 0 means random
 	var root = options.root || process.cwd();
+	var mount = options.mount || [];
 	var watchPaths = [root];
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
@@ -115,7 +116,7 @@ LiveServer.start = function(options) {
 
 	// Setup a web server
 	var app = connect(); 
-	options.mount.forEach(function(mountRule) {
+	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		watchPaths.push(mountPath);
 		app.use(mountRule[0], staticServer(mountPath));
