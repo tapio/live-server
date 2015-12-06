@@ -45,6 +45,7 @@ Command line parameters:
 * `--port=NUMBER` - select port to use (can also be done with PORT environment variable)
 * `--host=ADDRESS` - select host address to bind to, default: 0.0.0.0 ("any address")
 * `--no-browser` - suppress automatic web browser launching
+* `--browser=BROWSER` - specify browser to use instead of system default
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--ignore=PATH` - comma-separated string of paths to ignore
@@ -100,6 +101,10 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
+* v0.9.0
+	- `--mount=ROUTE:PATH` cli option to specify alternative routes to paths (@pmentz)
+	- `--browser=BROWSER` cli option to specify browser to use (@sakiv)
+	- Initial testing framework (@harrytruong, @evanplaice)
 * v0.8.2
 	- Load initial settings from `~/.live-server.json` if exists (@mikker)
 	- Allow `--port=0` to select random port (@viqueen)
