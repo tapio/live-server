@@ -116,7 +116,7 @@ LiveServer.start = function(options) {
 	var browser = options.browser || null;
 
 	// Setup a web server
-	var app = connect(); 
+	var app = connect();
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		watchPaths.push(mountPath);

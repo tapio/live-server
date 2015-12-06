@@ -63,7 +63,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	else if (arg.indexOf("--mount=") > -1) {
 		// e.g. "--mount=/components:./node_modules" will be ['/components', '<process.cwd()>/node_modules']
 		var mountRule = arg.substring(8).split(":");
-		mountRule[1] = path.resolve(process.cwd(), mountRule[1]); 
+		mountRule[1] = path.resolve(process.cwd(), mountRule[1]);
 		opts.mount.push(mountRule);
 		process.argv.splice(i, 1);
 	}
