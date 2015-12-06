@@ -2,6 +2,7 @@ var request = require('supertest');
 var path = require('path');
 var liveServer = require('..').start({
 	root: path.join(__dirname, "data"),
+	port: 0,
 	open: false
 });
 
