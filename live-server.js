@@ -90,9 +90,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	}
 	else if (arg == "--test") {
 		// Hidden param for tests to exit automatically
-		setTimeout(function() {
-			liveServer.shutdown();
-		}, 500);
+		setTimeout(liveServer.shutdown, 500);
 		process.argv.splice(i, 1);
 	}
 }
