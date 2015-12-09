@@ -105,6 +105,7 @@ Version history
 	- `--mount=ROUTE:PATH` cli option to specify alternative routes to paths (@pmentz)
 	- `--browser=BROWSER` cli option to specify browser to use (@sakiv)
 	- Improved error reporting
+	- Basic support for injecting the reload code to SVG files (@dotnetCarpenter, @tapio)
 	- LiveServer.shutdown() function to close down the server and file watchers
 	- If host parameter is given, use it for browser URL instead of resolved IP
 	- Initial testing framework (@harrytruong, @evanplaice, @tapio)
