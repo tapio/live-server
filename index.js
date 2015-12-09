@@ -148,16 +148,22 @@ LiveServer.start = function(options) {
 	server.addListener('listening', function(e) {
 		var address = server.address();
 		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
+		var openHost = host === "0.0.0.0" ? "127.0.0.1" : host;
+
 		var serveURL = 'http://' + serveHost + ':' + address.port;
+		var openURL = 'http://' + openHost + ':' + address.port;
 
 		// Output
 		if (logLevel >= 1) {
-			console.log(("Serving \"%s\" at %s").green, root, serveURL);
+			if (serveURL === openURL)
+				console.log(("Serving \"%s\" at %s").green, root, serveURL);
+			else
+				console.log(("Serving \"%s\" at %s (%s)").green, root, openURL, serveURL);
 		}
 
 		// Launch browser
 		if (openPath !== null)
-			open(serveURL + openPath, {app: browser});
+			open(openURL + openPath, {app: browser});
 	});
 
 	// Setup server to listen at port
