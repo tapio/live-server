@@ -29,4 +29,20 @@ describe('command line usage', function() {
 			done();
 		});
 	});
+	it('--port', function(done) {
+		exec(cmd, [ "--port=16123", "--no-browser", "--test" ], opts, function(error, stdout, stdin) {
+			assert(!error, error);
+			assert(stdout.indexOf("Serving") == 0, "serving string not found");
+			assert(stdout.indexOf("at http://127.0.0.1:16123") != -1, "port string not found");
+			done();
+		});
+	});
+	it('--host', function(done) {
+		exec(cmd, [ "--host=localhost", "--no-browser", "--test" ], opts, function(error, stdout, stdin) {
+			assert(!error, error);
+			assert(stdout.indexOf("Serving") == 0, "serving string not found");
+			assert(stdout.indexOf("at http://localhost:") != -1, "host string not found");
+			done();
+		});
+	});
 });
