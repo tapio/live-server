@@ -104,7 +104,10 @@ Version history
 * master (unreleased)
 	- `--mount=ROUTE:PATH` cli option to specify alternative routes to paths (@pmentz)
 	- `--browser=BROWSER` cli option to specify browser to use (@sakiv)
-	- Initial testing framework (@harrytruong, @evanplaice)
+	- Improved error reporting
+	- LiveServer.shutdown() function to close down the server and file watchers
+	- If host parameter is given, use it for browser URL instead of resolved IP
+	- Initial testing framework (@harrytruong, @evanplaice, @tapio)
 * v0.8.2
 	- Load initial settings from `~/.live-server.json` if exists (@mikker)
 	- Allow `--port=0` to select random port (@viqueen)
