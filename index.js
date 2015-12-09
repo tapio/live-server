@@ -135,10 +135,12 @@ LiveServer.start = function(options) {
 	server.addListener('error', function(e) {
 		if (e.code === 'EADDRINUSE') {
 			var serveURL = 'http://' + host + ':' + port;
-			console.log('%s is already in use. Trying another port.'.red, serveURL);
+			console.log('%s is already in use. Trying another port.'.yellow, serveURL);
 			setTimeout(function() {
 				server.listen(0, host);
 			}, 1000);
+		} else {
+			console.error(e.toString().red);
 		}
 	});
 
