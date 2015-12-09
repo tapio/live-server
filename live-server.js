@@ -49,6 +49,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.open = false;
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--browser=") > -1) {
+		opts.browser = arg.substring(10).split(",");
+		process.argv.splice(i, 1);
+	}
 	else if (arg.indexOf("--entry-file=") > -1) {
 		var file = arg.substring(13);
 		if (file.length) {
@@ -83,10 +87,6 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	else if (arg == "--help" || arg == "-h") {
 		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
-	}
-	else if (arg.indexOf("--browser=") > -1) {
-		opts.browser = arg.substring(10).split(",");
-		process.argv.splice(i, 1);
 	}
 }
 
