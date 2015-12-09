@@ -144,6 +144,7 @@ LiveServer.start = function(options) {
 			}, 1000);
 		} else {
 			console.error(e.toString().red);
+			LiveServer.shutdown();
 		}
 	});
 
