@@ -13,7 +13,10 @@ require('colors');
 
 var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
 
-var LiveServer = {};
+var LiveServer = {
+	server: null,
+	watchers: []
+};
 
 function escape(html){
 	return String(html)
@@ -146,6 +149,8 @@ LiveServer.start = function(options) {
 
 	// Handle successful server
 	server.addListener('listening', function(e) {
+		LiveServer.server = server;
+
 		var address = server.address();
 		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
 		var openHost = host === "0.0.0.0" ? "127.0.0.1" : host;
@@ -225,10 +230,26 @@ LiveServer.start = function(options) {
 					}
 				});
 			}
+		},
+		next: function(err, watchers) {
+			if (err)
+				console.error("Error watching files:".red, err);
+			LiveServer.watchers = watchers;
 		}
 	});
 
 	return server;
+};
+
+LiveServer.shutdown = function() {
+	var watchers = LiveServer.watchers;
+	if (watchers) {
+		for (var i = 0; i < watchers.length; ++i)
+			watchers[i].close();
+	}
+	var server = LiveServer.server;
+	if (server)
+		server.close();
 };
 
 module.exports = LiveServer;
