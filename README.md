@@ -101,7 +101,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
-* master (unreleased)
+* v0.9.0
 	- `--mount=ROUTE:PATH` cli option to specify alternative routes to paths (@pmentz)
 	- `--browser=BROWSER` cli option to specify browser to use (@sakiv)
 	- Improved error reporting
