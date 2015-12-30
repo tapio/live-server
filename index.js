@@ -217,6 +217,7 @@ LiveServer.start = function(options) {
 		ignorePaths: options.ignore || false,
 		ignoreCommonPatterns: true,
 		ignoreHiddenFiles: true,
+		ignoreCustomPatterns: options.ignorePattern || null,
 		preferredMethods: [ 'watchFile', 'watch' ],
 		interval: 1407,
 		listeners: {
@@ -233,7 +234,7 @@ LiveServer.start = function(options) {
 					} else {
 						ws.send('reload');
 						if (logLevel >= 1)
-							console.log("File change detected".cyan);
+							console.log("File change detected".cyan, filePath);
 					}
 				});
 			}

@@ -45,6 +45,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.ignore = arg.substring(9).split(",");
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--ignorePattern=") > -1) {
+		opts.ignorePattern = new RegExp(arg.substring(16));
+		process.argv.splice(i, 1);
+	}
 	else if (arg == "--no-browser") {
 		opts.open = false;
 		process.argv.splice(i, 1);
@@ -85,7 +89,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.exit();
 	}
 	else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [PATH]');
 		process.exit();
 	}
 	else if (arg == "--test") {
