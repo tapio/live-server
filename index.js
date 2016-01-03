@@ -231,7 +231,7 @@ LiveServer.start = function(options) {
 						if (logLevel >= 1)
 							console.log("CSS change detected".magenta);
 					} else {
-						ws.send('reload');
+						ws.send('reload ' + filePath);
 						if (logLevel >= 1)
 							console.log("File change detected".cyan);
 					}

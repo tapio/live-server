@@ -21,8 +21,18 @@
 			var address = protocol + window.location.host + window.location.pathname + '/ws';
 			var socket = new WebSocket(address);
 			socket.onmessage = function(msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
+				if (msg.data === 'refreshcss') {
+					refreshCSS();
+				} else if (msg.data.match('reload ')) {
+					var scripts = document.querySelectorAll('script[src$=".js"]');
+					for(var i = 0, l = scripts.length; i < l; i++) {
+						var filePath = scripts[i].src.replace(window.location.origin, '');
+						var reloadPath = msg.data.split(' ')[1];
+						if (reloadPath.match(filePath)) {
+							window.location.reload();
+						}
+					}
+				}
 			};
 			console.log('Live reload enabled.');
 		})();
