@@ -54,6 +54,11 @@ function staticServer(root) {
 						break;
 					}
 				}
+				if (injectTag === null) {
+					console.error("Refresh won't happen as no file was find to watch. ".red + 
+						"If you have html files, please check their syntax.");
+				}
+				
 			}
 		}
 
