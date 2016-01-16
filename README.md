@@ -49,7 +49,7 @@ Command line parameters:
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--ignore=PATH` - comma-separated string of paths to ignore
-* `--ignorePatter=RGXP` - Regular expression of files to ignore (ie `.*\.jade`)
+* `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`)
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
@@ -102,6 +102,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
+* master (unreleased)
+	- `--ignorePattern=RGXP` exclude files from watching by regexp (@psi-4ward)
 * v0.9.0
 	- `--mount=ROUTE:PATH` cli option to specify alternative routes to paths (@pmentz)
 	- `--browser=BROWSER` cli option to specify browser to use (@sakiv)

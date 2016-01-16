@@ -102,6 +102,8 @@ function entryPoint(staticHandler, file) {
  * @param host {string} Address to bind to (default: 0.0.0.0)
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
+ * @param ignore {array} Paths to ignore when watching files for changes
+ * @param ignorePattern {regexp} Ignore files by RegExp
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
  * @param mount {array} Mount directories onto a route, e.g. [['/components', './node_modules']].
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
