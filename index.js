@@ -55,10 +55,9 @@ function staticServer(root) {
 					}
 				}
 				if (injectTag === null) {
-					console.error("Refresh won't happen as no file was find to watch. ".red + 
-						"If you have html files, please check their syntax.");
+					console.warn("Failed to inject refresh script!".yellow,
+						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
 				}
-				
 			}
 		}
 
