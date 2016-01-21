@@ -106,6 +106,7 @@ function entryPoint(staticHandler, file) {
  * @param host {string} Address to bind to (default: 0.0.0.0)
  * @param port {number} Port number (default: 8080)
  * @param root {string} Path to root directory (default: cwd)
+ * @param watch {array} Paths to exclusively watch for changes
  * @param ignore {array} Paths to ignore when watching files for changes
  * @param ignorePattern {regexp} Ignore files by RegExp
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
@@ -120,7 +121,7 @@ LiveServer.start = function(options) {
 	var port = options.port !== undefined ? options.port : 8080; // 0 means random
 	var root = options.root || process.cwd();
 	var mount = options.mount || [];
-	var watchPaths = [root];
+	var watchPaths = options.watch || [root];
 	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);

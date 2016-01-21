@@ -40,6 +40,11 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.open = open;
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--watch=") > -1) {
+		// Will be modified later when cwd is known
+		opts.watch = arg.substring(8).split(",");
+		process.argv.splice(i, 1);
+	}
 	else if (arg.indexOf("--ignore=") > -1) {
 		// Will be modified later when cwd is known
 		opts.ignore = arg.substring(9).split(",");
@@ -103,8 +108,14 @@ if (process.argv[2]) {
 	process.chdir(process.argv[2]);
 }
 
-if (opts.ignore) { // Patch ignore paths
-	var cwd = process.cwd();
+// Patch paths
+var cwd = process.cwd();
+if (opts.watch) {
+	opts.watch = opts.watch.map(function(relativePath) {
+		return path.join(cwd, relativePath);
+	});
+}
+if (opts.ignore) {
 	opts.ignore = opts.ignore.map(function(relativePath) {
 		return path.join(cwd, relativePath);
 	});

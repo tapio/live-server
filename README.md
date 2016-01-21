@@ -48,6 +48,7 @@ Command line parameters:
 * `--browser=BROWSER` - specify browser to use instead of system default
 * `--quiet` - suppress logging
 * `--open=PATH` - launch browser to PATH instead of server root
+* `--watch=PATH` - comma-separated string of paths to exclusively watch for changes (default: watch everything)
 * `--ignore=PATH` - comma-separated string of paths to ignore
 * `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`)
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
@@ -104,6 +105,7 @@ Version history
 
 * master (unreleased)
 	- `--ignorePattern=RGXP` exclude files from watching by regexp (@psi-4ward)
+	- `--watch=PATH` cli option to only watch given paths
 * v0.9.0
 	- `--mount=ROUTE:PATH` cli option to specify alternative routes to paths (@pmentz)
 	- `--browser=BROWSER` cli option to specify browser to use (@sakiv)
