@@ -237,7 +237,7 @@ LiveServer.start = function(options) {
 					if (path.extname(filePath) === ".css") {
 						ws.send('refreshcss');
 						if (logLevel >= 1)
-							console.log("CSS change detected".magenta);
+							console.log("CSS change detected".magenta, filePath);
 					} else {
 						ws.send('reload');
 						if (logLevel >= 1)
