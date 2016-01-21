@@ -26,8 +26,8 @@
 		"supertest": "1.0.1"
 	},
 	"scripts": {
-	"test": "mocha test",
-	"lint": "jshint *.js; eslint *.js"
+		"lint": "jshint *.js; eslint *.js",
+		"test": "npm run lint && mocha test"
 	},
 	"bin": {
 		"live-server": "./live-server.js"
