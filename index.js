@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 var fs = require('fs'),
 	connect = require('connect'),
+	serveIndex = require('serve-index'),
+	logger = require('morgan'),
 	WebSocket = require('faye-websocket'),
 	path = require('path'),
 	url = require('url'),
@@ -142,9 +144,9 @@ LiveServer.start = function(options) {
 	});
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
-		.use(connect.directory(root, { icons: true }));
+		.use(serveIndex(root, { icons: true }));
 	if (logLevel >= 2)
-		app.use(connect.logger('dev'));
+		app.use(logger('dev'));
 	var server = http.createServer(app);
 
 	// Handle server startup errors

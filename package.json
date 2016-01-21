@@ -13,17 +13,19 @@
 	"author": "Tapio Vierros",
 	"dependencies": {
 		"colors": "latest",
-		"connect": "2.x.x",
+		"connect": "3.4.x",
+		"serve-index": "^1.7.2",
+		"morgan": "^1.6.1",
 		"event-stream": "latest",
-		"faye-websocket": "0.9.x",
-		"object-assign": "^2.0.0",
+		"faye-websocket": "0.10.x",
+		"object-assign": "latest",
 		"opn": "latest",
 		"send": "latest",
 		"watchr": "2.3.x"
 	},
 	"devDependencies": {
 		"mocha": "^2.3.3",
-		"supertest": "1.0.1"
+		"supertest": "^1.0.1"
 	},
 	"scripts": {
 		"lint": "jshint *.js; eslint *.js",
@@ -37,7 +39,7 @@
 		"url": "https://github.com/tapio/live-server.git"
 	},
 	"engines": {
-		"node": ">=0.8.0"
+		"node": ">=0.10.0"
 	},
 	"preferGlobal": true,
 	"license": "MIT",

@@ -103,6 +103,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
+* master (unreleased)
+	- Updated most dependencies to latest versions
 * v0.9.1
 	- `--ignorePattern=RGXP` exclude files from watching by regexp (@psi-4ward)
 	- `--watch=PATH` cli option to only watch given paths
