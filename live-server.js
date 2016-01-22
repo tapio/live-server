@@ -94,12 +94,16 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.exit();
 	}
 	else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--cors-origin=list]  [PATH]');
 		process.exit();
 	}
 	else if (arg == "--test") {
 		// Hidden param for tests to exit automatically
 		setTimeout(liveServer.shutdown, 500);
+		process.argv.splice(i, 1);
+	}
+	else if (arg.indexOf("--cors-origin=") > -1) {
+		opts.corsOrigin = arg.substring(14);
 		process.argv.splice(i, 1);
 	}
 }

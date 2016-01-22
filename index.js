@@ -132,9 +132,16 @@ LiveServer.start = function(options) {
 	var staticServerHandler = staticServer(root);
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
+	var corsOrigin = options.corsOrigin || false;
 
 	// Setup a web server
 	var app = connect();
+
+	if(corsOrigin)
+		app.use(function(req, res, next) {
+			res.setHeader('Access-Control-Allow-Origin', corsOrigin);
+			next();
+		});
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		watchPaths.push(mountPath);
@@ -147,6 +154,7 @@ LiveServer.start = function(options) {
 		.use(serveIndex(root, { icons: true }));
 	if (logLevel >= 2)
 		app.use(logger('dev'));
+
 	var server = http.createServer(app);
 
 	// Handle server startup errors
