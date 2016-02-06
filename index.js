@@ -132,6 +132,7 @@ LiveServer.start = function(options) {
 	var staticServerHandler = staticServer(root);
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
+	var authPath = options.authPath || null;
 
 	// Setup a web server
 	var app = connect();
@@ -147,7 +148,18 @@ LiveServer.start = function(options) {
 		.use(serveIndex(root, { icons: true }));
 	if (logLevel >= 2)
 		app.use(logger('dev'));
-	var server = http.createServer(app);
+
+	if (authPath == null){
+		var server = http.createServer(app);
+	}
+	else {
+		var auth = require('http-auth');
+		var basic = auth.basic({
+			realm: "Please authorize",
+			file: authPath
+		});
+		var server = http.createServer(basic, app);
+	}
 
 	// Handle server startup errors
 	server.addListener('error', function(e) {
