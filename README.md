@@ -54,6 +54,7 @@ Command line parameters:
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
+* `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
 
