@@ -150,8 +150,9 @@ LiveServer.start = function(options) {
 		app.use(logger('dev'));
 
 	// Use http-auth if configured
-	if (authPath == null){
-		var server = http.createServer(app);
+	var server = null;
+	if (authPath === null){
+		server = http.createServer(app);
 	}
 	else {
 		var auth = require('http-auth');
@@ -159,7 +160,7 @@ LiveServer.start = function(options) {
 			realm: "Please authorize",
 			file: authPath
 		});
-		var server = http.createServer(basic, app);
+		server = http.createServer(basic, app);
 	}
 
 	// Handle server startup errors
