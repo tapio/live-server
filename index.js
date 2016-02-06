@@ -149,6 +149,7 @@ LiveServer.start = function(options) {
 	if (logLevel >= 2)
 		app.use(logger('dev'));
 
+	// Use http-auth if configured
 	if (authPath == null){
 		var server = http.createServer(app);
 	}
