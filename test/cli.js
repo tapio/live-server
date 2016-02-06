@@ -45,4 +45,15 @@ describe('command line usage', function() {
 			done();
 		});
 	});
+	it('--htpasswd', function(done) {
+		exec(cmd,
+			[ "--htpasswd=" + path.join(__dirname, "data/htpasswd-test"),
+				"--no-browser",
+				"--test"
+			], opts, function(error, stdout, stdin) {
+			assert(!error, error);
+			assert(stdout.indexOf("Serving") == 0, "serving string not found");
+			done();
+		});
+	});
 });
