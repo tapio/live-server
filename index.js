@@ -20,6 +20,8 @@ var LiveServer = {
 	watchers: []
 };
 
+var logLevel;
+
 function escape(html){
 	return String(html)
 		.replace(/&(?!\w+;)/g, '&amp;')
@@ -57,8 +59,9 @@ function staticServer(root) {
 					}
 				}
 				if (injectTag === null) {
-					console.warn("Failed to inject refresh script!".yellow,
-						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
+					if (logLevel >= 1)
+						console.warn("Failed to inject refresh script!".yellow,
+							"Couldn't find any of the tags ", injectCandidates, "from", filepath);
 				}
 			}
 		}
@@ -114,6 +117,7 @@ function entryPoint(staticHandler, file) {
  * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
  * @param mount {array} Mount directories onto a route, e.g. [['/components', './node_modules']].
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
+ * @param quiet {string} Sets the loglevel to 0
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
  */
@@ -124,7 +128,6 @@ LiveServer.start = function(options) {
 	var root = options.root || process.cwd();
 	var mount = options.mount || [];
 	var watchPaths = options.watch || [root];
-	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
@@ -132,6 +135,10 @@ LiveServer.start = function(options) {
 	var staticServerHandler = staticServer(root);
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
+
+	logLevel = options.logLevel === undefined ? 2 : options.logLevel;
+	if(options.quiet)
+		logLevel = 0;
 
 	// Setup a web server
 	var app = connect();
