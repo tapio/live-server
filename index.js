@@ -138,7 +138,8 @@ LiveServer.start = function(options) {
 	var app = connect();
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
-		watchPaths.push(mountPath);
+		if (!options.watch) // Auto add mount paths to wathing but only if exclusive path option is not given
+			watchPaths.push(mountPath);
 		app.use(mountRule[0], staticServer(mountPath));
 		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', mountRule[0], mountPath);
