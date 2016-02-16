@@ -103,7 +103,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
-* master (unreleased)
+* v0.9.2
 	- Updated most dependencies to latest versions
 	- `--quiet` now silences warning about injection failure
 	- Giving explicit `--watch` paths now disables adding mounted paths to watching
