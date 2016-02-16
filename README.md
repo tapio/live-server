@@ -105,6 +105,7 @@ Version history
 
 * master (unreleased)
 	- Updated most dependencies to latest versions
+	- `--quiet` now silences warning about injection failure
 * v0.9.1
 	- `--ignorePattern=RGXP` exclude files from watching by regexp (@psi-4ward)
 	- `--watch=PATH` cli option to only watch given paths

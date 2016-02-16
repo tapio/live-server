@@ -17,7 +17,8 @@ var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8
 
 var LiveServer = {
 	server: null,
-	watchers: []
+	watchers: [],
+	logLevel: 2
 };
 
 function escape(html){
@@ -56,7 +57,7 @@ function staticServer(root) {
 						break;
 					}
 				}
-				if (injectTag === null) {
+				if (injectTag === null && LiveServer.logLevel >= 2) {
 					console.warn("Failed to inject refresh script!".yellow,
 						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
 				}
@@ -124,7 +125,7 @@ LiveServer.start = function(options) {
 	var root = options.root || process.cwd();
 	var mount = options.mount || [];
 	var watchPaths = options.watch || [root];
-	var logLevel = options.logLevel === undefined ? 2 : options.logLevel;
+	LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
@@ -139,13 +140,13 @@ LiveServer.start = function(options) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		watchPaths.push(mountPath);
 		app.use(mountRule[0], staticServer(mountPath));
-		if (logLevel >= 1)
+		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', mountRule[0], mountPath);
 	});
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
 		.use(serveIndex(root, { icons: true }));
-	if (logLevel >= 2)
+	if (LiveServer.logLevel >= 2)
 		app.use(logger('dev'));
 	var server = http.createServer(app);
 
@@ -175,7 +176,7 @@ LiveServer.start = function(options) {
 		var openURL = 'http://' + openHost + ':' + address.port;
 
 		// Output
-		if (logLevel >= 1) {
+		if (LiveServer.logLevel >= 1) {
 			if (serveURL === openURL)
 				console.log(("Serving \"%s\" at %s").green, root, serveURL);
 			else
@@ -238,11 +239,11 @@ LiveServer.start = function(options) {
 					if (!ws) return;
 					if (path.extname(filePath) === ".css") {
 						ws.send('refreshcss');
-						if (logLevel >= 1)
+						if (LiveServer.logLevel >= 1)
 							console.log("CSS change detected".magenta, filePath);
 					} else {
 						ws.send('reload');
-						if (logLevel >= 1)
+						if (LiveServer.logLevel >= 1)
 							console.log("File change detected".cyan, filePath);
 					}
 				});
