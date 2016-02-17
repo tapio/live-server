@@ -132,7 +132,7 @@ LiveServer.start = function(options) {
 	var staticServerHandler = staticServer(root);
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
-	var authPath = options.authPath || null;
+	var htpasswd = options.htpasswd || null;
 
 	// Setup a web server
 	var app = connect();
@@ -151,14 +151,14 @@ LiveServer.start = function(options) {
 
 	// Use http-auth if configured
 	var server = null;
-	if (authPath === null){
+	if (htpasswd === null){
 		server = http.createServer(app);
 	}
 	else {
 		var auth = require('http-auth');
 		var basic = auth.basic({
 			realm: "Please authorize",
-			file: authPath
+			file: htpasswd
 		});
 		server = http.createServer(basic, app);
 	}

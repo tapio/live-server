@@ -94,7 +94,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.exit();
 	}
 	else if (arg.indexOf("--htpasswd=") > -1) {
-		opts.authPath = arg.substring(11);
+		opts.htpasswd = arg.substring(11);
 		process.argv.splice(i, 1);
 	}
 	else if (arg == "--help" || arg == "-h") {
