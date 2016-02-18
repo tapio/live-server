@@ -116,6 +116,7 @@ function entryPoint(staticHandler, file) {
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
+ * @param htpasswd {string} Path to htpasswd file to enable HTTP Basic authentication
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -151,10 +152,9 @@ LiveServer.start = function(options) {
 
 	// Use http-auth if configured
 	var server = null;
-	if (htpasswd === null){
+	if (htpasswd === null) {
 		server = http.createServer(app);
-	}
-	else {
+	} else {
 		var auth = require('http-auth');
 		var basic = auth.basic({
 			realm: "Please authorize",
