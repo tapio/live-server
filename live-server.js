@@ -93,8 +93,12 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		console.log(packageJson.name, packageJson.version);
 		process.exit();
 	}
+	else if (arg.indexOf("--htpasswd=") > -1) {
+		opts.htpasswd = arg.substring(11);
+		process.argv.splice(i, 1);
+	}
 	else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [PATH]');
 		process.exit();
 	}
 	else if (arg == "--test") {
