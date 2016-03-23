@@ -35,7 +35,7 @@ function staticServer(root) {
 		if (req.method !== "GET" && req.method !== "HEAD") return next();
 		var reqpath = url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
-		var injectCandidates = [ "</body>", "</svg>" ];
+		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>") ];
 		var injectTag = null;
 
 		function directory() {
@@ -46,14 +46,15 @@ function staticServer(root) {
 		}
 
 		function file(filepath, stat) {
-			var x = path.extname(filepath).toLocaleLowerCase(),
+			var x = path.extname(filepath).toLocaleLowerCase(), match,
 					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
 			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
 				for (var i = 0; i < injectCandidates.length; ++i) {
-					if (contents.indexOf(injectCandidates[i]) > -1) {
-						injectTag = injectCandidates[i];
+					match = injectCandidates[i].exec(contents);
+					if (match) {
+						injectTag = match[0];
 						break;
 					}
 				}

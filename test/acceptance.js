@@ -21,6 +21,13 @@ describe('basic functional tests', function(){
 			.expect(/<script [^]+?live reload enabled[^]+?<\/script>/i)
 			.expect(200, done);
 	});
+	it('should inject script when tags are in CAPS', function(done){
+		request(liveServer)
+			.get('/index-caps.htm')
+			.expect('Content-Type', 'text/html; charset=UTF-8')
+			.expect(/<script [^]+?live reload enabled[^]+?<\/script>/i)
+			.expect(200, done);
+	});
 	it('should inject also svg files', function(done){
 		request(liveServer)
 			.get('/test.svg')
