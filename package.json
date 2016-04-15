@@ -29,7 +29,7 @@
 		"supertest": "^1.0.1"
 	},
 	"scripts": {
-		"lint": "jshint *.js; eslint *.js",
+		"lint": "node scripts/linting.js",
 		"test": "npm run lint && mocha test"
 	},
 	"bin": {
