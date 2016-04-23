@@ -1,65 +1,66 @@
 {
-	"name": "live-server",
-	"version": "0.9.2",
-	"description": "simple development http server with live reload capability",
-	"keywords": [
-		"front-end",
-		"development",
-		"tool",
-		"server",
-		"http",
-		"cli"
-	],
-	"author": "Tapio Vierros",
-	"dependencies": {
-		"colors": "latest",
-		"connect": "3.4.x",
-		"cors": "latest",
-		"serve-index": "^1.7.2",
-		"morgan": "^1.6.1",
-		"event-stream": "latest",
-		"faye-websocket": "0.10.x",
-		"object-assign": "latest",
-		"opn": "latest",
-		"send": "latest",
-		"watchr": "2.3.x",
-		"http-auth": "2.2.x"
-	},
-	"devDependencies": {
-		"mocha": "^2.3.3",
-		"supertest": "^1.0.1",
-		"eslint": "^2.8.0",
-		"jshint": "^2.9.2"
-	},
-	"scripts": {
-		"lint": "eslint live-server.js index.js",
-		"hint": "jshint live-server.js index.js",
-		"test": "mocha test && npm run lint"
-	},
-	"bin": {
-		"live-server": "./live-server.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/tapio/live-server.git"
-	},
-	"engines": {
-		"node": ">=0.10.0"
-	},
-	"preferGlobal": true,
-	"license": "MIT",
-	"eslintConfig": {
-		"env": {
-			"node": true
-		},
-		"rules": {
-			"quotes": 0,
-			"curly": 0,
-			"strict": 0,
-			"no-process-exit": 0,
-			"eqeqeq": 1,
-			"no-unused-vars": 1,
-			"no-shadow": 1
-		}
-	}
+  "name": "live-server",
+  "version": "0.9.2",
+  "description": "simple development http server with live reload capability",
+  "keywords": [
+    "front-end",
+    "development",
+    "tool",
+    "server",
+    "http",
+    "cli"
+  ],
+  "author": "Tapio Vierros",
+  "dependencies": {
+    "colors": "latest",
+    "connect": "3.4.x",
+    "cors": "latest",
+    "eslint": "^2.8.0",
+    "event-stream": "latest",
+    "faye-websocket": "0.10.x",
+    "http-auth": "2.2.x",
+    "morgan": "^1.6.1",
+    "object-assign": "latest",
+    "opn": "latest",
+    "send": "latest",
+    "serve-index": "^1.7.2",
+    "watchr": "2.3.x"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3",
+    "supertest": "^1.0.1",
+    "eslint": "^2.8.0",
+    "jshint": "^2.9.2"
+  },
+  "scripts": {
+    "lint": "eslint live-server.js index.js",
+    "hint": "jshint live-server.js index.js",
+    "test": "mocha test && npm run lint"
+  },
+  "bin": {
+    "live-server": "./live-server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tapio/live-server.git"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "preferGlobal": true,
+  "license": "MIT",
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "quotes": 0,
+      "curly": 0,
+      "strict": 0,
+      "no-process-exit": 0,
+      "eqeqeq": 1,
+      "no-unused-vars": 1,
+      "no-shadow": 1
+    }
+  }
 }
