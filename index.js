@@ -31,9 +31,15 @@ function escape(html){
 
 // Based on connect.static(), but streamlined and with added code injecter
 function staticServer(root) {
+	var isFile = false;
+	try {
+		isFile = fs.statSync(root).isFile();
+	} catch (e) {
+		if (e.code !== "ENOENT") throw e;
+	}
 	return function(req, res, next) {
 		if (req.method !== "GET" && req.method !== "HEAD") return next();
-		var reqpath = url.parse(req.url).pathname;
+		var reqpath = isFile ? "" : url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
 		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>") ];
 		var injectTag = null;
