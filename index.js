@@ -142,9 +142,13 @@ LiveServer.start = function(options) {
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
+	var cors = options.cors || false;
 
 	// Setup a web server
 	var app = connect();
+	if (cors) {
+		app.use(require("cors")({ origin: true, credentials: true }));
+	}
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		if (!options.watch) // Auto add mount paths to wathing but only if exclusive path option is not given

@@ -55,6 +55,7 @@ Command line parameters:
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
+* `--cors` - Enables CORS for any origin (reflects request origin, requests with credentials are supported)
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
 
