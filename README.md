@@ -109,6 +109,8 @@ Version history
 
 * master (unreleased)
 	- HTTP Basic authentication support (@hey-johnnypark)
+	- CORS support (@pavel)
+	- Support mounting single files (@pavel)
 	- `--spa` cli option for single page apps, translates requests from /abc to /#/abc (@evanplaice)
 * v0.9.2
 	- Updated most dependencies to latest versions
