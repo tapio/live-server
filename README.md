@@ -42,8 +42,8 @@ This will automatically launch the default browser. When you make a change to an
 
 Command line parameters:
 
-* `--port=NUMBER` - select port to use (can also be done with PORT environment variable)
-* `--host=ADDRESS` - select host address to bind to, default: 0.0.0.0 ("any address")
+* `--port=NUMBER` - select port to use, default: PORT env var or 8080
+* `--host=ADDRESS` - select host address to bind to, default: IP env var or 0.0.0.0 ("any address")
 * `--no-browser` - suppress automatic web browser launching
 * `--browser=BROWSER` - specify browser to use instead of system default
 * `--quiet` - suppress logging
