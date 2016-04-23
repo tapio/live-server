@@ -143,11 +143,25 @@ LiveServer.start = function(options) {
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
 	var cors = options.cors || false;
+	var https = options.https || null;
 
 	// Setup a web server
 	var app = connect();
+
+	// Use http-auth if configured
+	if (htpasswd !== null) {
+		var auth = require('http-auth');
+		var basic = auth.basic({
+			realm: "Please authorize",
+			file: htpasswd
+		});
+		app.use(auth.connect(basic));
+	}
 	if (cors) {
-		app.use(require("cors")({ origin: true, credentials: true }));
+		app.use(require("cors")({
+			origin: true, // reflecting request origin
+			credentials: true // allowing requests with credentials
+		}));
 	}
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
@@ -163,17 +177,12 @@ LiveServer.start = function(options) {
 	if (LiveServer.logLevel >= 2)
 		app.use(logger('dev'));
 
-	// Use http-auth if configured
-	var server = null;
-	if (htpasswd === null) {
-		server = http.createServer(app);
+	var server;
+	if (https !== null) {
+		var httpsConfig = require(path.join(process.cwd(), https));
+		server = require("https").createServer(httpsConfig, app);
 	} else {
-		var auth = require('http-auth');
-		var basic = auth.basic({
-			realm: "Please authorize",
-			file: htpasswd
-		});
-		server = http.createServer(basic, app);
+		server = http.createServer(app);
 	}
 
 	// Handle server startup errors
