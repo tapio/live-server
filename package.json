@@ -32,7 +32,7 @@
 		"jshint": "^2.9.2"
 	},
 	"scripts": {
-		"lint": "jshint *.js; eslint *.js",
+		"lint": "node scripts/linting.js",
 		"test": "npm run lint && mocha test"
 	},
 	"bin": {
