@@ -107,8 +107,12 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.cors = true;
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--https=") > -1) {
+		opts.https = arg.substring(8);
+		process.argv.splice(i, 1);
+	}
 	else if (arg === "--help" || arg === "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [PATH]');
 		process.exit();
 	}
 	else if (arg === "--test") {
@@ -118,20 +122,17 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	}
 }
 
-if (process.argv[2]) {
-	process.chdir(process.argv[2]);
-}
-
 // Patch paths
-var cwd = process.cwd();
+var dir = opts.root = process.argv[2] || "";
+
 if (opts.watch) {
 	opts.watch = opts.watch.map(function(relativePath) {
-		return path.join(cwd, relativePath);
+		return path.join(dir, relativePath);
 	});
 }
 if (opts.ignore) {
 	opts.ignore = opts.ignore.map(function(relativePath) {
-		return path.join(cwd, relativePath);
+		return path.join(dir, relativePath);
 	});
 }
 

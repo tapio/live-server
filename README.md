@@ -57,6 +57,7 @@ Command line parameters:
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--cors` - Enables CORS for any origin (reflects request origin, requests with credentials are supported)
+* `--https=PATH` - PATH to a HTTPS configuration module
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
 
@@ -85,6 +86,23 @@ var params = {
 liveServer.start(params);
 ```
 
+HTTPS
+---------------
+
+In order to enable HTTPS support, you'll need to create a configuration module.
+The module must export an object that will be used to configure a HTTPS server.
+The keys are the same as the keys in `options` for [tls.createServer](https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener).
+
+For example:
+```javascript
+var fs = require("fs");
+
+module.exports = {
+	cert: fs.readFileSync(__dirname + "/server.cert"),
+	key: fs.readFileSync(__dirname + "/server.key"),
+	passphrase: "12345"
+};
+```
 
 Troubleshooting
 ---------------

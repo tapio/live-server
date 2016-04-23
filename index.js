@@ -152,11 +152,25 @@ LiveServer.start = function(options) {
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
 	var cors = options.cors || false;
+	var https = options.https || null;
 
 	// Setup a web server
 	var app = connect();
+
+	// Use http-auth if configured
+	if (htpasswd !== null) {
+		var auth = require('http-auth');
+		var basic = auth.basic({
+			realm: "Please authorize",
+			file: htpasswd
+		});
+		app.use(auth.connect(basic));
+	}
 	if (cors) {
-		app.use(require("cors")({ origin: true, credentials: true }));
+		app.use(require("cors")({
+			origin: true, // reflecting request origin
+			credentials: true // allowing requests with credentials
+		}));
 	}
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
@@ -172,23 +186,20 @@ LiveServer.start = function(options) {
 	if (LiveServer.logLevel >= 2)
 		app.use(logger('dev'));
 
-	// Use http-auth if configured
-	var server = null;
-	if (htpasswd === null) {
-		server = http.createServer(app);
+	var server, protocol;
+	if (https !== null) {
+		var httpsConfig = require(path.resolve(process.cwd(), https));
+		server = require("https").createServer(httpsConfig, app);
+		protocol = "https";
 	} else {
-		var auth = require('http-auth');
-		var basic = auth.basic({
-			realm: "Please authorize",
-			file: htpasswd
-		});
-		server = http.createServer(basic, app);
+		server = http.createServer(app);
+		protocol = "http";
 	}
 
 	// Handle server startup errors
 	server.addListener('error', function(e) {
 		if (e.code === 'EADDRINUSE') {
-			var serveURL = 'http://' + host + ':' + port;
+			var serveURL = protocol + '://' + host + ':' + port;
 			console.log('%s is already in use. Trying another port.'.yellow, serveURL);
 			setTimeout(function() {
 				server.listen(0, host);
@@ -207,8 +218,8 @@ LiveServer.start = function(options) {
 		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
 		var openHost = host === "0.0.0.0" ? "127.0.0.1" : host;
 
-		var serveURL = 'http://' + serveHost + ':' + address.port;
-		var openURL = 'http://' + openHost + ':' + address.port;
+		var serveURL = protocol + '://' + serveHost + ':' + address.port;
+		var openURL = protocol + '://' + openHost + ':' + address.port;
 
 		// Output
 		if (LiveServer.logLevel >= 1) {
