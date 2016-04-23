@@ -5,7 +5,7 @@
     <title>Live-server by tapio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -23,7 +23,7 @@
 <a href="https://www.npmjs.org/package/live-server"><img src="http://img.shields.io/npm/dm/live-server.svg" alt="npm module downloads per month"></a></p>
 
 <h1>
-<a id="live-server" class="anchor" href="#live-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>Live Server</h1>
+<a id="live-server" class="anchor" href="#live-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Server</h1>
 
 <p>This is a little development server with live reload capability. Use it for hacking your HTML/JavaScript/CSS files, but not for deploying the final site.</p>
 
@@ -34,13 +34,13 @@
 <li>Having the page reload automatically after changes to files can accelerate development.</li>
 </ol>
 
-<p>If you don't want/need the live reload, you should probably use something simpler, like the following Python-based one-liner:</p>
+<p>You don't need to install any browser plugins or manually add code snippets to your pages for the reload functionality to work, see "How it works" section below for more information. If you don't want/need the live reload, you should probably use something even simpler, like the following Python-based one-liner:</p>
 
 <pre><code>python -m SimpleHTTPServer
 </code></pre>
 
 <h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>You need node.js and npm. You should probably install this globally.</p>
 
@@ -58,75 +58,144 @@ npm install -g # Install globally
 </code></pre>
 
 <h2>
-<a id="usage-from-command-line" class="anchor" href="#usage-from-command-line" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage from command line</h2>
+<a id="usage-from-command-line" class="anchor" href="#usage-from-command-line" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage from command line</h2>
 
 <p>Issue the command <code>live-server</code> in your project's directory. Alternatively you can add the path to serve as a command line parameter.</p>
 
-<p>This will automatically launch the default browser (you should have <code>index.html</code> present). When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.</p>
+<p>This will automatically launch the default browser. When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.</p>
 
 <p>Command line parameters:</p>
 
 <ul>
 <li>
-<code>--port=NUMBER</code> - select port to use (can also be done with PORT environment variable)</li>
+<code>--port=NUMBER</code> - select port to use, default: PORT env var or 8080</li>
 <li>
-<code>--host=ADDRESS</code> - select host address to bind to, default: 0.0.0.0 ("any address")</li>
+<code>--host=ADDRESS</code> - select host address to bind to, default: IP env var or 0.0.0.0 ("any address")</li>
 <li>
 <code>--no-browser</code> - suppress automatic web browser launching</li>
+<li>
+<code>--browser=BROWSER</code> - specify browser to use instead of system default</li>
 <li>
 <code>--quiet</code> - suppress logging</li>
 <li>
 <code>--open=PATH</code> - launch browser to PATH instead of server root</li>
 <li>
+<code>--watch=PATH</code> - comma-separated string of paths to exclusively watch for changes (default: watch everything)</li>
+<li>
 <code>--ignore=PATH</code> - comma-separated string of paths to ignore</li>
+<li>
+<code>--ignorePattern=RGXP</code> - Regular expression of files to ignore (ie <code>.*\.jade</code>)</li>
 <li>
 <code>--entry-file=PATH</code> - serve this file in place of missing files (useful for single page apps)</li>
 <li>
+<code>--mount=ROUTE:PATH</code> - serve the paths contents under the defined route (multiple definitions possible)</li>
+<li>
+<code>--spa</code> - translate requests from /abc to /#/abc (handy for Single Page Apps)</li>
+<li>
 <code>--wait=MILLISECONDS</code> - wait for all changes, before reloading</li>
+<li>
+<code>--htpasswd=PATH</code> - Enables http-auth expecting htpasswd file located at PATH</li>
+<li>
+<code>--cors</code> - Enables CORS for any origin (reflects request origin, requests with credentials are supported)</li>
 <li>
 <code>--help | -h</code> - display terse usage hint and exit</li>
 <li>
 <code>--version | -v</code> - display version and exit</li>
 </ul>
 
-<h2>
-<a id="usage-from-node" class="anchor" href="#usage-from-node" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage from node</h2>
+<p>Default options:</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> liveServer <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>live-server<span class="pl-pds">"</span></span>);
+<p>If a file <code>~/.live-server.json</code> exists it will be loaded and used as default options for live-server on the command line. See "Usage from node" for option names.</p>
+
+<h2>
+<a id="usage-from-node" class="anchor" href="#usage-from-node" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage from node</h2>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> liveServer <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>live-server<span class="pl-pds">"</span></span>);
 
 <span class="pl-k">var</span> params <span class="pl-k">=</span> {
     port<span class="pl-k">:</span> <span class="pl-c1">8181</span>, <span class="pl-c">// Set the server port. Defaults to 8080.</span>
-    host<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>0.0.0.0<span class="pl-pds">"</span></span>, <span class="pl-c">// Set the address to bind to. Defaults to 0.0.0.0.</span>
+    host<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>0.0.0.0<span class="pl-pds">"</span></span>, <span class="pl-c">// Set the address to bind to. Defaults to 0.0.0.0 or process.env.IP.</span>
     root<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>/public<span class="pl-pds">"</span></span>, <span class="pl-c">// Set root directory that's being server. Defaults to cwd.</span>
     open<span class="pl-k">:</span> <span class="pl-c1">false</span>, <span class="pl-c">// When false, it won't load your browser by default.</span>
     ignore<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>scss,my/templates<span class="pl-pds">'</span></span>, <span class="pl-c">// comma-separated string for paths to ignore</span>
     file<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>index.html<span class="pl-pds">"</span></span>, <span class="pl-c">// When set, serve this file for every 404 (useful for single-page applications)</span>
-    wait<span class="pl-k">:</span> <span class="pl-c1">1000</span> <span class="pl-c">// Waits for all changes, before reloading. Defaults to 0 sec.</span>
+    wait<span class="pl-k">:</span> <span class="pl-c1">1000</span>, <span class="pl-c">// Waits for all changes, before reloading. Defaults to 0 sec.</span>
+    mount<span class="pl-k">:</span> [[<span class="pl-s"><span class="pl-pds">'</span>/components<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>./node_modules<span class="pl-pds">'</span></span>]], <span class="pl-c">// Mount a directory to a route.</span>
+    logLevel<span class="pl-k">:</span> <span class="pl-c1">2</span> <span class="pl-c">// 0 = errors only, 1 = some, 2 = lots</span>
 };
-liveServer.<span class="pl-c1">start</span>(params);</pre></div>
+<span class="pl-smi">liveServer</span>.<span class="pl-c1">start</span>(params);</pre></div>
 
 <h2>
-<a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Troubleshooting</h2>
+<a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Troubleshooting</h2>
 
 <p>Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, <a href="https://github.com/tapio/live-server/issues">file an issue</a>.</p>
 
 <h2>
-<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span class="octicon octicon-link"></span></a>How it works</h2>
+<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How it works</h2>
 
-<p>The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html file. This script establishes the web socket connection and listens to the reload requests.</p>
+<p>The server is a simple node app that serves the working directory and its subdirectories. It also watches the files for changes and when that happens, it sends a message through a web socket connection to the browser instructing it to reload. In order for the client side to support this, the server injects a small piece of JavaScript code to each requested html file. This script establishes the web socket connection and listens to the reload requests. CSS files can be refreshed without a full page reload by finding the referenced stylesheets from the DOM and tricking the browser to fetch and parse them again.</p>
 
 <h2>
-<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
 
 <p>We welcome contributions! See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for details.</p>
 
 <h2>
-<a id="version-history" class="anchor" href="#version-history" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version history</h2>
+<a id="version-history" class="anchor" href="#version-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Version history</h2>
 
 <ul>
 <li>master (unreleased)
 
 <ul>
+<li>HTTP Basic authentication support (<a href="https://github.com/hey-johnnypark" class="user-mention">@hey-johnnypark</a>)</li>
+<li>CORS support (<a href="https://github.com/pavel" class="user-mention">@pavel</a>)</li>
+<li>Support mounting single files (<a href="https://github.com/pavel" class="user-mention">@pavel</a>)</li>
+<li>
+<code>--spa</code> cli option for single page apps, translates requests from /abc to /#/abc (<a href="https://github.com/evanplaice" class="user-mention">@evanplaice</a>)</li>
+<li>Check <code>IP</code> env var for default host (<a href="https://github.com/dotnetCarpenter" class="user-mention">@dotnetCarpenter</a>)</li>
+<li>Fix <code>ignorePattern</code> from config file (<a href="https://github.com/cyfersystems" class="user-mention">@cyfersystems</a>)</li>
+<li>Fix test running for Windows (<a href="https://github.com/peterhull90" class="user-mention">@peterhull90</a>)</li>
+</ul>
+</li>
+<li>v0.9.2
+
+<ul>
+<li>Updated most dependencies to latest versions</li>
+<li>
+<code>--quiet</code> now silences warning about injection failure</li>
+<li>Giving explicit <code>--watch</code> paths now disables adding mounted paths to watching</li>
+</ul>
+</li>
+<li>v0.9.1
+
+<ul>
+<li>
+<code>--ignorePattern=RGXP</code> exclude files from watching by regexp (<a href="https://github.com/psi-4ward" class="user-mention">@psi-4ward</a>)</li>
+<li>
+<code>--watch=PATH</code> cli option to only watch given paths</li>
+</ul>
+</li>
+<li>v0.9.0
+
+<ul>
+<li>
+<code>--mount=ROUTE:PATH</code> cli option to specify alternative routes to paths (<a href="https://github.com/pmentz" class="user-mention">@pmentz</a>)</li>
+<li>
+<code>--browser=BROWSER</code> cli option to specify browser to use (<a href="https://github.com/sakiv" class="user-mention">@sakiv</a>)</li>
+<li>Improved error reporting</li>
+<li>Basic support for injecting the reload code to SVG files (<a href="https://github.com/dotnetCarpenter" class="user-mention">@dotnetCarpenter</a>, <a href="https://github.com/tapio" class="user-mention">@tapio</a>)</li>
+<li>LiveServer.shutdown() function to close down the server and file watchers</li>
+<li>If host parameter is given, use it for browser URL instead of resolved IP</li>
+<li>Initial testing framework (<a href="https://github.com/harrytruong" class="user-mention">@harrytruong</a>, <a href="https://github.com/evanplaice" class="user-mention">@evanplaice</a>, <a href="https://github.com/tapio" class="user-mention">@tapio</a>)</li>
+</ul>
+</li>
+<li>v0.8.2
+
+<ul>
+<li>Load initial settings from <code>~/.live-server.json</code> if exists (<a href="https://github.com/mikker" class="user-mention">@mikker</a>)</li>
+<li>Allow <code>--port=0</code> to select random port (<a href="https://github.com/viqueen" class="user-mention">@viqueen</a>)</li>
+<li>Fix injecting when file extension is not lower case (<a href="https://github.com/gusgard" class="user-mention">@gusgard</a>)</li>
+<li>Fail gracefully if browser does not support WebSockets (<a href="https://github.com/mattymaloney" class="user-mention">@mattymaloney</a>)</li>
 <li>Switched to a more maintained browser opening library</li>
 </ul>
 </li>
@@ -255,7 +324,7 @@ liveServer.<span class="pl-c1">start</span>(params);</pre></div>
 </ul>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>Uses MIT licensed code from <a href="https://github.com/senchalabs/connect/">Connect</a> and  <a href="https://github.com/jenius/roots">Roots</a>.</p>
 
@@ -277,7 +346,16 @@ liveServer.<span class="pl-c1">start</span>(params);</pre></div>
 
     </section>
 
-  
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-32826962-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
-
