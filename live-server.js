@@ -116,20 +116,17 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	}
 }
 
-if (process.argv[2]) {
-	process.chdir(process.argv[2]);
-}
-
 // Patch paths
-var cwd = process.cwd();
+var dir = opts.root = process.argv[2] || null;
+
 if (opts.watch) {
 	opts.watch = opts.watch.map(function(relativePath) {
-		return path.join(cwd, relativePath);
+		return path.join(dir, relativePath);
 	});
 }
 if (opts.ignore) {
 	opts.ignore = opts.ignore.map(function(relativePath) {
-		return path.join(cwd, relativePath);
+		return path.join(dir, relativePath);
 	});
 }
 
