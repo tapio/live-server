@@ -126,6 +126,7 @@ Version history
 ---------------
 
 * master (unreleased)
+	- HTTPS support (@pavel)
 	- HTTP Basic authentication support (@hey-johnnypark)
 	- CORS support (@pavel)
 	- Support mounting single files (@pavel)
