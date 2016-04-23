@@ -53,6 +53,7 @@ Command line parameters:
 * `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`)
 * `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
+* `--spa` - translate requests from /abc to /#/abc (handy for Single Page Apps)
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--help | -h` - display terse usage hint and exit
@@ -107,6 +108,7 @@ Version history
 
 * master (unreleased)
 	- HTTP Basic authentication support (@hey-johnnypark)
+	- `--spa` cli option for single page apps, translates requests from /abc to /#/abc (@evanplaice)
 * v0.9.2
 	- Updated most dependencies to latest versions
 	- `--quiet` now silences warning about injection failure
