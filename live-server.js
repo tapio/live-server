@@ -12,7 +12,7 @@ var opts = {
 	logLevel: 2
 };
 
-var homeDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+var homeDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 var configPath = path.join(homeDir, '.live-server.json');
 if (fs.existsSync(configPath)) {
 	var userConfig = fs.readFileSync(configPath, 'utf8');
@@ -56,7 +56,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.ignorePattern = new RegExp(arg.substring(16));
 		process.argv.splice(i, 1);
 	}
-	else if (arg == "--no-browser") {
+	else if (arg === "--no-browser") {
 		opts.open = false;
 		process.argv.splice(i, 1);
 	}
@@ -71,11 +71,11 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 			process.argv.splice(i, 1);
 		}
 	}
-	else if (arg == "--spa") {
+	else if (arg === "--spa") {
 		opts.spa = true;
 		process.argv.splice(i, 1);
 	}
-	else if (arg == "--quiet" || arg == "-q") {
+	else if (arg === "--quiet" || arg === "-q") {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
 	}
@@ -94,7 +94,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 			process.argv.splice(i, 1);
 		}
 	}
-	else if (arg == "--version" || arg == "-v") {
+	else if (arg === "--version" || arg === "-v") {
 		var packageJson = require('./package.json');
 		console.log(packageJson.name, packageJson.version);
 		process.exit();
@@ -103,15 +103,15 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.htpasswd = arg.substring(11);
 		process.argv.splice(i, 1);
 	}
-	else if (arg == "--cors") {
+	else if (arg === "--cors") {
 		opts.cors = true;
 		process.argv.splice(i, 1);
 	}
-	else if (arg == "--help" || arg == "-h") {
+	else if (arg === "--help" || arg === "-h") {
 		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [PATH]');
 		process.exit();
 	}
-	else if (arg == "--test") {
+	else if (arg === "--test") {
 		// Hidden param for tests to exit automatically
 		setTimeout(liveServer.shutdown, 500);
 		process.argv.splice(i, 1);

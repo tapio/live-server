@@ -59,7 +59,7 @@ function staticServer(root, spa) {
 			res.end('Redirecting to ' + escape(pathname) + '/');
 		}
 
-		function file(filepath, stat) {
+		function file(filepath /*, stat*/) {
 			var x = path.extname(filepath).toLocaleLowerCase(), match,
 					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
 			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
@@ -200,7 +200,7 @@ LiveServer.start = function(options) {
 	});
 
 	// Handle successful server
-	server.addListener('listening', function(e) {
+	server.addListener('listening', function(/*e*/) {
 		LiveServer.server = server;
 
 		var address = server.address();
@@ -269,7 +269,7 @@ LiveServer.start = function(options) {
 			error: function(err) {
 				console.log("ERROR:".red, err);
 			},
-			change: function(eventName, filePath, fileCurrentStat, filePreviousStat) {
+			change: function(eventName, filePath /*, fileCurrentStat, filePreviousStat*/) {
 				clients.forEach(function(ws) {
 					if (!ws) return;
 					if (path.extname(filePath) === ".css") {
