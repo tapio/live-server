@@ -4,7 +4,7 @@ var liveServer = require('..').start({
 	root: path.join(__dirname, 'data'),
 	port: 0,
 	open: false,
-	https: 'test/conf/https.conf.js'
+	https: path.join(__dirname, 'conf/https.conf.js')
 });
 // accept self-signed certificates
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
