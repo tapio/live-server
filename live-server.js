@@ -17,6 +17,7 @@ var configPath = path.join(homeDir, '.live-server.json');
 if (fs.existsSync(configPath)) {
 	var userConfig = fs.readFileSync(configPath, 'utf8');
 	assign(opts, JSON.parse(userConfig));
+	if (opts.ignorePattern) opts.ignorePattern = new RegExp(opts.ignorePattern);
 }
 
 for (var i = process.argv.length - 1; i >= 2; --i) {
