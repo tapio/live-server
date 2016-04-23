@@ -98,6 +98,8 @@ npm install -g # Install globally
 <li>
 <code>--cors</code> - Enables CORS for any origin (reflects request origin, requests with credentials are supported)</li>
 <li>
+<code>--https=PATH</code> - PATH to a HTTPS configuration module</li>
+<li>
 <code>--help | -h</code> - display terse usage hint and exit</li>
 <li>
 <code>--version | -v</code> - display version and exit</li>
@@ -126,6 +128,23 @@ npm install -g # Install globally
 <span class="pl-smi">liveServer</span>.<span class="pl-c1">start</span>(params);</pre></div>
 
 <h2>
+<a id="https" class="anchor" href="#https" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTPS</h2>
+
+<p>In order to enable HTTPS support, you'll need to create a configuration module.
+The module must export an object that will be used to configure a HTTPS server.
+The keys are the same as the keys in <code>options</code> for <a href="https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener">tls.createServer</a>.</p>
+
+<p>For example:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> fs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>fs<span class="pl-pds">"</span></span>);
+
+<span class="pl-c1">module</span>.<span class="pl-smi">exports</span> <span class="pl-k">=</span> {
+    cert<span class="pl-k">:</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-c1">__dirname</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>/server.cert<span class="pl-pds">"</span></span>),
+    key<span class="pl-k">:</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-c1">__dirname</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>/server.key<span class="pl-pds">"</span></span>),
+    passphrase<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>12345<span class="pl-pds">"</span></span>
+};</pre></div>
+
+<h2>
 <a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Troubleshooting</h2>
 
 <p>Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, <a href="https://github.com/tapio/live-server/issues">file an issue</a>.</p>
@@ -144,9 +163,10 @@ npm install -g # Install globally
 <a id="version-history" class="anchor" href="#version-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Version history</h2>
 
 <ul>
-<li>master (unreleased)
+<li>v1.0.0
 
 <ul>
+<li>HTTPS support (<a href="https://github.com/pavel" class="user-mention">@pavel</a>)</li>
 <li>HTTP Basic authentication support (<a href="https://github.com/hey-johnnypark" class="user-mention">@hey-johnnypark</a>)</li>
 <li>CORS support (<a href="https://github.com/pavel" class="user-mention">@pavel</a>)</li>
 <li>Support mounting single files (<a href="https://github.com/pavel" class="user-mention">@pavel</a>)</li>
