@@ -11,7 +11,7 @@ There are two reasons for using this:
 1. AJAX requests don't work with the `file://` protocol due to security restrictions, i.e. you need a server if your site fetches content through JavaScript.
 2. Having the page reload automatically after changes to files can accelerate development.
 
-If you don't want/need the live reload, you should probably use something simpler, like the following Python-based one-liner:
+You don't need to install any browser plugins or manually add code snippets to your pages for the reload functionality to work, see "How it works" section below for more information. If you don't want/need the live reload, you should probably use something even simpler, like the following Python-based one-liner:
 
 	python -m SimpleHTTPServer
 
