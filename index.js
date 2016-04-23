@@ -177,18 +177,20 @@ LiveServer.start = function(options) {
 	if (LiveServer.logLevel >= 2)
 		app.use(logger('dev'));
 
-	var server;
+	var server, protocol;
 	if (https !== null) {
 		var httpsConfig = require(path.resolve(process.cwd(), https));
 		server = require("https").createServer(httpsConfig, app);
+		protocol = "https";
 	} else {
 		server = http.createServer(app);
+		protocol = "http";
 	}
 
 	// Handle server startup errors
 	server.addListener('error', function(e) {
 		if (e.code === 'EADDRINUSE') {
-			var serveURL = 'http://' + host + ':' + port;
+			var serveURL = protocol + '://' + host + ':' + port;
 			console.log('%s is already in use. Trying another port.'.yellow, serveURL);
 			setTimeout(function() {
 				server.listen(0, host);
@@ -207,8 +209,8 @@ LiveServer.start = function(options) {
 		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
 		var openHost = host === "0.0.0.0" ? "127.0.0.1" : host;
 
-		var serveURL = 'http://' + serveHost + ':' + address.port;
-		var openURL = 'http://' + openHost + ':' + address.port;
+		var serveURL = protocol + '://' + serveHost + ':' + address.port;
+		var openURL = protocol + '://' + openHost + ':' + address.port;
 
 		// Output
 		if (LiveServer.logLevel >= 1) {
