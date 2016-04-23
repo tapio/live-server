@@ -32,8 +32,9 @@
 		"jshint": "^2.9.2"
 	},
 	"scripts": {
-		"lint": "jshint *.js; eslint *.js",
-		"test": "npm run lint && mocha test"
+		"lint": "eslint live-server.js index.js",
+		"hint": "jshint live-server.js index.js",
+		"test": "mocha test && npm run lint"
 	},
 	"bin": {
 		"live-server": "./live-server.js"
