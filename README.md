@@ -113,6 +113,7 @@ Version history
 	- Support mounting single files (@pavel)
 	- `--spa` cli option for single page apps, translates requests from /abc to /#/abc (@evanplaice)
 	- Check `IP` env var for default host (@dotnetCarpenter)
+	- Fix `ignorePattern` from config file (@cyfersystems)
 * v0.9.2
 	- Updated most dependencies to latest versions
 	- `--quiet` now silences warning about injection failure
