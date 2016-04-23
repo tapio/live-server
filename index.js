@@ -138,7 +138,7 @@ LiveServer.start = function(options) {
 	LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
-	var spa = ((options.spa === undefined || options.spa ===false) ? null : options.spa);
+	var spa = ((options.spa === undefined || options.spa === false) ? null : options.spa);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
 	var staticServerHandler = staticServer(root, spa);

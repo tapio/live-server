@@ -71,8 +71,8 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	}
 	else if (arg == "--spa") {
 		opts.spa = true;
-   		process.argv.splice(i, 1);
- 	}
+		process.argv.splice(i, 1);
+	}
 	else if (arg == "--quiet" || arg == "-q") {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
