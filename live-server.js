@@ -101,8 +101,12 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.htpasswd = arg.substring(11);
 		process.argv.splice(i, 1);
 	}
+	else if (arg == "--cors") {
+		opts.cors = true;
+		process.argv.splice(i, 1);
+	}
 	else if (arg == "--help" || arg == "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [PATH]');
 		process.exit();
 	}
 	else if (arg == "--test") {

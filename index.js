@@ -31,9 +31,15 @@ function escape(html){
 
 // Based on connect.static(), but streamlined and with added code injecter
 function staticServer(root, spa) {
+	var isFile = false;
+	try { // For supporting mounting files instead of just directories
+		isFile = fs.statSync(root).isFile();
+	} catch (e) {
+		if (e.code !== "ENOENT") throw e;
+	}
 	return function(req, res, next) {
 		if (req.method !== "GET" && req.method !== "HEAD") return next();
-		var reqpath = url.parse(req.url).pathname;
+		var reqpath = isFile ? "" : url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
 		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>") ];
 		var injectTag = null;
@@ -145,9 +151,13 @@ LiveServer.start = function(options) {
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
+	var cors = options.cors || false;
 
 	// Setup a web server
 	var app = connect();
+	if (cors) {
+		app.use(require("cors")({ origin: true, credentials: true }));
+	}
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		if (!options.watch) // Auto add mount paths to wathing but only if exclusive path option is not given
