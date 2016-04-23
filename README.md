@@ -114,6 +114,7 @@ Version history
 	- `--spa` cli option for single page apps, translates requests from /abc to /#/abc (@evanplaice)
 	- Check `IP` env var for default host (@dotnetCarpenter)
 	- Fix `ignorePattern` from config file (@cyfersystems)
+	- Fix test running for Windows (@peterhull90)
 * v0.9.2
 	- Updated most dependencies to latest versions
 	- `--quiet` now silences warning about injection failure
