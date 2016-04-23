@@ -15,7 +15,6 @@
     "colors": "latest",
     "connect": "3.4.x",
     "cors": "latest",
-    "eslint": "^2.8.0",
     "event-stream": "latest",
     "faye-websocket": "0.10.x",
     "http-auth": "2.2.x",
