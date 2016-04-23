@@ -113,6 +113,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg.indexOf("--proxy=") > -1) {
+		// split only on the first ":", as the URL will contain ":" as well
 		var match = arg.substring(8).match(/([^:]+):(.+)$/);
 		opts.proxy.push([ match[1], match[2] ]);
 		process.argv.splice(i, 1);
