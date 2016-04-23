@@ -90,7 +90,7 @@ HTTPS
 
 In order to enable HTTPS support, you'll need to create a configuration module.
 The module must export an object that will be used to configure a HTTPS server.
-The keys are the same as the keys in `options` for [tls.createServer](https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener)
+The keys are the same as the keys in `options` for [tls.createServer](https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener).
 
 For example:
 ```javascript
