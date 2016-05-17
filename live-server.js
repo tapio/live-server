@@ -26,7 +26,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	if (arg.indexOf("--port=") > -1) {
 		var portString = arg.substring(7);
 		var portNumber = parseInt(portString, 10);
-		if (portNumber == portString) {
+		if (portNumber === +portString) {
 			opts.port = portNumber;
 			process.argv.splice(i, 1);
 		}
@@ -90,7 +90,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	else if (arg.indexOf("--wait=") > -1) {
 		var waitString = arg.substring(7);
 		var waitNumber = parseInt(waitString, 10);
-		if (waitNumber == waitString) {
+		if (waitNumber === +waitString) {
 			opts.wait = waitNumber;
 			process.argv.splice(i, 1);
 		}
