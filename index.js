@@ -153,6 +153,7 @@ LiveServer.start = function(options) {
 	var htpasswd = options.htpasswd || null;
 	var cors = options.cors || false;
 	var https = options.https || null;
+	var proxy = options.proxy || [];
 
 	// Setup a web server
 	var app = connect();
@@ -179,6 +180,13 @@ LiveServer.start = function(options) {
 		app.use(mountRule[0], staticServer(mountPath));
 		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', mountRule[0], mountPath);
+	});
+	proxy.forEach(function(proxyRule) {
+		var proxyOpts = url.parse(proxyRule[1]);
+		proxyOpts.via = true;
+		app.use(proxyRule[0], require('proxy-middleware')(proxyOpts));
+		if (LiveServer.logLevel >= 1)
+			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
 	});
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
