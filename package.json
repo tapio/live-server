@@ -18,7 +18,7 @@
     "proxy-middleware": "latest",
     "event-stream": "latest",
     "faye-websocket": "0.10.x",
-    "http-auth": "2.2.x",
+    "http-auth": "2.3.x",
     "morgan": "^1.6.1",
     "object-assign": "latest",
     "opn": "latest",
