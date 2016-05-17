@@ -127,6 +127,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
+* master (unreleased)
+	- Proxy support (@pavel)
 * v1.0.0
 	- HTTPS support (@pavel)
 	- HTTP Basic authentication support (@hey-johnnypark)
