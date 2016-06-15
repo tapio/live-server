@@ -30,7 +30,7 @@ function escape(html){
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root, spa) {
+function staticServer(root, spa, injection) {
 	var isFile = false;
 	try { // For supporting mounting files instead of just directories
 		isFile = fs.statSync(root).isFile();
@@ -88,10 +88,10 @@ function staticServer(root, spa) {
 			if (injectTag) {
 				// We need to modify the length given to browser
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
-				res.setHeader('Content-Length', len);
+				res.setHeader('Content-Length', len + injection.length);
 				var originalPipe = stream.pipe;
 				stream.pipe = function(res) {
-					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(res);
+					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injection + injectTag)).pipe(res);
 				};
 			}
 		}
@@ -147,7 +147,8 @@ LiveServer.start = function(options) {
 	var spa = options.spa || false;
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
-	var staticServerHandler = staticServer(root, spa);
+	var injection = options.injection || "";
+	var staticServerHandler = staticServer(root, spa, injection);
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
@@ -177,7 +178,7 @@ LiveServer.start = function(options) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
 		if (!options.watch) // Auto add mount paths to wathing but only if exclusive path option is not given
 			watchPaths.push(mountPath);
-		app.use(mountRule[0], staticServer(mountPath));
+		app.use(mountRule[0], staticServer(mountPath, null, injection));
 		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', mountRule[0], mountPath);
 	});
