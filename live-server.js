@@ -127,6 +127,15 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		setTimeout(liveServer.shutdown, 500);
 		process.argv.splice(i, 1);
 	}
+		//Custom parameter : automatically asign entry-file if given a 
+		// .htm or .html file in the argument. 
+	else if (arg.indexOf(".htm") > -1) {
+		var file = arg.substring(0,arg.indexOf(".htm"));
+		if (file.length) {
+			opts.file = arg;
+			process.argv.splice(i, 1);
+		}
+	}
 }
 
 // Patch paths
