@@ -116,7 +116,7 @@ function staticServer(root, spa) {
 				stream.pipe = function(res) {
 					originalPipe.call(stream, sink().on('data', function(md) {
 						var content = marked(md);
-						var html = fs.readFileSync('./markdown.html').toString();
+						var html = fs.readFileSync(__dirname + '/markdown.html').toString();
 						html = html.replace('%content%', content);
 						html = html.replace('%class%', markdownStyles[LiveServer.markdownStyle]);
 						res.write(html);
