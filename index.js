@@ -9,6 +9,8 @@ var fs = require('fs'),
 	http = require('http'),
 	send = require('send'),
 	open = require('opn'),
+	sink = require('stream-sink'),
+	marked = require('marked'),
 	es = require("event-stream"),
 	watchr = require('watchr');
 require('colors');
@@ -19,6 +21,13 @@ var LiveServer = {
 	server: null,
 	watchers: [],
 	logLevel: 2
+};
+
+var markdownStyles = {
+	'html': 'standard',
+	'hack': 'hack',
+	'hack-dark': 'hack dark',
+	'hack-light': 'hack'
 };
 
 function escape(html){
@@ -43,6 +52,7 @@ function staticServer(root, spa) {
 		var hasNoOrigin = !req.headers.origin;
 		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>") ];
 		var injectTag = null;
+		var injectMarkdown = false;
 
 		// Single Page App - redirect handler
 		if (spa && req.url !== '/') {
@@ -77,6 +87,10 @@ function staticServer(root, spa) {
 						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
 				}
 			}
+
+			if(LiveServer.markdownStyle && x === '.md') {
+				injectMarkdown = true;
+			}
 		}
 
 		function error(err) {
@@ -92,6 +106,22 @@ function staticServer(root, spa) {
 				var originalPipe = stream.pipe;
 				stream.pipe = function(res) {
 					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(res);
+				};
+			}
+			if(injectMarkdown) {
+				res.setHeader('Content-Type', 'text/html');
+				res.removeHeader('Content-Length');
+				// TODO: Modify the length given to the browser
+				var originalPipe = stream.pipe;
+				stream.pipe = function(res) {
+					originalPipe.call(stream, sink().on('data', function(md) {
+						var content = marked(md);
+						var html = fs.readFileSync(__dirname + '/markdown.html').toString();
+						html = html.replace('%content%', content);
+						html = html.replace('%class%', markdownStyles[LiveServer.markdownStyle]);
+						res.write(html);
+						res.end();
+					}))
 				};
 			}
 		}
@@ -154,6 +184,7 @@ LiveServer.start = function(options) {
 	var cors = options.cors || false;
 	var https = options.https || null;
 	var proxy = options.proxy || [];
+	LiveServer.markdownStyle = options.markdown;
 
 	// Setup a web server
 	var app = connect();
@@ -325,3 +356,4 @@ LiveServer.shutdown = function() {
 };
 
 module.exports = LiveServer;
+module.exports.markdownStyles = markdownStyles;

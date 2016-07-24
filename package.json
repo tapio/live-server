@@ -19,11 +19,13 @@
     "event-stream": "latest",
     "faye-websocket": "0.11.x",
     "http-auth": "2.3.x",
+    "marked": "^0.3.5",
     "morgan": "^1.6.1",
     "object-assign": "latest",
     "opn": "latest",
     "send": "latest",
     "serve-index": "^1.7.2",
+    "stream-sink": "^1.2.0",
     "watchr": "2.3.x"
   },
   "devDependencies": {
