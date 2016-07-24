@@ -62,6 +62,8 @@ Command line parameters:
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
+* `--no-markdown` - do not render markdown files as such
+* `--markdown=STYLE` - change the style of markdown rendering: html (default), hack, hack-dark, hack-light
 
 Default options:
 
