@@ -8,7 +8,7 @@ var opts = {
 	host: process.env.IP,
 	port: process.env.PORT,
 	open: true,
-	markdown: false,
+	markdown: 'html',
 	mount: [],
 	proxy: [],
 	logLevel: 2
@@ -127,8 +127,8 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		// Hidden param for tests to exit automatically
 		setTimeout(liveServer.shutdown, 500);
 		process.argv.splice(i, 1);
-	} else if (arg === "--markdown") {
-		opts.markdown = 'standard';
+	} else if (arg === "--no-markdown") {
+		opts.markdown = false;
 		process.argv.splice(i, 1);
 	} else if (arg.indexOf("--markdown=") > -1) {
 		opts.markdown = arg.substring(11);
