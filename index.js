@@ -154,6 +154,7 @@ LiveServer.start = function(options) {
 	var cors = options.cors || false;
 	var https = options.https || null;
 	var proxy = options.proxy || [];
+	var middleware = options.middleware || [];
 
 	// Setup a web server
 	var app = connect();
@@ -193,6 +194,9 @@ LiveServer.start = function(options) {
 		.use(serveIndex(root, { icons: true }));
 	if (LiveServer.logLevel >= 2)
 		app.use(logger('dev'));
+
+	// Add middleware
+	middleware.map(app.use.bind(app));
 
 	var server, protocol;
 	if (https !== null) {
