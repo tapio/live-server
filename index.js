@@ -133,6 +133,7 @@ function entryPoint(staticHandler, file) {
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
  * @param htpasswd {string} Path to htpasswd file to enable HTTP Basic authentication
+ * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
  */
 LiveServer.start = function(options) {
 	options = options || {};
