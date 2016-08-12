@@ -160,6 +160,9 @@ LiveServer.start = function(options) {
 	// Setup a web server
 	var app = connect();
 
+	// Add middleware
+	middleware.map(app.use.bind(app));
+
 	// Use http-auth if configured
 	if (htpasswd !== null) {
 		var auth = require('http-auth');
@@ -195,9 +198,6 @@ LiveServer.start = function(options) {
 		.use(serveIndex(root, { icons: true }));
 	if (LiveServer.logLevel >= 2)
 		app.use(logger('dev'));
-
-	// Add middleware
-	middleware.map(app.use.bind(app));
 
 	var server, protocol;
 	if (https !== null) {
