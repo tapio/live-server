@@ -13,7 +13,7 @@ var liveServer = require('..').start({
 });
 
 describe('middleware tests', function() {
-	it('should add middleware to stack', function(done) {
+	it("should respond with middleware's status code", function(done) {
 		request(liveServer)
 			.get('/')
 			.expect(201, done);
