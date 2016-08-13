@@ -72,7 +72,7 @@ function staticServer(root, spa) {
 						break;
 					}
 				}
-				if (injectTag === null && LiveServer.logLevel >= 2) {
+				if (injectTag === null && LiveServer.logLevel >= 3) {
 					console.warn("Failed to inject refresh script!".yellow,
 						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
 				}
