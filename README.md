@@ -131,6 +131,7 @@ Version history
 * master (unreleased)
 	- Proxy support (@pavel)
 	- Middleware support (@achandrasekar)
+	- Dependency updates (@tapio, @rahatarmanahmed)
 * v1.0.0
 	- HTTPS support (@pavel)
 	- HTTP Basic authentication support (@hey-johnnypark)
