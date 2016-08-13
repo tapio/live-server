@@ -10,7 +10,8 @@ var opts = {
 	open: true,
 	mount: [],
 	proxy: [],
-	logLevel: 2
+	logLevel: 2,
+	injection: ""
 };
 
 var homeDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -126,6 +127,9 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		// Hidden param for tests to exit automatically
 		setTimeout(liveServer.shutdown, 500);
 		process.argv.splice(i, 1);
+	}	
+	else if (arg.indexOf("--injection=") > -1) {
+		opts.injection = arg.substring(12);
 	}
 }
 

@@ -62,6 +62,7 @@ Command line parameters:
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
+* `--injection=TEXT | --injection` - inject additional content to the pages
 
 Default options:
 
@@ -84,6 +85,7 @@ var params = {
 	wait: 1000, // Waits for all changes, before reloading. Defaults to 0 sec.
 	mount: [['/components', './node_modules']], // Mount a directory to a route.
 	logLevel: 2 // 0 = errors only, 1 = some, 2 = lots
+	injection: "<script>console.log('hi')</script>" // Inject additional script.
 };
 liveServer.start(params);
 ```
