@@ -133,6 +133,7 @@ function entryPoint(staticHandler, file) {
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
  * @param htpasswd {string} Path to htpasswd file to enable HTTP Basic authentication
+ * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -154,9 +155,13 @@ LiveServer.start = function(options) {
 	var cors = options.cors || false;
 	var https = options.https || null;
 	var proxy = options.proxy || [];
+	var middleware = options.middleware || [];
 
 	// Setup a web server
 	var app = connect();
+
+	// Add middleware
+	middleware.map(app.use.bind(app));
 
 	// Use http-auth if configured
 	if (htpasswd !== null) {
