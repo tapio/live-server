@@ -15,16 +15,16 @@
     "colors": "latest",
     "connect": "3.4.x",
     "cors": "latest",
-    "proxy-middleware": "latest",
     "event-stream": "latest",
     "faye-websocket": "0.11.x",
     "http-auth": "2.3.x",
     "morgan": "^1.6.1",
     "object-assign": "latest",
     "opn": "latest",
+    "proxy-middleware": "latest",
     "send": "latest",
     "serve-index": "^1.7.2",
-    "watchr": "2.3.x"
+    "watchr": "2.6.x"
   },
   "devDependencies": {
     "mocha": "^2.3.3",
