@@ -20,7 +20,8 @@
 
     <section class="main-content">
       <p><a href="https://www.npmjs.org/package/live-server"><img src="http://img.shields.io/npm/v/live-server.svg" alt="view on npm"></a>
-<a href="https://www.npmjs.org/package/live-server"><img src="http://img.shields.io/npm/dm/live-server.svg" alt="npm module downloads per month"></a></p>
+<a href="https://www.npmjs.org/package/live-server"><img src="http://img.shields.io/npm/dm/live-server.svg" alt="npm module downloads per month"></a>
+<a href="https://travis-ci.org/tapio/live-server"><img src="https://travis-ci.org/tapio/live-server.svg" alt="build status"></a></p>
 
 <h1>
 <a id="live-server" class="anchor" href="#live-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Server</h1>
@@ -100,6 +101,8 @@ npm install -g # Install globally
 <li>
 <code>--https=PATH</code> - PATH to a HTTPS configuration module</li>
 <li>
+<code>--proxy=ROUTE:URL</code> - proxy all requests for ROUTE to URL</li>
+<li>
 <code>--help | -h</code> - display terse usage hint and exit</li>
 <li>
 <code>--version | -v</code> - display version and exit</li>
@@ -123,7 +126,8 @@ npm install -g # Install globally
     file<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>index.html<span class="pl-pds">"</span></span>, <span class="pl-c">// When set, serve this file for every 404 (useful for single-page applications)</span>
     wait<span class="pl-k">:</span> <span class="pl-c1">1000</span>, <span class="pl-c">// Waits for all changes, before reloading. Defaults to 0 sec.</span>
     mount<span class="pl-k">:</span> [[<span class="pl-s"><span class="pl-pds">'</span>/components<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>./node_modules<span class="pl-pds">'</span></span>]], <span class="pl-c">// Mount a directory to a route.</span>
-    logLevel<span class="pl-k">:</span> <span class="pl-c1">2</span> <span class="pl-c">// 0 = errors only, 1 = some, 2 = lots</span>
+    logLevel<span class="pl-k">:</span> <span class="pl-c1">2</span>, <span class="pl-c">// 0 = errors only, 1 = some, 2 = lots</span>
+    middleware<span class="pl-k">:</span> [<span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">res</span>, <span class="pl-smi">next</span>) { <span class="pl-en">next</span>(); }] <span class="pl-c">// Takes an array of Connect-compatible middleware that are injected into the server middleware stack</span>
 };
 <span class="pl-smi">liveServer</span>.<span class="pl-c1">start</span>(params);</pre></div>
 
@@ -163,6 +167,15 @@ The keys are the same as the keys in <code>options</code> for <a href="https://n
 <a id="version-history" class="anchor" href="#version-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Version history</h2>
 
 <ul>
+<li>v1.1.0
+
+<ul>
+<li>Proxy support (<a href="https://github.com/pavel" class="user-mention">@pavel</a>)</li>
+<li>Middleware support (<a href="https://github.com/achandrasekar" class="user-mention">@achandrasekar</a>)</li>
+<li>Dependency updates (<a href="https://github.com/tapio" class="user-mention">@tapio</a>, <a href="https://github.com/rahatarmanahmed" class="user-mention">@rahatarmanahmed</a>)</li>
+<li>Using Travis CI</li>
+</ul>
+</li>
 <li>v1.0.0
 
 <ul>
@@ -174,7 +187,7 @@ The keys are the same as the keys in <code>options</code> for <a href="https://n
 <code>--spa</code> cli option for single page apps, translates requests from /abc to /#/abc (<a href="https://github.com/evanplaice" class="user-mention">@evanplaice</a>)</li>
 <li>Check <code>IP</code> env var for default host (<a href="https://github.com/dotnetCarpenter" class="user-mention">@dotnetCarpenter</a>)</li>
 <li>Fix <code>ignorePattern</code> from config file (<a href="https://github.com/cyfersystems" class="user-mention">@cyfersystems</a>)</li>
-<li>Fix test running for Windows (<a href="https://github.com/peterhull90" class="user-mention">@peterhull90</a>)</li>
+<li>Fix test running for Windows (@peterhull90)</li>
 </ul>
 </li>
 <li>v0.9.2
