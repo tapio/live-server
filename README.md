@@ -128,10 +128,11 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
-* master (unreleased)
+* v1.1.0
 	- Proxy support (@pavel)
 	- Middleware support (@achandrasekar)
 	- Dependency updates (@tapio, @rahatarmanahmed)
+	- Using Travis CI
 * v1.0.0
 	- HTTPS support (@pavel)
 	- HTTP Basic authentication support (@hey-johnnypark)
