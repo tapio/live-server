@@ -10,6 +10,7 @@ var fs = require('fs'),
 	send = require('send'),
 	open = require('opn'),
 	es = require("event-stream"),
+	os = require('os'),
 	chokidar = require('chokidar');
 require('colors');
 
@@ -244,10 +245,31 @@ LiveServer.start = function(options) {
 		var serveURL = protocol + '://' + serveHost + ':' + address.port;
 		var openURL = protocol + '://' + openHost + ':' + address.port;
 
+		var serveURLs = [ serveURL ];
+		if (address.address === "0.0.0.0") {
+			var ifaces = os.networkInterfaces();
+			serveURLs = Object.keys(ifaces)
+				.map(function (iface) {
+					return ifaces[iface];
+				})
+				// flatten address data, use only IPv4
+				.reduce(function (data, addresses) {
+					addresses.filter(function (address) {
+						return address.family === "IPv4";
+					}).forEach(function (address) {
+						data.push(address);
+					});
+					return data;
+				}, [])
+				.map(function (addr) {
+					return protocol + "://" + addr.address + ":" + address.port;
+				});
+		}
+
 		// Output
 		if (LiveServer.logLevel >= 1) {
 			if (serveURL === openURL)
-				console.log(("Serving \"%s\" at %s").green, root, serveURL);
+				console.log(("Serving \"%s\" at\n\t%s").green, root, serveURLs.join("\n\t"));
 			else
 				console.log(("Serving \"%s\" at %s (%s)").green, root, openURL, serveURL);
 		}
