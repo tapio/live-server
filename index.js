@@ -202,7 +202,10 @@ LiveServer.start = function(options) {
 
 	var server, protocol;
 	if (https !== null) {
-		var httpsConfig = require(path.resolve(process.cwd(), https));
+		var httpsConfig = https;
+		if (typeof https === "string") {
+			httpsConfig = require(path.resolve(process.cwd(), https));
+		}
 		server = require("https").createServer(httpsConfig, app);
 		protocol = "https";
 	} else {
