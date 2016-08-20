@@ -80,6 +80,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
 	}
+	else if (arg === "--verbose" || arg === "-vv") {
+		opts.logLevel = 3;
+		process.argv.splice(i, 1);
+	}
 	else if (arg.indexOf("--mount=") > -1) {
 		// e.g. "--mount=/components:./node_modules" will be ['/components', '<process.cwd()>/node_modules']
 		var mountRule = arg.substring(8).split(":");

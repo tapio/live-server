@@ -160,6 +160,15 @@ LiveServer.start = function(options) {
 	// Setup a web server
 	var app = connect();
 
+	// Add logger. Level 2 logs only errors
+	if (LiveServer.logLevel == 2) {
+		app.use(logger('dev', {
+			skip: function (req, res) { return res.statusCode < 400; }
+		}));
+	// Level 2 or above logs all requests
+	} else if (LiveServer.logLevel > 2) {
+		app.use(logger('dev'));
+	}
 	// Add middleware
 	middleware.map(app.use.bind(app));
 
@@ -197,8 +206,6 @@ LiveServer.start = function(options) {
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
 		.use(serveIndex(root, { icons: true }));
-	if (LiveServer.logLevel >= 2)
-		app.use(logger('dev'));
 
 	var server, protocol;
 	if (https !== null) {
