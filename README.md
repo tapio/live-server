@@ -48,7 +48,7 @@ Command line parameters:
 * `--no-browser` - suppress automatic web browser launching
 * `--browser=BROWSER` - specify browser to use instead of system default
 * `--quiet | -q` - suppress logging
-* `--verbose | -vv` - more logging (logs all requests, etc.)
+* `--verbose | -V` - more logging (logs all requests, etc.)
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--watch=PATH` - comma-separated string of paths to exclusively watch for changes (default: watch everything)
 * `--ignore=PATH` - comma-separated string of paths to ignore

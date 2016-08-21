@@ -80,7 +80,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
 	}
-	else if (arg === "--verbose" || arg === "-vv") {
+	else if (arg === "--verbose" || arg === "-V") {
 		opts.logLevel = 3;
 		process.argv.splice(i, 1);
 	}
