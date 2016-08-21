@@ -246,7 +246,7 @@ LiveServer.start = function(options) {
 		var openURL = protocol + '://' + openHost + ':' + address.port;
 
 		var serveURLs = [ serveURL ];
-		if (address.address === "0.0.0.0") {
+		if (LiveServer.logLevel > 2 && address.address === "0.0.0.0") {
 			var ifaces = os.networkInterfaces();
 			serveURLs = Object.keys(ifaces)
 				.map(function (iface) {
@@ -269,7 +269,11 @@ LiveServer.start = function(options) {
 		// Output
 		if (LiveServer.logLevel >= 1) {
 			if (serveURL === openURL)
-				console.log(("Serving \"%s\" at\n\t%s").green, root, serveURLs.join("\n\t"));
+				if (serveURLs.length === 1) {
+					console.log(("Serving \"%s\" at %s").green, root, serveURLs[0]);
+				} else {
+					console.log(("Serving \"%s\" at\n\t%s").green, root, serveURLs.join("\n\t"));
+				}
 			else
 				console.log(("Serving \"%s\" at %s (%s)").green, root, openURL, serveURL);
 		}
