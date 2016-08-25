@@ -122,8 +122,14 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.proxy.push([ match[1], match[2] ]);
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--logLevel=") > -1) {
+ 		var logLevelString = arg.substring(11);
+ 		var logLevelNumber = parseInt(logLevelString);
+ 		opts.logLevel = logLevelNumber;
+ 		process.argv.splice(i, 1);
+	}
 	else if (arg === "--help" || arg === "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH]  [--cors] [--https=PATH] [--proxy=PATH] [--logLevel=LOGLEVEL] [PATH]');
 		process.exit();
 	}
 	else if (arg === "--test") {

@@ -48,7 +48,8 @@ Command line parameters:
 * `--no-browser` - suppress automatic web browser launching
 * `--browser=BROWSER` - specify browser to use instead of system default
 * `--quiet | -q` - suppress logging
-* `--verbose | -V` - more logging (logs all requests, etc.)
+* `--verbose | -V` - more logging (logs all requests, etc.), equals logLevel=3
+* `--logLevel=LOGLEVEL` - 0 = errors only, 1 = some, 2 = lots, 3 = everything
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--watch=PATH` - comma-separated string of paths to exclusively watch for changes (default: watch everything)
 * `--ignore=PATH` - comma-separated string of paths to ignore
@@ -84,7 +85,7 @@ var params = {
 	file: "index.html", // When set, serve this file for every 404 (useful for single-page applications)
 	wait: 1000, // Waits for all changes, before reloading. Defaults to 0 sec.
 	mount: [['/components', './node_modules']], // Mount a directory to a route.
-	logLevel: 2, // 0 = errors only, 1 = some, 2 = lots
+	logLevel: 2, // 0 = errors only, 1 = some, 2 = lots, 3 = everything
 	middleware: [function(req, res, next) { next(); }] // Takes an array of Connect-compatible middleware that are injected into the server middleware stack
 };
 liveServer.start(params);
