@@ -46,10 +46,14 @@ function staticServer(root, spa) {
 
 		// Single Page App - redirect handler
 		if (spa && req.url !== '/') {
-			var route = req.url;
-			req.url = '/';
-			res.statusCode = 302;
-			res.setHeader('Location', req.url + '#' + route);
+			var ext = path.extname(req.url);
+			// when there is no extension, path.extname === ''
+			if (ext === '') {
+				var route = req.url;
+				req.url = '/';
+				res.statusCode = 302;
+				res.setHeader('Location', req.url + '#' + route);
+			}
 		}
 
 		function directory() {
