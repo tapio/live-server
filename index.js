@@ -90,8 +90,8 @@ function staticServer(root, spa) {
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
 				var originalPipe = stream.pipe;
-				stream.pipe = function(res) {
-					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(res);
+				stream.pipe = function(resp) {
+					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(resp);
 				};
 			}
 		}
@@ -161,7 +161,7 @@ LiveServer.start = function(options) {
 	var app = connect();
 
 	// Add logger. Level 2 logs only errors
-	if (LiveServer.logLevel == 2) {
+	if (LiveServer.logLevel === 2) {
 		app.use(logger('dev', {
 			skip: function (req, res) { return res.statusCode < 400; }
 		}));
