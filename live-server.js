@@ -86,9 +86,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	}
 	else if (arg.indexOf("--mount=") > -1) {
 		// e.g. "--mount=/components:./node_modules" will be ['/components', '<process.cwd()>/node_modules']
-		var mountRule = arg.substring(8).split(":");
-		mountRule[1] = path.resolve(process.cwd(), mountRule[1]);
-		opts.mount.push(mountRule);
+		// split only on the first ":", as the path may contain ":" as well (e.g. C:\file.txt)
+		var match = arg.substring(8).match(/([^:]+):(.+)$/);
+		match[2] = path.resolve(process.cwd(), match[2]);
+		opts.mount.push([ match[1], match[2] ]);
 		process.argv.splice(i, 1);
 	}
 	else if (arg.indexOf("--wait=") > -1) {
