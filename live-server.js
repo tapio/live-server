@@ -76,6 +76,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.spa = true;
 		process.argv.splice(i, 1);
 	}
+	else if (arg === '--spa-ignore-assets') {
+		opts.spaIgnoreAssets = true;
+		process.argv.splice(i, 1);
+	}
 	else if (arg === "--quiet" || arg === "-q") {
 		opts.logLevel = 0;
 		process.argv.splice(i, 1);
@@ -123,7 +127,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--help" || arg === "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--spa-ignore-assets] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
 		process.exit();
 	}
 	else if (arg === "--test") {

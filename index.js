@@ -30,7 +30,7 @@ function escape(html){
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root, spa) {
+function staticServer(root, spa, spaIgnoreAssets) {
 	var isFile = false;
 	try { // For supporting mounting files instead of just directories
 		isFile = fs.statSync(root).isFile();
@@ -47,12 +47,14 @@ function staticServer(root, spa) {
 		// Single Page App - redirect handler
 		if (spa && req.url !== '/') {
 			var ext = path.extname(req.url);
-			// when there is no extension, path.extname === ''
-			if (ext === '') {
-				var route = req.url;
-				req.url = '/';
-				res.statusCode = 302;
-				res.setHeader('Location', req.url + '#' + route);
+			if (spaIgnoreAssets) {
+				// when there is no extension, path.extname === ''
+				if (ext === '') {
+					var route = req.url;
+					req.url = '/';
+					res.statusCode = 302;
+					res.setHeader('Location', req.url + '#' + route);
+				}
 			}
 		}
 
@@ -150,9 +152,10 @@ LiveServer.start = function(options) {
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	var spa = options.spa || false;
+	var spaIgnoreAssets = options.spaIgnoreAssets || false;
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
-	var staticServerHandler = staticServer(root, spa);
+	var staticServerHandler = staticServer(root, spa, spaIgnoreAssets);
 	var wait = options.wait || 0;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;

@@ -56,6 +56,7 @@ Command line parameters:
 * `--entry-file=PATH` - serve this file (server root relative) in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--spa` - translate requests from /abc to /#/abc (handy for Single Page Apps)
+* `--spa-ignore-assets` - when `--spa` is passed, this option stops the server intercepting requests for any assets (CSS, JS and so on)
 * `--wait=MILLISECONDS` - wait for all changes, before reloading
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--cors` - Enables CORS for any origin (reflects request origin, requests with credentials are supported)
