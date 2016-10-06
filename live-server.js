@@ -18,7 +18,6 @@ var configPath = path.join(homeDir, '.live-server.json');
 if (fs.existsSync(configPath)) {
 	var userConfig = fs.readFileSync(configPath, 'utf8');
 	assign(opts, JSON.parse(userConfig));
-	if (opts.ignorePattern) opts.ignorePattern = new RegExp(opts.ignorePattern);
 }
 
 for (var i = process.argv.length - 1; i >= 2; --i) {
@@ -50,11 +49,9 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 	}
 	else if (arg.indexOf("--ignore=") > -1) {
 		// Will be modified later when cwd is known
-		opts.ignore = arg.substring(9).split(",");
-		process.argv.splice(i, 1);
-	}
-	else if (arg.indexOf("--ignorePattern=") > -1) {
-		opts.ignorePattern = new RegExp(arg.substring(16));
+		opts.ignore = arg.substring(9).split(",").filter(function (pattern) {
+			return pattern.trim().length > 0;
+		});
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--no-browser") {
@@ -124,7 +121,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--help" || arg === "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
 		process.exit();
 	}
 	else if (arg === "--test") {
