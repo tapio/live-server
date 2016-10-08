@@ -341,6 +341,10 @@ LiveServer.start = function(options) {
 		.on("unlink", handleChange)
 		.on("addDir", handleChange)
 		.on("unlinkDir", handleChange)
+		.on("ready", function () {
+			if (LiveServer.logLevel >= 1)
+				console.log("Ready for changes".cyan);
+		})
 		.on("error", function (err) {
 			console.log("ERROR:".red, err);
 		});
