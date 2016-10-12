@@ -133,7 +133,8 @@ Version history
 ---------------
 
 * master (unreleased)
-	- Added `--verbose` cli option (logLevel 3) to log all requests and display warning when can't inject html file (@pavel)
+	- Added `--verbose` cli option (logLevel 3) (@pavel)
+		- Logs all requests, displays warning when can't inject html file, displays all listening IPv4 interfaces...
 	- HTTPS configuration now also accepts a plain object (@pavel)
 * v1.1.0
 	- Proxy support (@pavel)

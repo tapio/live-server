@@ -250,19 +250,19 @@ LiveServer.start = function(options) {
 		if (LiveServer.logLevel > 2 && address.address === "0.0.0.0") {
 			var ifaces = os.networkInterfaces();
 			serveURLs = Object.keys(ifaces)
-				.map(function (iface) {
+				.map(function(iface) {
 					return ifaces[iface];
 				})
 				// flatten address data, use only IPv4
 				.reduce(function (data, addresses) {
-					addresses.filter(function (address) {
-						return address.family === "IPv4";
-					}).forEach(function (address) {
-						data.push(address);
+					addresses.filter(function(addr) {
+						return addr.family === "IPv4";
+					}).forEach(function(addr) {
+						data.push(addr);
 					});
 					return data;
 				}, [])
-				.map(function (addr) {
+				.map(function(addr) {
 					return protocol + "://" + addr.address + ":" + address.port;
 				});
 		}
