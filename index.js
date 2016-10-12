@@ -47,14 +47,15 @@ function staticServer(root, spa, spaIgnoreAssets) {
 		// Single Page App - redirect handler
 		if (spa && req.url !== '/') {
 			var ext = path.extname(req.url);
-			if (spaIgnoreAssets) {
-				// when there is no extension, path.extname === ''
-				if (ext === '') {
-					var route = req.url;
-					req.url = '/';
-					res.statusCode = 302;
-					res.setHeader('Location', req.url + '#' + route);
-				}
+			var shouldRewriteRequest = (spaIgnoreAssets === true && ext === '') ||
+				(typeof spaIgnoreAssets === 'function' &&
+					spaIgnoreAssets(req) === false);
+
+			if (shouldRewriteRequest) {
+				var route = req.url;
+				req.url = '/';
+				res.statusCode = 302;
+				res.setHeader('Location', req.url + '#' + route);
 			}
 		}
 
