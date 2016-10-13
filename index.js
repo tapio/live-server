@@ -150,7 +150,10 @@ LiveServer.start = function(options) {
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
 	var staticServerHandler = staticServer(root, spa);
-	var wait = options.wait || 0;
+	var wait = options.wait;
+	if (wait == null) {
+		wait = 100;
+	}
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
 	var cors = options.cors || false;
