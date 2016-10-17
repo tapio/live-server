@@ -150,10 +150,7 @@ LiveServer.start = function(options) {
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
 	var staticServerHandler = staticServer(root, spa);
-	var wait = options.wait;
-	if (wait == null) {
-		wait = 100;
-	}
+	var wait = options.wait === undefined ? 100 : options.wait;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
 	var cors = options.cors || false;
@@ -297,10 +294,9 @@ LiveServer.start = function(options) {
 		ws.onopen = function() { ws.send('connected'); };
 
 		if (wait > 0) {
-			(function(ws) {
+			(function() {
 				var wssend = ws.send;
 				var waitTimeout;
-
 				ws.send = function() {
 					var args = arguments;
 					if (waitTimeout) clearTimeout(waitTimeout);
@@ -308,7 +304,7 @@ LiveServer.start = function(options) {
 						wssend.apply(ws, args);
 					}, wait);
 				};
-			})(ws);
+			})();
 		}
 
 		ws.onclose = function() {
