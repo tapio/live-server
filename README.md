@@ -137,6 +137,8 @@ Version history
 ---------------
 
 * master (unreleased)
+	- Changed file watcher to improve speed (@pavel)
+	- `--ignore` now accepts regexps and globs, `--ignorePattern` deprecated (@pavel)
 	- Added `--verbose` cli option (logLevel 3) (@pavel)
 		- Logs all requests, displays warning when can't inject html file, displays all listening IPv4 interfaces...
 	- HTTPS configuration now also accepts a plain object (@pavel)
