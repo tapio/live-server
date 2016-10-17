@@ -320,7 +320,11 @@ LiveServer.start = function(options) {
 		clients.push(ws);
 	});
 
-	var ignored = [];
+	var ignored = [
+		function(testPath) { // Always ignore dotfiles (important e.g. because editor hidden temp files)
+			return /(^[.#]|(?:__|~)$)/.test(path.basename(testPath));
+		}
+	];
 	if (options.ignore) {
 		ignored = ignored.concat(options.ignore);
 	}
