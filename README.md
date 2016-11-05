@@ -53,6 +53,7 @@ Command line parameters:
 * `--watch=PATH` - comma-separated string of paths to exclusively watch for changes (default: watch everything)
 * `--ignore=PATH` - comma-separated string of paths to ignore ([anymatch](https://github.com/es128/anymatch)-compatible definition)
 * `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`) (**DEPRECATED** in favor of `--ignore`)
+* `--middleware=PATH` - path to .js file exporting a middleware function to add; can be a name without path nor extension to reference bundled middlewares in `middleware` folder
 * `--entry-file=PATH` - serve this file (server root relative) in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--spa` - translate requests from /abc to /#/abc (handy for Single Page Apps)
@@ -137,11 +138,15 @@ Version history
 ---------------
 
 * master (unreleased)
+	- Add `--middleware` parameter to use external middlewares
+	- `middleware` API parameter now also accepts strings similar to `--middleware`
 	- Changed file watcher to improve speed (@pavel)
 	- `--ignore` now accepts regexps and globs, `--ignorePattern` deprecated (@pavel)
 	- Added `--verbose` cli option (logLevel 3) (@pavel)
 		- Logs all requests, displays warning when can't inject html file, displays all listening IPv4 interfaces...
 	- HTTPS configuration now also accepts a plain object (@pavel)
+	- Move `--spa` to a bundled middleware file
+	- New bundled `spa-no-assets` middleware that works like `spa` but ignores requests with extension
 * v1.1.0
 	- Proxy support (@pavel)
 	- Middleware support (@achandrasekar)
