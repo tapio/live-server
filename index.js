@@ -171,7 +171,17 @@ LiveServer.start = function(options) {
 		app.use(logger('dev'));
 	}
 	// Add middleware
-	middleware.map(app.use.bind(app));
+	middleware.map(function(mw) {
+		if (typeof mw === "string") {
+			var ext = path.extname(mw).toLocaleLowerCase();
+			if (ext !== ".js") {
+				mw = require(path.join(__dirname, "middleware", mw + ".js"));
+			} else {
+				mw = require(mw);
+			}
+		}
+		app.use(mw);
+	});
 
 	// Use http-auth if configured
 	if (htpasswd !== null) {
