@@ -74,7 +74,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		}
 	}
 	else if (arg === "--spa") {
-		opts.spa = true;
+		opts.middleware.push("spa");
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--quiet" || arg === "-q") {

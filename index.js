@@ -31,7 +31,7 @@ function escape(html){
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root, spa) {
+function staticServer(root) {
 	var isFile = false;
 	try { // For supporting mounting files instead of just directories
 		isFile = fs.statSync(root).isFile();
@@ -44,14 +44,6 @@ function staticServer(root, spa) {
 		var hasNoOrigin = !req.headers.origin;
 		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>") ];
 		var injectTag = null;
-
-		// Single Page App - redirect handler
-		if (spa && req.url !== '/') {
-			var route = req.url;
-			req.url = '/';
-			res.statusCode = 302;
-			res.setHeader('Location', req.url + '#' + route);
-		}
 
 		function directory() {
 			var pathname = url.parse(req.originalUrl).pathname;
@@ -146,10 +138,9 @@ LiveServer.start = function(options) {
 	LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
 	var openPath = (options.open === undefined || options.open === true) ?
 		"" : ((options.open === null || options.open === false) ? null : options.open);
-	var spa = options.spa || false;
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
-	var staticServerHandler = staticServer(root, spa);
+	var staticServerHandler = staticServer(root);
 	var wait = options.wait === undefined ? 100 : options.wait;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
@@ -169,6 +160,9 @@ LiveServer.start = function(options) {
 	// Level 2 or above logs all requests
 	} else if (LiveServer.logLevel > 2) {
 		app.use(logger('dev'));
+	}
+	if (options.spa) {
+		middleware.push("spa");
 	}
 	// Add middleware
 	middleware.map(function(mw) {
