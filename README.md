@@ -147,6 +147,7 @@ Version history
 	- HTTPS configuration now also accepts a plain object (@pavel)
 	- Move `--spa` to a bundled middleware file
 	- New bundled `spa-no-assets` middleware that works like `spa` but ignores requests with extension
+	- Allow multiple `--open` arguments (@PirtleShell)
 * v1.1.0
 	- Proxy support (@pavel)
 	- Middleware support (@achandrasekar)
