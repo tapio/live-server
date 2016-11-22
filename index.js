@@ -120,7 +120,7 @@ function entryPoint(staticHandler, file) {
  * @param watch {array} Paths to exclusively watch for changes
  * @param ignore {array} Paths to ignore when watching files for changes
  * @param ignorePattern {regexp} Ignore files by RegExp
- * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
+ * @param open {(string|string[])} Subpath(s) to open in browser, use false to suppress launch (default: server root)
  * @param mount {array} Mount directories onto a route, e.g. [['/components', './node_modules']].
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  * @param file {string} Path to the entry point file
@@ -285,7 +285,13 @@ LiveServer.start = function(options) {
 
 		// Launch browser
 		if (openPath !== null)
-			open(openURL + openPath, {app: browser});
+			if (typeof openPath === "object") {
+				openPath.forEach(function(p) {
+					open(openURL + p, {app: browser});
+				});
+			} else {
+				open(openURL + openPath, {app: browser});
+			}
 	});
 
 	// Setup server to listen at port
