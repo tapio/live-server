@@ -201,6 +201,13 @@ LiveServer.start = function(options) {
 			console.log('Mapping %s to "%s"', mountRule[0], mountPath);
 	});
 	proxy.forEach(function(proxyRule) {
+		if (mountRule.length === 1) {
+			var mountPath = path.resolve(process.cwd(), mountRule[0]);
+			app.use(staticServer(mountPath));
+			if (LiveServer.logLevel >= 1)
+				console.log('Mapping to "%s"', mountPath);
+			return;
+		}
 		var proxyOpts = url.parse(proxyRule[1]);
 		proxyOpts.via = true;
 		proxyOpts.preserveHost = true;
