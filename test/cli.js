@@ -62,4 +62,12 @@ describe('command line usage', function() {
 			done();
 		});
 	});
+	it("--https", function(done) {
+		exec_test(["--https", "--no-browser", "--test"], function(error, stdout, stdin) {
+			assert(!error, error);
+			assert(stdout.indexOf("Serving") == 0, "serving string not found");
+			assert(stdout.indexOf("at https://127.0.0.1:") != -1, "https host string not found");
+			done();
+		});
+	});
 });
