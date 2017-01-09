@@ -27,9 +27,9 @@
     "serve-index": "^1.7.2"
   },
   "devDependencies": {
-    "mocha": "^2.3.3",
-    "supertest": "^1.0.1",
-    "eslint": "^2.8.0",
+    "mocha": "^3.2.0",
+    "supertest": "^2.0.1",
+    "eslint": "^3.13.0",
     "jshint": "^2.9.2"
   },
   "scripts": {
