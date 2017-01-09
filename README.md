@@ -137,7 +137,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
-* master (unreleased)
+* v1.2.0
 	- Add `--middleware` parameter to use external middlewares
 	- `middleware` API parameter now also accepts strings similar to `--middleware`
 	- Changed file watcher to improve speed (@pavel)
