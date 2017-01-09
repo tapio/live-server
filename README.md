@@ -148,6 +148,8 @@ Version history
 	- Move `--spa` to a bundled middleware file
 	- New bundled `spa-no-assets` middleware that works like `spa` but ignores requests with extension
 	- Allow multiple `--open` arguments (@PirtleShell)
+	- Inject to `head` if `body` not found (@pmd1991)
+	- Update dependencies
 * v1.1.0
 	- Proxy support (@pavel)
 	- Middleware support (@achandrasekar)
