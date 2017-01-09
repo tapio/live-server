@@ -343,17 +343,15 @@ LiveServer.start = function(options) {
 		ignoreInitial: true
 	});
 	function handleChange(changePath) {
-		clients.forEach(function (ws) {
-			if (!ws) return;
-			if (path.extname(changePath) === ".css") {
-				ws.send('refreshcss');
-				if (LiveServer.logLevel >= 1)
-					console.log("CSS change detected".magenta, changePath);
-			} else {
-				ws.send('reload');
-				if (LiveServer.logLevel >= 1)
-					console.log("Change detected".cyan, changePath);
-			}
+		var cssChange = path.extname(changePath) === ".css";
+		if (LiveServer.logLevel >= 1) {
+			if (cssChange)
+				console.log("CSS change detected".magenta, changePath);
+			else console.log("Change detected".cyan, changePath);
+		}
+		clients.forEach(function(ws) {
+			if (ws)
+				ws.send(cssChange ? 'refreshcss' : 'reload');
 		});
 	}
 	LiveServer.watcher
