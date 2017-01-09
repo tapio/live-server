@@ -14,11 +14,11 @@
   "dependencies": {
     "chokidar": "^1.6.0",
     "colors": "latest",
-    "connect": "3.4.x",
+    "connect": "3.5.x",
     "cors": "latest",
     "event-stream": "latest",
     "faye-websocket": "0.11.x",
-    "http-auth": "2.4.x",
+    "http-auth": "3.1.x",
     "morgan": "^1.6.1",
     "object-assign": "latest",
     "opn": "latest",
