@@ -258,7 +258,7 @@ LiveServer.start = function(options) {
 					return ifaces[iface];
 				})
 				// flatten address data, use only IPv4
-				.reduce(function (data, addresses) {
+				.reduce(function(data, addresses) {
 					addresses.filter(function(addr) {
 						return addr.family === "IPv4";
 					}).forEach(function(addr) {
@@ -328,7 +328,7 @@ LiveServer.start = function(options) {
 
 	var ignored = [
 		function(testPath) { // Always ignore dotfiles (important e.g. because editor hidden temp files)
-			return /(^[.#]|(?:__|~)$)/.test(path.basename(testPath));
+			return testPath !== "." && /(^[.#]|(?:__|~)$)/.test(path.basename(testPath));
 		}
 	];
 	if (options.ignore) {
