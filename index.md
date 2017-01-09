@@ -47,15 +47,17 @@ Command line parameters:
 * `--host=ADDRESS` - select host address to bind to, default: IP env var or 0.0.0.0 ("any address")
 * `--no-browser` - suppress automatic web browser launching
 * `--browser=BROWSER` - specify browser to use instead of system default
-* `--quiet` - suppress logging
+* `--quiet | -q` - suppress logging
+* `--verbose | -V` - more logging (logs all requests, shows all listening IPv4 interfaces, etc.)
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--watch=PATH` - comma-separated string of paths to exclusively watch for changes (default: watch everything)
-* `--ignore=PATH` - comma-separated string of paths to ignore
-* `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`)
-* `--entry-file=PATH` - serve this file in place of missing files (useful for single page apps)
+* `--ignore=PATH` - comma-separated string of paths to ignore ([anymatch](https://github.com/es128/anymatch)-compatible definition)
+* `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`) (**DEPRECATED** in favor of `--ignore`)
+* `--middleware=PATH` - path to .js file exporting a middleware function to add; can be a name without path nor extension to reference bundled middlewares in `middleware` folder
+* `--entry-file=PATH` - serve this file (server root relative) in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--spa` - translate requests from /abc to /#/abc (handy for Single Page Apps)
-* `--wait=MILLISECONDS` - wait for all changes, before reloading
+* `--wait=MILLISECONDS` - (default 100ms) wait for all changes, before reloading
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--cors` - Enables CORS for any origin (reflects request origin, requests with credentials are supported)
 * `--https=PATH` - PATH to a HTTPS configuration module
@@ -77,7 +79,7 @@ var liveServer = require("live-server");
 var params = {
 	port: 8181, // Set the server port. Defaults to 8080.
 	host: "0.0.0.0", // Set the address to bind to. Defaults to 0.0.0.0 or process.env.IP.
-	root: "/public", // Set root directory that's being server. Defaults to cwd.
+	root: "/public", // Set root directory that's being served. Defaults to cwd.
 	open: false, // When false, it won't load your browser by default.
 	ignore: 'scss,my/templates', // comma-separated string for paths to ignore
 	file: "index.html", // When set, serve this file for every 404 (useful for single-page applications)
@@ -107,11 +109,18 @@ module.exports = {
 };
 ```
 
+If using the node API, you can also directly pass a configuration object instead of a path to the module.
+
+
 Troubleshooting
 ---------------
 
-Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, [file an issue](https://github.com/tapio/live-server/issues).
-
+* No reload on changes
+	* Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, [file an issue](https://github.com/tapio/live-server/issues).
+* Error: watch <PATH> ENOSPC
+	* See [this suggested solution](http://stackoverflow.com/questions/22475849/node-js-error-enospc/32600959#32600959).
+* Reload works but changes are missing or outdated
+	* Try using `--wait=MS` option. Where `MS` is time in milliseconds to wait before issuing a reload.
 
 How it works
 ------------
@@ -128,6 +137,19 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
+* v1.2.0
+	- Add `--middleware` parameter to use external middlewares
+	- `middleware` API parameter now also accepts strings similar to `--middleware`
+	- Changed file watcher to improve speed (@pavel)
+	- `--ignore` now accepts regexps and globs, `--ignorePattern` deprecated (@pavel)
+	- Added `--verbose` cli option (logLevel 3) (@pavel)
+		- Logs all requests, displays warning when can't inject html file, displays all listening IPv4 interfaces...
+	- HTTPS configuration now also accepts a plain object (@pavel)
+	- Move `--spa` to a bundled middleware file
+	- New bundled `spa-no-assets` middleware that works like `spa` but ignores requests with extension
+	- Allow multiple `--open` arguments (@PirtleShell)
+	- Inject to `head` if `body` not found (@pmd1991)
+	- Update dependencies
 * v1.1.0
 	- Proxy support (@pavel)
 	- Middleware support (@achandrasekar)
