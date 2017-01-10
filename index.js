@@ -170,8 +170,11 @@ LiveServer.start = function(options) {
 			var ext = path.extname(mw).toLocaleLowerCase();
 			if (ext !== ".js") {
 				mw = require(path.join(__dirname, "middleware", mw + ".js"));
-			} else {
+			}
+			else if (path.isAbsolute(mw)) {
 				mw = require(mw);
+			} else {
+				mw = require(path.join(process.cwd(), mw));
 			}
 		}
 		app.use(mw);
