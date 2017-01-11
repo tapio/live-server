@@ -60,7 +60,7 @@ Command line parameters:
 * `--wait=MILLISECONDS` - (default 100ms) wait for all changes, before reloading
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--cors` - Enables CORS for any origin (reflects request origin, requests with credentials are supported)
-* `--https=PATH` - PATH to a HTTPS configuration module
+* `--https=PATH` - PATH to a HTTPS configuration module; if no PATH, a generic (expired) certification is used
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
@@ -95,6 +95,7 @@ HTTPS
 ---------------
 
 In order to enable HTTPS support, you'll need to create a configuration module.
+If no module is provided, a generic, self-signed certification is used. This is **unsuitable for production** but works well for testing with zero-setup.
 The module must export an object that will be used to configure a HTTPS server.
 The keys are the same as the keys in `options` for [tls.createServer](https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener).
 

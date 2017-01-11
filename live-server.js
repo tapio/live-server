@@ -128,6 +128,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.https = arg.substring(8);
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--https") > -1) {
+		opts.https = path.join(__dirname, 'test/conf/https.conf.js');
+		process.argv.splice(i, 1);
+	}
 	else if (arg.indexOf("--proxy=") > -1) {
 		// split only on the first ":", as the URL will contain ":" as well
 		var match = arg.substring(8).match(/([^:]+):(.+)$/);
@@ -139,7 +143,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--help" || arg === "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https[=PATH]] [--proxy=PATH] [PATH]');
 		process.exit();
 	}
 	else if (arg === "--test") {
