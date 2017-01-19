@@ -28,6 +28,13 @@ describe('basic functional tests', function(){
 			.expect(/<script [^]+?live reload enabled[^]+?<\/script>/i)
 			.expect(200, done);
 	});
+	it('should inject to <head> when no <body>', function(done){
+		request(liveServer)
+			.get('/index-head.html')
+			.expect('Content-Type', 'text/html; charset=UTF-8')
+			.expect(/<script [^]+?live reload enabled[^]+?<\/script>/i)
+			.expect(200, done);
+	});
 	it('should inject also svg files', function(done){
 		request(liveServer)
 			.get('/test.svg')
@@ -35,6 +42,16 @@ describe('basic functional tests', function(){
 			.expect(function(res) {
 				if (res.body.toString().indexOf("Live reload enabled") == -1)
 					throw new Error("injected code not found");
+			})
+			.expect(200, done);
+	});
+	it('should not inject html fragments', function(done){
+		request(liveServer)
+			.get('/fragment.html')
+			.expect('Content-Type', 'text/html; charset=UTF-8')
+			.expect(function(res) {
+				if (res.text.toString().indexOf("Live reload enabled") > -1)
+					throw new Error("injected code should not be found");
 			})
 			.expect(200, done);
 	});

@@ -42,7 +42,7 @@ function staticServer(root) {
 		if (req.method !== "GET" && req.method !== "HEAD") return next();
 		var reqpath = isFile ? "" : url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
-		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>") ];
+		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>"), new RegExp("</head>", "i")];
 		var injectTag = null;
 
 		function directory() {
@@ -120,7 +120,7 @@ function entryPoint(staticHandler, file) {
  * @param watch {array} Paths to exclusively watch for changes
  * @param ignore {array} Paths to ignore when watching files for changes
  * @param ignorePattern {regexp} Ignore files by RegExp
- * @param open {string} Subpath to open in browser, use false to suppress launch (default: server root)
+ * @param open {(string|string[])} Subpath(s) to open in browser, use false to suppress launch (default: server root)
  * @param mount {array} Mount directories onto a route, e.g. [['/components', './node_modules']].
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  * @param file {string} Path to the entry point file
@@ -264,7 +264,7 @@ LiveServer.start = function(options) {
 					return ifaces[iface];
 				})
 				// flatten address data, use only IPv4
-				.reduce(function (data, addresses) {
+				.reduce(function(data, addresses) {
 					addresses.filter(function(addr) {
 						return addr.family === "IPv4";
 					}).forEach(function(addr) {
@@ -291,7 +291,13 @@ LiveServer.start = function(options) {
 
 		// Launch browser
 		if (openPath !== null)
-			open(openURL + openPath, {app: browser});
+			if (typeof openPath === "object") {
+				openPath.forEach(function(p) {
+					open(openURL + p, {app: browser});
+				});
+			} else {
+				open(openURL + openPath, {app: browser});
+			}
 	});
 
 	// Setup server to listen at port
@@ -328,7 +334,7 @@ LiveServer.start = function(options) {
 
 	var ignored = [
 		function(testPath) { // Always ignore dotfiles (important e.g. because editor hidden temp files)
-			return /(^[.#]|(?:__|~)$)/.test(path.basename(testPath));
+			return testPath !== "." && /(^[.#]|(?:__|~)$)/.test(path.basename(testPath));
 		}
 	];
 	if (options.ignore) {
@@ -343,17 +349,15 @@ LiveServer.start = function(options) {
 		ignoreInitial: true
 	});
 	function handleChange(changePath) {
-		clients.forEach(function (ws) {
-			if (!ws) return;
-			if (path.extname(changePath) === ".css") {
-				ws.send('refreshcss');
-				if (LiveServer.logLevel >= 1)
-					console.log("CSS change detected".magenta, changePath);
-			} else {
-				ws.send('reload');
-				if (LiveServer.logLevel >= 1)
-					console.log("Change detected".cyan, changePath);
-			}
+		var cssChange = path.extname(changePath) === ".css";
+		if (LiveServer.logLevel >= 1) {
+			if (cssChange)
+				console.log("CSS change detected".magenta, changePath);
+			else console.log("Change detected".cyan, changePath);
+		}
+		clients.forEach(function(ws) {
+			if (ws)
+				ws.send(cssChange ? 'refreshcss' : 'reload');
 		});
 	}
 	LiveServer.watcher
