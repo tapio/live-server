@@ -148,6 +148,19 @@ LiveServer.start = function(options) {
 	var https = options.https || null;
 	var proxy = options.proxy || [];
 	var middleware = options.middleware || [];
+	var httpsModule = options.httpsModule;
+
+	if (httpsModule) {
+		try {
+			require.resolve(httpsModule);
+		} catch (e) {
+			console.error(("HTTPS module \"" + httpsModule + "\" you've provided was not found.").red);
+			console.error("Did you do", "\"npm install " + httpsModule + "\"?");
+			return;
+		}
+	} else {
+		httpsModule = "https";
+	}
 
 	// Setup a web server
 	var app = connect();
@@ -218,7 +231,7 @@ LiveServer.start = function(options) {
 		if (typeof https === "string") {
 			httpsConfig = require(path.resolve(process.cwd(), https));
 		}
-		server = require("https").createServer(httpsConfig, app);
+		server = require(httpsModule).createServer(httpsConfig, app);
 		protocol = "https";
 	} else {
 		server = http.createServer(app);
