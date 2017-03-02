@@ -206,6 +206,7 @@ LiveServer.start = function(options) {
 		proxyOpts.preserveHost = true;
         if (options.unsecureProxy) {
 			process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+            proxyOpts.rejectUnauthorized = false;
             proxyOpts.checkServerIdentity = function () {
                 return undefined;
             };
