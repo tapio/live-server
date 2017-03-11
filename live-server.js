@@ -15,8 +15,11 @@ var opts = {
 };
 
 var homeDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
-var configPath = path.join(homeDir, '.live-server.json');
-if (fs.existsSync(configPath)) {
+var homeConfigPath = path.join(homeDir, '.live-server.json');
+var localConfigPath = path.join('./', '.live-server.json');
+var configPath = fs.existsSync(localConfigPath) ? localConfigPath : fs.existsSync(homeConfigPath) ? homeConfigPath : null; 
+
+if (configPath) {
 	var userConfig = fs.readFileSync(configPath, 'utf8');
 	assign(opts, JSON.parse(userConfig));
 	if (opts.ignorePattern) opts.ignorePattern = new RegExp(opts.ignorePattern);
