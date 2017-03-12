@@ -70,12 +70,17 @@ describe('command line usage', function() {
 			done();
 		});
 	});
-	it('--port should take precence over --config', function(done) {
-		exec_test([ "--config=test/data/.live-server.json", "--port=54321", "--no-browser", "--test" ], function(error, stdout, stdin) {
+	it('inline options should take precence over --config', function(done) {
+		exec_test([ 
+			"--port=54321",
+			"--config=test/data/.live-server.json",
+			"--host=127.0.0.1", 
+			"--no-browser", 
+			"--test" ], function(error, stdout, stdin) {
 			assert(!error, error);
 			assert(stdout.indexOf("Serving") == 0, "serving string not found");
-			assert(stdout.indexOf("at http://localhost:54321") != -1, "Failed to read config frm the configuration file!");
+			assert(stdout.indexOf("at http://127.0.0.1:54321") != -1, "Failed to read config frm the configuration file!");
 			done();
 		});
-	})
+	});
 });
