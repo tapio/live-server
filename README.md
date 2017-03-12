@@ -138,7 +138,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
-* v1.2.1
+* v1.3.0
 	- Add `--config` parameter to support specifying configuration files
 * v1.2.0
 	- Add `--middleware` parameter to use external middlewares
