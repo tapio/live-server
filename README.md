@@ -138,6 +138,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 Version history
 ---------------
 
+* v1.2.1
+	- Add `--config` parameter to support specifying configuration files
 * v1.2.0
 	- Add `--middleware` parameter to use external middlewares
 	- `middleware` API parameter now also accepts strings similar to `--middleware`
