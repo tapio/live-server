@@ -148,7 +148,9 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 }
 
 // Patch paths
-var dir = opts.root = process.argv[2] || "";
+opts.root = opts.root || process.argv[2] || process.cwd();
+if (opts.root) opts.root = path.resolve(opts.root);
+var dir = opts.root;
 
 if (opts.watch) {
 	opts.watch = opts.watch.map(function(relativePath) {
