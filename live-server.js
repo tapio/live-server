@@ -68,6 +68,10 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.ignorePattern = new RegExp(arg.substring(16));
 		process.argv.splice(i, 1);
 	}
+	else if (arg === "--no-css-inject") {
+		opts.noCssInject = true;
+		process.argv.splice(i, 1);
+	}
 	else if (arg === "--no-browser") {
 		opts.open = false;
 		process.argv.splice(i, 1);
@@ -139,7 +143,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--help" || arg === "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--no-css-inject] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--proxy=PATH] [PATH]');
 		process.exit();
 	}
 	else if (arg === "--test") {

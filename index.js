@@ -120,6 +120,7 @@ function entryPoint(staticHandler, file) {
  * @param watch {array} Paths to exclusively watch for changes
  * @param ignore {array} Paths to ignore when watching files for changes
  * @param ignorePattern {regexp} Ignore files by RegExp
+ * @param noCssInject Don't inject CSS changes, just reload as with any other file change
  * @param open {(string|string[])} Subpath(s) to open in browser, use false to suppress launch (default: server root)
  * @param mount {array} Mount directories onto a route, e.g. [['/components', './node_modules']].
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
@@ -148,6 +149,7 @@ LiveServer.start = function(options) {
 	var https = options.https || null;
 	var proxy = options.proxy || [];
 	var middleware = options.middleware || [];
+	var noCssInject = options.noCssInject
 
 	// Setup a web server
 	var app = connect();
@@ -343,7 +345,7 @@ LiveServer.start = function(options) {
 		ignoreInitial: true
 	});
 	function handleChange(changePath) {
-		var cssChange = path.extname(changePath) === ".css";
+		var cssChange = path.extname(changePath) === ".css" && !noCssInject;
 		if (LiveServer.logLevel >= 1) {
 			if (cssChange)
 				console.log("CSS change detected".magenta, changePath);

@@ -53,6 +53,7 @@ Command line parameters:
 * `--watch=PATH` - comma-separated string of paths to exclusively watch for changes (default: watch everything)
 * `--ignore=PATH` - comma-separated string of paths to ignore ([anymatch](https://github.com/es128/anymatch)-compatible definition)
 * `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`) (**DEPRECATED** in favor of `--ignore`)
+* `--no-css-inject` - reload page on CSS change, rather than injecting changed CSS
 * `--middleware=PATH` - path to .js file exporting a middleware function to add; can be a name without path nor extension to reference bundled middlewares in `middleware` folder
 * `--entry-file=PATH` - serve this file (server root relative) in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
