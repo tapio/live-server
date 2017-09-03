@@ -131,7 +131,7 @@ The server is a simple node app that serves the working directory and its subdir
 Contributing
 ------------
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+We welcome contributions! See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
 
 
 Version history
