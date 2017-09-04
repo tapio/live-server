@@ -149,7 +149,7 @@ LiveServer.start = function(options) {
 	var https = options.https || null;
 	var proxy = options.proxy || [];
 	var middleware = options.middleware || [];
-  var noCssInject = options.noCssInject;
+	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
 
 	if (httpsModule) {
