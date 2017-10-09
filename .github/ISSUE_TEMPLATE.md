@@ -4,6 +4,7 @@
 
 ## Software details
 
+* Command line used for launching `live-server`:
 * OS:
 * Browser (if browser related):
 * Node.js version:
