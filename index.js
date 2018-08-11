@@ -271,16 +271,30 @@ LiveServer.start = function(options) {
 			else return -1
 		}
 
-		const directoryComparison =
-			Number(b.stat && b.stat.isDirectory()) -
-			Number(a.stat && a.stat.isDirectory())
+		const aIsADirectory = a.stat && a.stat.isDirectory()
+		const bIsADirectory = b.stat && b.stat.isDirectory()
+		const directoryComparison = Number(bIsADirectory) - Number(aIsADirectory)
 
-		const aCanBeCastToANumber = !Number.isNaN(Number(a.name))
-		const bCanBeCastToANumber = !Number.isNaN(Number(b.name))
+		function stripFileExtension(filename) {
+			const splitFilename = filename.split('.')
+			return splitFilename.slice(0, splitFilename.length - 1).join('.')
+		}
+
+		let aParsedName = a.name
+		let bParsedName = b.name
+		if (!aIsADirectory) {
+			aParsedName = stripFileExtension(a.name)
+		}
+		if (!bIsADirectory) {
+			bParsedName = stripFileExtension(b.name)
+		}
+
+		const aCanBeCastToANumber = !Number.isNaN(Number(aParsedName))
+		const bCanBeCastToANumber = !Number.isNaN(Number(bParsedName))
 		const numberTypeComparison =
 			Number(aCanBeCastToANumber) - Number(bCanBeCastToANumber)
 		const numberValueComparison = getAscendingSortValue(
-			Number(a.name) - Number(b.name)
+			Number(aParsedName) - Number(bParsedName)
 		)
 		const numberComparison = numberTypeComparison || numberValueComparison
 		const stringComparison = String(a.name)
@@ -290,14 +304,20 @@ LiveServer.start = function(options) {
 		const returnValue =
 			directoryComparison || numberComparison || stringComparison
 
-		console.log(' - - - - - - - - - - - - ')
-		console.log('aCanBeCastToANumber', aCanBeCastToANumber)
-		console.log('bCanBeCastToANumber', bCanBeCastToANumber)
-		console.log('a.name', a.name)
-		console.log('b.name', b.name)
-		console.log('~~~')
-
 		if (aCanBeCastToANumber && bCanBeCastToANumber) {
+			console.log(' - - - - - - - - - - - - ')
+			console.log('aIsADirectory', aIsADirectory)
+			console.log('bIsADirectory', bIsADirectory)
+			console.log('~~~')
+			console.log('aCanBeCastToANumber', aCanBeCastToANumber)
+			console.log('bCanBeCastToANumber', bCanBeCastToANumber)
+			console.log('~~~')
+			console.log('a.name', a.name)
+			console.log('b.name', b.name)
+			console.log('~~~')
+			console.log('aParsedName', aParsedName)
+			console.log('bParsedName', bParsedName)
+			console.log('~~~')
 			console.log('numberTypeComparison', numberTypeComparison)
 			console.log('numberValueComparison', numberValueComparison)
 			console.log('~~~')
