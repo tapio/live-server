@@ -265,21 +265,49 @@ LiveServer.start = function(options) {
 			return a.name === b.name ? 0 : a.name === '..' ? -1 : 1
 		}
 
+		function getAscendingSortValue(d) {
+			if (d === 0) return 0
+			else if (d > 0) return 1
+			else return -1
+		}
+
 		const directoryComparison =
 			Number(b.stat && b.stat.isDirectory()) -
 			Number(a.stat && a.stat.isDirectory())
+
+		const aCanBeCastToANumber = !Number.isNaN(Number(a.name))
+		const bCanBeCastToANumber = !Number.isNaN(Number(b.name))
 		const numberTypeComparison =
-			Number(!Number.isNaN(a.name)) - Number(!Number.isNaN(b.name))
-		const numberValueComparison = Number(a.name) - Number(b.name)
+			Number(aCanBeCastToANumber) - Number(bCanBeCastToANumber)
+		const numberValueComparison = getAscendingSortValue(
+			Number(a.name) - Number(b.name)
+		)
+		const numberComparison = numberTypeComparison || numberValueComparison
 		const stringComparison = String(a.name)
 			.toLocaleLowerCase()
 			.localeCompare(String(b.name).toLocaleLowerCase())
 
-		return (
-			directoryComparison ||
-			(numberTypeComparison && numberValueComparison) ||
-			stringComparison
-		)
+		const returnValue =
+			directoryComparison || numberComparison || stringComparison
+
+		console.log(' - - - - - - - - - - - - ')
+		console.log('aCanBeCastToANumber', aCanBeCastToANumber)
+		console.log('bCanBeCastToANumber', bCanBeCastToANumber)
+		console.log('a.name', a.name)
+		console.log('b.name', b.name)
+		console.log('~~~')
+
+		if (aCanBeCastToANumber && bCanBeCastToANumber) {
+			console.log('numberTypeComparison', numberTypeComparison)
+			console.log('numberValueComparison', numberValueComparison)
+			console.log('~~~')
+			console.log('directoryComparison', directoryComparison)
+			console.log('numberComparison', numberComparison)
+			console.log('stringComparison', stringComparison)
+			console.log('returnValue from custom fileSort', returnValue)
+		}
+
+		return returnValue
 	}
 
 	app
