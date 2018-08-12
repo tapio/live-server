@@ -289,15 +289,14 @@ LiveServer.start = function(options) {
 			bParsedName = stripFileExtension(b.name)
 		}
 
-		let numberTypeComparison
+		// calculate numberTypeComparison sort value
 		const aCanBeCastToANumber = !Number.isNaN(Number(aParsedName))
 		const bCanBeCastToANumber = !Number.isNaN(Number(bParsedName))
-		const both = aCanBeCastToANumber && bCanBeCastToANumber
-		const neither = !aCanBeCastToANumber && !aCanBeCastToANumber
 		const onlyA = aCanBeCastToANumber && !bCanBeCastToANumber
 		const onlyB = !aCanBeCastToANumber && bCanBeCastToANumber
-		if (both || neither) numberTypeComparison = 0
-		else if (onlyA) numberTypeComparison = -1
+		// if both can be numbers or neither can be numbers
+		let numberTypeComparison = 0
+		if (onlyA) numberTypeComparison = -1
 		else if (onlyB) numberTypeComparison = 1
 
 		const numberValueComparison = getAscendingSortValue(
