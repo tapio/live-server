@@ -2,7 +2,7 @@
   "name": "live-server",
   "version": "1.2.0",
   "description": "simple development http server with live reload capability",
-    "keywords": [
+  "keywords": [
     "front-end",
     "development",
     "tool",
