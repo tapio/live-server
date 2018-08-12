@@ -2,7 +2,14 @@
   "name": "live-server",
   "version": "1.2.0",
   "description": "simple development http server with live reload capability",
-  "keywords": ["front-end", "development", "tool", "server", "http", "cli"],
+    "keywords": [
+    "front-end",
+    "development",
+    "tool",
+    "server",
+    "http",
+    "cli"
+  ],
   "author": "Tapio Vierros",
   "dependencies": {
     "chokidar": "^1.6.0",
