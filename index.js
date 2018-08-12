@@ -224,7 +224,7 @@ LiveServer.start = function(options) {
 			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
 	});
 
-	function fileSort(a, b) {
+	function indexPageSort(a, b) {
 	  // sort ".." to the top
 	  if (a.name === '..' || b.name === '..') {
 	    return a.name === b.name ? 0 : a.name === '..' ? -1 : 1;
@@ -309,7 +309,7 @@ LiveServer.start = function(options) {
 	    // console.log('numberComparison', numberComparison)
 	    console.log('stringComparison', stringComparison);
 	    console.log('~~~');
-	    console.log('returnValue from custom fileSort', returnValue);
+	    console.log('returnValue from custom indexPageSort', returnValue);
 	  }
 	
 	  return returnValue;
@@ -317,7 +317,7 @@ LiveServer.start = function(options) {
 
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
-		.use(serveIndex(root, { icons: true, sort: fileSort }));
+		.use(serveIndex(root, { icons: true, sort: indexPageSort }));
 
 	var server, protocol;
 	if (https !== null) {
