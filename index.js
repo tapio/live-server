@@ -265,54 +265,20 @@ LiveServer.start = function(options) {
 	  else if (onlyB) numberTypeComparison = 1;
 	
 	  var numberValueComparison = getAscendingSortValue(Number(aParsedName) - Number(bParsedName));
-	  // const numberComparison = numberTypeComparison || numberValueComparison
 	  var stringComparison = String(a.name).toLocaleLowerCase().localeCompare(String(b.name).toLocaleLowerCase());
 	
 	  var logCondition = (aCanBeCastToANumber && !bCanBeCastToANumber || !aCanBeCastToANumber && bCanBeCastToANumber) && aIsADirectory && bIsADirectory;
 	
-	  if (logCondition) console.log(' - - - - - - - - - - - - ');
-	
-	  var returnValue = void 0;
 	  if (directoryComparison !== 0) {
-	    if (logCondition) console.log('using directoryComparison for sort');
-	    returnValue = directoryComparison;
+	    return directoryComparison;
 	  } else if (aCanBeCastToANumber && bCanBeCastToANumber) {
-	    if (logCondition) console.log('using numberValueComparison for sort');
-	    returnValue = numberValueComparison;
+	    return numberValueComparison;
 	  } else if (numberTypeComparison !== 0) {
 	    // one can be cast to a number
 	    // and the other cannot
-	    if (logCondition) console.log('using numberTypeComparison for sort');
-	    returnValue = numberTypeComparison;
-	  } else {
-	    if (logCondition) console.log('using stringComparison for sort');
-	    returnValue = stringComparison;
-	  }
-	
-	  if (logCondition) {
-	    console.log('aIsADirectory', aIsADirectory);
-	    console.log('bIsADirectory', bIsADirectory);
-	    console.log('~~~');
-	    console.log('aCanBeCastToANumber', aCanBeCastToANumber);
-	    console.log('bCanBeCastToANumber', bCanBeCastToANumber);
-	    console.log('~~~');
-	    console.log('a.name', a.name);
-	    console.log('b.name', b.name);
-	    console.log('~~~');
-	    console.log('aParsedName', aParsedName);
-	    console.log('bParsedName', bParsedName);
-	    console.log('~~~');
-	    console.log('directoryComparison', directoryComparison);
-	    console.log('aCanBeCastToANumber && bCanBeCastToANumber', aCanBeCastToANumber && bCanBeCastToANumber);
-	    console.log('numberValueComparison', numberValueComparison);
-	    console.log('numberTypeComparison', numberTypeComparison);
-	    // console.log('numberComparison', numberComparison)
-	    console.log('stringComparison', stringComparison);
-	    console.log('~~~');
-	    console.log('returnValue from custom indexPageSort', returnValue);
-	  }
-	
-	  return returnValue;
+	    return numberTypeComparison;
+	  } 
+	  return stringComparison;
 	}
 
 	app.use(staticServerHandler) // Custom static server
