@@ -289,23 +289,51 @@ LiveServer.start = function(options) {
 			bParsedName = stripFileExtension(b.name)
 		}
 
+		let numberTypeComparison
 		const aCanBeCastToANumber = !Number.isNaN(Number(aParsedName))
 		const bCanBeCastToANumber = !Number.isNaN(Number(bParsedName))
-		const numberTypeComparison =
-			Number(aCanBeCastToANumber) - Number(bCanBeCastToANumber)
+		const both = aCanBeCastToANumber && bCanBeCastToANumber
+		const neither = !aCanBeCastToANumber && !aCanBeCastToANumber
+		const onlyA = aCanBeCastToANumber && !bCanBeCastToANumber
+		const onlyB = !aCanBeCastToANumber && bCanBeCastToANumber
+		if (both || neither) numberTypeComparison = 0
+		else if (onlyA) numberTypeComparison = -1
+		else if (onlyB) numberTypeComparison = 1
+
 		const numberValueComparison = getAscendingSortValue(
 			Number(aParsedName) - Number(bParsedName)
 		)
-		const numberComparison = numberTypeComparison || numberValueComparison
+		// const numberComparison = numberTypeComparison || numberValueComparison
 		const stringComparison = String(a.name)
 			.toLocaleLowerCase()
 			.localeCompare(String(b.name).toLocaleLowerCase())
 
-		const returnValue =
-			directoryComparison || numberComparison || stringComparison
+		const logCondition =
+			((aCanBeCastToANumber && !bCanBeCastToANumber) ||
+				(!aCanBeCastToANumber && bCanBeCastToANumber)) &&
+			aIsADirectory &&
+			bIsADirectory
 
-		if (aCanBeCastToANumber && bCanBeCastToANumber) {
-			console.log(' - - - - - - - - - - - - ')
+		if (logCondition) console.log(' - - - - - - - - - - - - ')
+
+		let returnValue
+		if (directoryComparison !== 0) {
+			if (logCondition) console.log('using directoryComparison for sort')
+			returnValue = directoryComparison
+		} else if (aCanBeCastToANumber && bCanBeCastToANumber) {
+			if (logCondition) console.log('using numberValueComparison for sort')
+			returnValue = numberValueComparison
+		} else if (numberTypeComparison !== 0) {
+			// one can be cast to a number
+			// and the other cannot
+			if (logCondition) console.log('using numberTypeComparison for sort')
+			returnValue = numberTypeComparison
+		} else {
+			if (logCondition) console.log('using stringComparison for sort')
+			returnValue = stringComparison
+		}
+
+		if (logCondition) {
 			console.log('aIsADirectory', aIsADirectory)
 			console.log('bIsADirectory', bIsADirectory)
 			console.log('~~~')
@@ -318,12 +346,16 @@ LiveServer.start = function(options) {
 			console.log('aParsedName', aParsedName)
 			console.log('bParsedName', bParsedName)
 			console.log('~~~')
-			console.log('numberTypeComparison', numberTypeComparison)
-			console.log('numberValueComparison', numberValueComparison)
-			console.log('~~~')
 			console.log('directoryComparison', directoryComparison)
-			console.log('numberComparison', numberComparison)
+			console.log(
+				'aCanBeCastToANumber && bCanBeCastToANumber',
+				aCanBeCastToANumber && bCanBeCastToANumber
+			)
+			console.log('numberValueComparison', numberValueComparison)
+			console.log('numberTypeComparison', numberTypeComparison)
+			// console.log('numberComparison', numberComparison)
 			console.log('stringComparison', stringComparison)
+			console.log('~~~')
 			console.log('returnValue from custom fileSort', returnValue)
 		}
 
