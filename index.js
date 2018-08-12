@@ -9,102 +9,83 @@ var fs = require('fs'),
 	http = require('http'),
 	send = require('send'),
 	open = require('opn'),
-	es = require('event-stream'),
+	es = require("event-stream"),
 	os = require('os'),
-	chokidar = require('chokidar')
-require('colors')
+	chokidar = require('chokidar');
+require('colors');
 
-var INJECTED_CODE = fs.readFileSync(
-	path.join(__dirname, 'injected.html'),
-	'utf8'
-)
+var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
 
 var LiveServer = {
 	server: null,
 	watcher: null,
 	logLevel: 2
-}
+};
 
-function escape(html) {
+function escape(html){
 	return String(html)
 		.replace(/&(?!\w+;)/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
+		.replace(/"/g, '&quot;');
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
 function staticServer(root) {
-	var isFile = false
-	try {
-		// For supporting mounting files instead of just directories
-		isFile = fs.statSync(root).isFile()
+	var isFile = false;
+	try { // For supporting mounting files instead of just directories
+		isFile = fs.statSync(root).isFile();
 	} catch (e) {
-		if (e.code !== 'ENOENT') throw e
+		if (e.code !== "ENOENT") throw e;
 	}
 	return function(req, res, next) {
-		if (req.method !== 'GET' && req.method !== 'HEAD') return next()
-		var reqpath = isFile ? '' : url.parse(req.url).pathname
-		var hasNoOrigin = !req.headers.origin
-		var injectCandidates = [
-			new RegExp('</body>', 'i'),
-			new RegExp('</svg>'),
-			new RegExp('</head>', 'i')
-		]
-		var injectTag = null
+		if (req.method !== "GET" && req.method !== "HEAD") return next();
+		var reqpath = isFile ? "" : url.parse(req.url).pathname;
+		var hasNoOrigin = !req.headers.origin;
+		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>"), new RegExp("</head>", "i")];
+		var injectTag = null;
 
 		function directory() {
-			var pathname = url.parse(req.originalUrl).pathname
-			res.statusCode = 301
-			res.setHeader('Location', pathname + '/')
-			res.end('Redirecting to ' + escape(pathname) + '/')
+			var pathname = url.parse(req.originalUrl).pathname;
+			res.statusCode = 301;
+			res.setHeader('Location', pathname + '/');
+			res.end('Redirecting to ' + escape(pathname) + '/');
 		}
 
 		function file(filepath /*, stat*/) {
-			var x = path.extname(filepath).toLocaleLowerCase(),
-				match,
-				possibleExtensions = ['', '.html', '.htm', '.xhtml', '.php', '.svg']
-			if (hasNoOrigin && possibleExtensions.indexOf(x) > -1) {
+			var x = path.extname(filepath).toLocaleLowerCase(), match,
+					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
+			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
-				var contents = fs.readFileSync(filepath, 'utf8')
+				var contents = fs.readFileSync(filepath, "utf8");
 				for (var i = 0; i < injectCandidates.length; ++i) {
-					match = injectCandidates[i].exec(contents)
+					match = injectCandidates[i].exec(contents);
 					if (match) {
-						injectTag = match[0]
-						break
+						injectTag = match[0];
+						break;
 					}
 				}
 				if (injectTag === null && LiveServer.logLevel >= 3) {
-					console.warn(
-						'Failed to inject refresh script!'.yellow,
-						"Couldn't find any of the tags ",
-						injectCandidates,
-						'from',
-						filepath
-					)
+					console.warn("Failed to inject refresh script!".yellow,
+						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
 				}
 			}
 		}
 
 		function error(err) {
-			if (err.status === 404) return next()
-			next(err)
+			if (err.status === 404) return next();
+			next(err);
 		}
 
 		function inject(stream) {
 			if (injectTag) {
 				// We need to modify the length given to browser
-				var len = INJECTED_CODE.length + res.getHeader('Content-Length')
-				res.setHeader('Content-Length', len)
-				var originalPipe = stream.pipe
+				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
+				res.setHeader('Content-Length', len);
+				var originalPipe = stream.pipe;
 				stream.pipe = function(resp) {
-					originalPipe
-						.call(
-							stream,
-							es.replace(new RegExp(injectTag, 'i'), INJECTED_CODE + injectTag)
-						)
-						.pipe(resp)
-				}
+					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(resp);
+				};
 			}
 		}
 
@@ -113,8 +94,8 @@ function staticServer(root) {
 			.on('directory', directory)
 			.on('file', file)
 			.on('stream', inject)
-			.pipe(res)
-	}
+			.pipe(res);
+	};
 }
 
 /**
@@ -123,15 +104,12 @@ function staticServer(root) {
  * @param file {string} Path to the entry point file
  */
 function entryPoint(staticHandler, file) {
-	if (!file)
-		return function(req, res, next) {
-			next()
-		}
+	if (!file) return function(req, res, next) { next(); };
 
 	return function(req, res, next) {
-		req.url = '/' + file
-		staticHandler(req, res, next)
-	}
+		req.url = "/" + file;
+		staticHandler(req, res, next);
+	};
 }
 
 /**
@@ -152,398 +130,362 @@ function entryPoint(staticHandler, file) {
  * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
  */
 LiveServer.start = function(options) {
-	options = options || {}
-	var host = options.host || '0.0.0.0'
-	var port = options.port !== undefined ? options.port : 8080 // 0 means random
-	var root = options.root || process.cwd()
-	var mount = options.mount || []
-	var watchPaths = options.watch || [root]
-	LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel
-	var openPath =
-		options.open === undefined || options.open === true
-			? ''
-			: options.open === null || options.open === false ? null : options.open
-	if (options.noBrowser) openPath = null // Backwards compatibility with 0.7.0
-	var file = options.file
-	var staticServerHandler = staticServer(root)
-	var wait = options.wait === undefined ? 100 : options.wait
-	var browser = options.browser || null
-	var htpasswd = options.htpasswd || null
-	var cors = options.cors || false
-	var https = options.https || null
-	var proxy = options.proxy || []
-	var middleware = options.middleware || []
-	var noCssInject = options.noCssInject
-	var httpsModule = options.httpsModule
+	options = options || {};
+	var host = options.host || '0.0.0.0';
+	var port = options.port !== undefined ? options.port : 8080; // 0 means random
+	var root = options.root || process.cwd();
+	var mount = options.mount || [];
+	var watchPaths = options.watch || [root];
+	LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
+	var openPath = (options.open === undefined || options.open === true) ?
+		"" : ((options.open === null || options.open === false) ? null : options.open);
+	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
+	var file = options.file;
+	var staticServerHandler = staticServer(root);
+	var wait = options.wait === undefined ? 100 : options.wait;
+	var browser = options.browser || null;
+	var htpasswd = options.htpasswd || null;
+	var cors = options.cors || false;
+	var https = options.https || null;
+	var proxy = options.proxy || [];
+	var middleware = options.middleware || [];
+	var noCssInject = options.noCssInject;
+	var httpsModule = options.httpsModule;
 
 	if (httpsModule) {
 		try {
-			require.resolve(httpsModule)
+			require.resolve(httpsModule);
 		} catch (e) {
-			console.error(
-				('HTTPS module "' + httpsModule + '" you\'ve provided was not found.')
-					.red
-			)
-			console.error('Did you do', '"npm install ' + httpsModule + '"?')
-			return
+			console.error(("HTTPS module \"" + httpsModule + "\" you've provided was not found.").red);
+			console.error("Did you do", "\"npm install " + httpsModule + "\"?");
+			return;
 		}
 	} else {
-		httpsModule = 'https'
+		httpsModule = "https";
 	}
 
 	// Setup a web server
-	var app = connect()
+	var app = connect();
 
 	// Add logger. Level 2 logs only errors
 	if (LiveServer.logLevel === 2) {
-		app.use(
-			logger('dev', {
-				skip: function(req, res) {
-					return res.statusCode < 400
-				}
-			})
-		)
-		// Level 2 or above logs all requests
+		app.use(logger('dev', {
+			skip: function (req, res) { return res.statusCode < 400; }
+		}));
+	// Level 2 or above logs all requests
 	} else if (LiveServer.logLevel > 2) {
-		app.use(logger('dev'))
+		app.use(logger('dev'));
 	}
 	if (options.spa) {
-		middleware.push('spa')
+		middleware.push("spa");
 	}
 	// Add middleware
 	middleware.map(function(mw) {
-		if (typeof mw === 'string') {
-			var ext = path.extname(mw).toLocaleLowerCase()
-			if (ext !== '.js') {
-				mw = require(path.join(__dirname, 'middleware', mw + '.js'))
+		if (typeof mw === "string") {
+			var ext = path.extname(mw).toLocaleLowerCase();
+			if (ext !== ".js") {
+				mw = require(path.join(__dirname, "middleware", mw + ".js"));
 			} else {
-				mw = require(mw)
+				mw = require(mw);
 			}
 		}
-		app.use(mw)
-	})
+		app.use(mw);
+	});
 
 	// Use http-auth if configured
 	if (htpasswd !== null) {
-		var auth = require('http-auth')
+		var auth = require('http-auth');
 		var basic = auth.basic({
-			realm: 'Please authorize',
+			realm: "Please authorize",
 			file: htpasswd
-		})
-		app.use(auth.connect(basic))
+		});
+		app.use(auth.connect(basic));
 	}
 	if (cors) {
-		app.use(
-			require('cors')({
-				origin: true, // reflecting request origin
-				credentials: true // allowing requests with credentials
-			})
-		)
+		app.use(require("cors")({
+			origin: true, // reflecting request origin
+			credentials: true // allowing requests with credentials
+		}));
 	}
 	mount.forEach(function(mountRule) {
-		var mountPath = path.resolve(process.cwd(), mountRule[1])
-		if (
-			!options.watch // Auto add mount paths to wathing but only if exclusive path option is not given
-		)
-			watchPaths.push(mountPath)
-		app.use(mountRule[0], staticServer(mountPath))
+		var mountPath = path.resolve(process.cwd(), mountRule[1]);
+		if (!options.watch) // Auto add mount paths to wathing but only if exclusive path option is not given
+			watchPaths.push(mountPath);
+		app.use(mountRule[0], staticServer(mountPath));
 		if (LiveServer.logLevel >= 1)
-			console.log('Mapping %s to "%s"', mountRule[0], mountPath)
-	})
+			console.log('Mapping %s to "%s"', mountRule[0], mountPath);
+	});
 	proxy.forEach(function(proxyRule) {
-		var proxyOpts = url.parse(proxyRule[1])
-		proxyOpts.via = true
-		proxyOpts.preserveHost = true
-		app.use(proxyRule[0], require('proxy-middleware')(proxyOpts))
+		var proxyOpts = url.parse(proxyRule[1]);
+		proxyOpts.via = true;
+		proxyOpts.preserveHost = true;
+		app.use(proxyRule[0], require('proxy-middleware')(proxyOpts));
 		if (LiveServer.logLevel >= 1)
-			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1])
-	})
+			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
+	});
 
 	function fileSort(a, b) {
-		// sort ".." to the top
-		if (a.name === '..' || b.name === '..') {
-			return a.name === b.name ? 0 : a.name === '..' ? -1 : 1
-		}
-
-		function getAscendingSortValue(d) {
-			if (d === 0) return 0
-			else if (d > 0) return 1
-			else return -1
-		}
-
-		const aIsADirectory = a.stat && a.stat.isDirectory()
-		const bIsADirectory = b.stat && b.stat.isDirectory()
-		const directoryComparison = Number(bIsADirectory) - Number(aIsADirectory)
-
-		function stripFileExtension(filename) {
-			const splitFilename = filename.split('.')
-			return splitFilename.slice(0, splitFilename.length - 1).join('.')
-		}
-
-		let aParsedName = a.name
-		let bParsedName = b.name
-		if (!aIsADirectory) {
-			aParsedName = stripFileExtension(a.name)
-		}
-		if (!bIsADirectory) {
-			bParsedName = stripFileExtension(b.name)
-		}
-
-		// calculate numberTypeComparison sort value
-		const aCanBeCastToANumber = !Number.isNaN(Number(aParsedName))
-		const bCanBeCastToANumber = !Number.isNaN(Number(bParsedName))
-		const onlyA = aCanBeCastToANumber && !bCanBeCastToANumber
-		const onlyB = !aCanBeCastToANumber && bCanBeCastToANumber
-		// if both can be numbers or neither can be numbers
-		let numberTypeComparison = 0
-		if (onlyA) numberTypeComparison = -1
-		else if (onlyB) numberTypeComparison = 1
-
-		const numberValueComparison = getAscendingSortValue(
-			Number(aParsedName) - Number(bParsedName)
-		)
-		// const numberComparison = numberTypeComparison || numberValueComparison
-		const stringComparison = String(a.name)
-			.toLocaleLowerCase()
-			.localeCompare(String(b.name).toLocaleLowerCase())
-
-		const logCondition =
-			((aCanBeCastToANumber && !bCanBeCastToANumber) ||
-				(!aCanBeCastToANumber && bCanBeCastToANumber)) &&
-			aIsADirectory &&
-			bIsADirectory
-
-		if (logCondition) console.log(' - - - - - - - - - - - - ')
-
-		let returnValue
-		if (directoryComparison !== 0) {
-			if (logCondition) console.log('using directoryComparison for sort')
-			returnValue = directoryComparison
-		} else if (aCanBeCastToANumber && bCanBeCastToANumber) {
-			if (logCondition) console.log('using numberValueComparison for sort')
-			returnValue = numberValueComparison
-		} else if (numberTypeComparison !== 0) {
-			// one can be cast to a number
-			// and the other cannot
-			if (logCondition) console.log('using numberTypeComparison for sort')
-			returnValue = numberTypeComparison
-		} else {
-			if (logCondition) console.log('using stringComparison for sort')
-			returnValue = stringComparison
-		}
-
-		if (logCondition) {
-			console.log('aIsADirectory', aIsADirectory)
-			console.log('bIsADirectory', bIsADirectory)
-			console.log('~~~')
-			console.log('aCanBeCastToANumber', aCanBeCastToANumber)
-			console.log('bCanBeCastToANumber', bCanBeCastToANumber)
-			console.log('~~~')
-			console.log('a.name', a.name)
-			console.log('b.name', b.name)
-			console.log('~~~')
-			console.log('aParsedName', aParsedName)
-			console.log('bParsedName', bParsedName)
-			console.log('~~~')
-			console.log('directoryComparison', directoryComparison)
-			console.log(
-				'aCanBeCastToANumber && bCanBeCastToANumber',
-				aCanBeCastToANumber && bCanBeCastToANumber
-			)
-			console.log('numberValueComparison', numberValueComparison)
-			console.log('numberTypeComparison', numberTypeComparison)
-			// console.log('numberComparison', numberComparison)
-			console.log('stringComparison', stringComparison)
-			console.log('~~~')
-			console.log('returnValue from custom fileSort', returnValue)
-		}
-
-		return returnValue
+	  // sort ".." to the top
+	  if (a.name === '..' || b.name === '..') {
+	    return a.name === b.name ? 0 : a.name === '..' ? -1 : 1;
+	  }
+	
+	  function getAscendingSortValue(d) {
+	    if (d === 0) return 0;
+	    else if (d > 0) return 1;
+	    else return -1;
+	  }
+	
+	  var aIsADirectory = a.stat && a.stat.isDirectory();
+	  var bIsADirectory = b.stat && b.stat.isDirectory();
+	  var directoryComparison = Number(bIsADirectory) - Number(aIsADirectory);
+	
+	  function stripFileExtension(filename) {
+	    var splitFilename = filename.split('.');
+	    return splitFilename.slice(0, splitFilename.length - 1).join('.');
+	  }
+	
+	  var aParsedName = a.name;
+	  var bParsedName = b.name;
+	  if (!aIsADirectory) {
+	    aParsedName = stripFileExtension(a.name);
+	  }
+	  if (!bIsADirectory) {
+	    bParsedName = stripFileExtension(b.name);
+	  }
+	
+	  // calculate numberTypeComparison sort value
+	  var aCanBeCastToANumber = !Number.isNaN(Number(aParsedName));
+	  var bCanBeCastToANumber = !Number.isNaN(Number(bParsedName));
+	  var onlyA = aCanBeCastToANumber && !bCanBeCastToANumber;
+	  var onlyB = !aCanBeCastToANumber && bCanBeCastToANumber;
+	  // if both can be numbers or neither can be numbers
+	  var numberTypeComparison = 0;
+	  if (onlyA) numberTypeComparison = -1;
+	  else if (onlyB) numberTypeComparison = 1;
+	
+	  var numberValueComparison = getAscendingSortValue(Number(aParsedName) - Number(bParsedName));
+	  // const numberComparison = numberTypeComparison || numberValueComparison
+	  var stringComparison = String(a.name).toLocaleLowerCase().localeCompare(String(b.name).toLocaleLowerCase());
+	
+	  var logCondition = (aCanBeCastToANumber && !bCanBeCastToANumber || !aCanBeCastToANumber && bCanBeCastToANumber) && aIsADirectory && bIsADirectory;
+	
+	  if (logCondition) console.log(' - - - - - - - - - - - - ');
+	
+	  var returnValue = void 0;
+	  if (directoryComparison !== 0) {
+	    if (logCondition) console.log('using directoryComparison for sort');
+	    returnValue = directoryComparison;
+	  } else if (aCanBeCastToANumber && bCanBeCastToANumber) {
+	    if (logCondition) console.log('using numberValueComparison for sort');
+	    returnValue = numberValueComparison;
+	  } else if (numberTypeComparison !== 0) {
+	    // one can be cast to a number
+	    // and the other cannot
+	    if (logCondition) console.log('using numberTypeComparison for sort');
+	    returnValue = numberTypeComparison;
+	  } else {
+	    if (logCondition) console.log('using stringComparison for sort');
+	    returnValue = stringComparison;
+	  }
+	
+	  if (logCondition) {
+	    console.log('aIsADirectory', aIsADirectory);
+	    console.log('bIsADirectory', bIsADirectory);
+	    console.log('~~~');
+	    console.log('aCanBeCastToANumber', aCanBeCastToANumber);
+	    console.log('bCanBeCastToANumber', bCanBeCastToANumber);
+	    console.log('~~~');
+	    console.log('a.name', a.name);
+	    console.log('b.name', b.name);
+	    console.log('~~~');
+	    console.log('aParsedName', aParsedName);
+	    console.log('bParsedName', bParsedName);
+	    console.log('~~~');
+	    console.log('directoryComparison', directoryComparison);
+	    console.log('aCanBeCastToANumber && bCanBeCastToANumber', aCanBeCastToANumber && bCanBeCastToANumber);
+	    console.log('numberValueComparison', numberValueComparison);
+	    console.log('numberTypeComparison', numberTypeComparison);
+	    // console.log('numberComparison', numberComparison)
+	    console.log('stringComparison', stringComparison);
+	    console.log('~~~');
+	    console.log('returnValue from custom fileSort', returnValue);
+	  }
+	
+	  return returnValue;
 	}
 
-	app
-		.use(staticServerHandler) // Custom static server
+	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
-		.use(serveIndex(root, { icons: true, sort: fileSort }))
+		.use(serveIndex(root, { icons: true, sort: fileSort }));
 
-	var server, protocol
+	var server, protocol;
 	if (https !== null) {
-		var httpsConfig = https
-		if (typeof https === 'string') {
-			httpsConfig = require(path.resolve(process.cwd(), https))
+		var httpsConfig = https;
+		if (typeof https === "string") {
+			httpsConfig = require(path.resolve(process.cwd(), https));
 		}
-		server = require(httpsModule).createServer(httpsConfig, app)
-		protocol = 'https'
+		server = require(httpsModule).createServer(httpsConfig, app);
+		protocol = "https";
 	} else {
-		server = http.createServer(app)
-		protocol = 'http'
+		server = http.createServer(app);
+		protocol = "http";
 	}
 
 	// Handle server startup errors
 	server.addListener('error', function(e) {
 		if (e.code === 'EADDRINUSE') {
-			var serveURL = protocol + '://' + host + ':' + port
-			console.log('%s is already in use. Trying another port.'.yellow, serveURL)
+			var serveURL = protocol + '://' + host + ':' + port;
+			console.log('%s is already in use. Trying another port.'.yellow, serveURL);
 			setTimeout(function() {
-				server.listen(0, host)
-			}, 1000)
+				server.listen(0, host);
+			}, 1000);
 		} else {
-			console.error(e.toString().red)
-			LiveServer.shutdown()
+			console.error(e.toString().red);
+			LiveServer.shutdown();
 		}
-	})
+	});
 
 	// Handle successful server
-	server.addListener(
-		'listening',
-		function(/*e*/) {
-			LiveServer.server = server
+	server.addListener('listening', function(/*e*/) {
+		LiveServer.server = server;
 
-			var address = server.address()
-			var serveHost =
-				address.address === '0.0.0.0' ? '127.0.0.1' : address.address
-			var openHost = host === '0.0.0.0' ? '127.0.0.1' : host
+		var address = server.address();
+		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
+		var openHost = host === "0.0.0.0" ? "127.0.0.1" : host;
 
-			var serveURL = protocol + '://' + serveHost + ':' + address.port
-			var openURL = protocol + '://' + openHost + ':' + address.port
+		var serveURL = protocol + '://' + serveHost + ':' + address.port;
+		var openURL = protocol + '://' + openHost + ':' + address.port;
 
-			var serveURLs = [serveURL]
-			if (LiveServer.logLevel > 2 && address.address === '0.0.0.0') {
-				var ifaces = os.networkInterfaces()
-				serveURLs = Object.keys(ifaces)
-					.map(function(iface) {
-						return ifaces[iface]
-					})
-					// flatten address data, use only IPv4
-					.reduce(function(data, addresses) {
-						addresses
-							.filter(function(addr) {
-								return addr.family === 'IPv4'
-							})
-							.forEach(function(addr) {
-								data.push(addr)
-							})
-						return data
-					}, [])
-					.map(function(addr) {
-						return protocol + '://' + addr.address + ':' + address.port
-					})
-			}
-
-			// Output
-			if (LiveServer.logLevel >= 1) {
-				if (serveURL === openURL)
-					if (serveURLs.length === 1) {
-						console.log('Serving "%s" at %s'.green, root, serveURLs[0])
-					} else {
-						console.log(
-							'Serving "%s" at\n\t%s'.green,
-							root,
-							serveURLs.join('\n\t')
-						)
-					}
-				else
-					console.log('Serving "%s" at %s (%s)'.green, root, openURL, serveURL)
-			}
-
-			// Launch browser
-			if (openPath !== null)
-				if (typeof openPath === 'object') {
-					openPath.forEach(function(p) {
-						open(openURL + p, { app: browser })
-					})
-				} else {
-					open(openURL + openPath, { app: browser })
-				}
+		var serveURLs = [ serveURL ];
+		if (LiveServer.logLevel > 2 && address.address === "0.0.0.0") {
+			var ifaces = os.networkInterfaces();
+			serveURLs = Object.keys(ifaces)
+				.map(function(iface) {
+					return ifaces[iface];
+				})
+				// flatten address data, use only IPv4
+				.reduce(function(data, addresses) {
+					addresses.filter(function(addr) {
+						return addr.family === "IPv4";
+					}).forEach(function(addr) {
+						data.push(addr);
+					});
+					return data;
+				}, [])
+				.map(function(addr) {
+					return protocol + "://" + addr.address + ":" + address.port;
+				});
 		}
-	)
+
+		// Output
+		if (LiveServer.logLevel >= 1) {
+			if (serveURL === openURL)
+				if (serveURLs.length === 1) {
+					console.log(("Serving \"%s\" at %s").green, root, serveURLs[0]);
+				} else {
+					console.log(("Serving \"%s\" at\n\t%s").green, root, serveURLs.join("\n\t"));
+				}
+			else
+				console.log(("Serving \"%s\" at %s (%s)").green, root, openURL, serveURL);
+		}
+
+		// Launch browser
+		if (openPath !== null)
+			if (typeof openPath === "object") {
+				openPath.forEach(function(p) {
+					open(openURL + p, {app: browser});
+				});
+			} else {
+				open(openURL + openPath, {app: browser});
+			}
+	});
 
 	// Setup server to listen at port
-	server.listen(port, host)
+	server.listen(port, host);
 
 	// WebSocket
-	var clients = []
+	var clients = [];
 	server.addListener('upgrade', function(request, socket, head) {
-		var ws = new WebSocket(request, socket, head)
-		ws.onopen = function() {
-			ws.send('connected')
-		}
+		var ws = new WebSocket(request, socket, head);
+		ws.onopen = function() { ws.send('connected'); };
 
 		if (wait > 0) {
-			;(function() {
-				var wssend = ws.send
-				var waitTimeout
+			(function() {
+				var wssend = ws.send;
+				var waitTimeout;
 				ws.send = function() {
-					var args = arguments
-					if (waitTimeout) clearTimeout(waitTimeout)
-					waitTimeout = setTimeout(function() {
-						wssend.apply(ws, args)
-					}, wait)
-				}
-			})()
+					var args = arguments;
+					if (waitTimeout) clearTimeout(waitTimeout);
+					waitTimeout = setTimeout(function(){
+						wssend.apply(ws, args);
+					}, wait);
+				};
+			})();
 		}
 
 		ws.onclose = function() {
-			clients = clients.filter(function(x) {
-				return x !== ws
-			})
-		}
+			clients = clients.filter(function (x) {
+				return x !== ws;
+			});
+		};
 
-		clients.push(ws)
-	})
+		clients.push(ws);
+	});
 
 	var ignored = [
-		function(testPath) {
-			// Always ignore dotfiles (important e.g. because editor hidden temp files)
-			return (
-				testPath !== '.' && /(^[.#]|(?:__|~)$)/.test(path.basename(testPath))
-			)
+		function(testPath) { // Always ignore dotfiles (important e.g. because editor hidden temp files)
+			return testPath !== "." && /(^[.#]|(?:__|~)$)/.test(path.basename(testPath));
 		}
-	]
+	];
 	if (options.ignore) {
-		ignored = ignored.concat(options.ignore)
+		ignored = ignored.concat(options.ignore);
 	}
 	if (options.ignorePattern) {
-		ignored.push(options.ignorePattern)
+		ignored.push(options.ignorePattern);
 	}
 	// Setup file watcher
 	LiveServer.watcher = chokidar.watch(watchPaths, {
 		ignored: ignored,
 		ignoreInitial: true
-	})
+	});
 	function handleChange(changePath) {
-		var cssChange = path.extname(changePath) === '.css' && !noCssInject
+		var cssChange = path.extname(changePath) === ".css" && !noCssInject;
 		if (LiveServer.logLevel >= 1) {
-			if (cssChange) console.log('CSS change detected'.magenta, changePath)
-			else console.log('Change detected'.cyan, changePath)
+			if (cssChange)
+				console.log("CSS change detected".magenta, changePath);
+			else console.log("Change detected".cyan, changePath);
 		}
 		clients.forEach(function(ws) {
-			if (ws) ws.send(cssChange ? 'refreshcss' : 'reload')
-		})
+			if (ws)
+				ws.send(cssChange ? 'refreshcss' : 'reload');
+		});
 	}
 	LiveServer.watcher
-		.on('change', handleChange)
-		.on('add', handleChange)
-		.on('unlink', handleChange)
-		.on('addDir', handleChange)
-		.on('unlinkDir', handleChange)
-		.on('ready', function() {
-			if (LiveServer.logLevel >= 1) console.log('Ready for changes'.cyan)
+		.on("change", handleChange)
+		.on("add", handleChange)
+		.on("unlink", handleChange)
+		.on("addDir", handleChange)
+		.on("unlinkDir", handleChange)
+		.on("ready", function () {
+			if (LiveServer.logLevel >= 1)
+				console.log("Ready for changes".cyan);
 		})
-		.on('error', function(err) {
-			console.log('ERROR:'.red, err)
-		})
+		.on("error", function (err) {
+			console.log("ERROR:".red, err);
+		});
 
-	return server
-}
+	return server;
+};
 
 LiveServer.shutdown = function() {
-	var watcher = LiveServer.watcher
+	var watcher = LiveServer.watcher;
 	if (watcher) {
-		watcher.close()
+		watcher.close();
 	}
-	var server = LiveServer.server
-	if (server) server.close()
-}
+	var server = LiveServer.server;
+	if (server)
+		server.close();
+};
 
-module.exports = LiveServer
+module.exports = LiveServer;
