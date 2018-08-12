@@ -24,7 +24,7 @@
     "opn": "latest",
     "proxy-middleware": "latest",
     "send": "latest",
-    "serve-index": "^1.7.2"
+    "serve-index": "micahstubbs/serve-index#micah/35/sort"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
