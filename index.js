@@ -79,12 +79,18 @@ function staticServer(root) {
 
 		function inject(stream) {
 			if (injectTag) {
-				// We need to modify the length given to browser
-				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
-				res.setHeader('Content-Length', len);
 				var originalPipe = stream.pipe;
 				stream.pipe = function(resp) {
-					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(resp);
+					originalPipe.call(stream, es.through(
+						function (data) {
+							var str = data.toString().replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)
+							// We need to modify the length given to browser
+							// before data emitted
+							res.setHeader('Content-Length', str.length);
+							this.emit('data', str)
+						}
+					))
+					.pipe(resp);
 				};
 			}
 		}
