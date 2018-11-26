@@ -12,7 +12,7 @@
   ],
   "author": "Tapio Vierros",
   "dependencies": {
-    "chokidar": "^1.6.0",
+    "chokidar": "^2.0.4",
     "colors": "latest",
     "connect": "^3.6.6",
     "cors": "latest",
@@ -27,15 +27,15 @@
     "serve-index": "^1.9.1"
   },
   "devDependencies": {
-    "eslint": "^3.13.0",
+    "eslint": "^5.9.0",
     "jshint": "^2.9.6",
-    "mocha": "^3.2.0",
-    "supertest": "^2.0.1"
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
   },
   "scripts": {
     "lint": "eslint live-server.js index.js",
     "hint": "jshint live-server.js index.js",
-    "test": "mocha test && npm run lint"
+    "test": "mocha test --exit && npm run lint"
   },
   "bin": {
     "live-server": "./live-server.js"
