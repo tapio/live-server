@@ -62,6 +62,7 @@ Command line parameters:
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--cors` - Enables CORS for any origin (reflects request origin, requests with credentials are supported)
 * `--https=PATH` - PATH to a HTTPS configuration module
+* `--https-module=MODULE_NAME` - Custom HTTPS module (e.g. `spdy`)
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
@@ -83,7 +84,7 @@ var params = {
 	root: "/public", // Set root directory that's being served. Defaults to cwd.
 	open: false, // When false, it won't load your browser by default.
 	ignore: 'scss,my/templates', // comma-separated string for paths to ignore
-	file: "index.html", // When set, serve this file for every 404 (useful for single-page applications)
+	file: "index.html", // When set, serve this file (server root relative) for every 404 (useful for single-page applications)
 	wait: 1000, // Waits for all changes, before reloading. Defaults to 0 sec.
 	mount: [['/components', './node_modules']], // Mount a directory to a route.
 	logLevel: 2, // 0 = errors only, 1 = some, 2 = lots
@@ -112,6 +113,18 @@ module.exports = {
 
 If using the node API, you can also directly pass a configuration object instead of a path to the module.
 
+HTTP/2
+---------------
+
+To get HTTP/2 support one can provide a custom HTTPS module via `--https-module` CLI parameter (`httpsModule` option for Node.js script). **Be sure to install the module first.**
+HTTP/2 unencrypted mode is not supported by browsers, thus not supported by `live-server`. See [this question](https://http2.github.io/faq/#does-http2-require-encryption) and [can I use page on HTTP/2](http://caniuse.com/#search=http2) for more details.
+
+For example from CLI(bash):
+
+	live-server \
+		--https=path/to/https.conf.js \
+		--https-module=spdy \
+		my-app-folder/
 
 Troubleshooting
 ---------------
