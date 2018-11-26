@@ -42,8 +42,9 @@ function staticServer(root) {
 		if (req.method !== "GET" && req.method !== "HEAD") return next();
 		var reqpath = isFile ? "" : url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
-		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>"), new RegExp("</head>", "i")];
+		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>", "g"), new RegExp("</head>", "i")];
 		var injectTag = null;
+		var injectCount = 0
 
 		function directory() {
 			var pathname = url.parse(req.originalUrl).pathname;
@@ -53,15 +54,16 @@ function staticServer(root) {
 		}
 
 		function file(filepath /*, stat*/) {
-			var x = path.extname(filepath).toLocaleLowerCase(), match,
+			var x = path.extname(filepath).toLocaleLowerCase(), matches,
 					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
 			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
 				for (var i = 0; i < injectCandidates.length; ++i) {
-					match = injectCandidates[i].exec(contents);
-					if (match) {
-						injectTag = match[0];
+					matches = contents.match(injectCandidates[i]);
+					injectCount = matches && matches.length || 0
+					if (injectCount) {
+						injectTag = matches[0];
 						break;
 					}
 				}
@@ -80,7 +82,7 @@ function staticServer(root) {
 		function inject(stream) {
 			if (injectTag) {
 				// We need to modify the length given to browser
-				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
+				var len = INJECTED_CODE.length * injectCount + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
 				var originalPipe = stream.pipe;
 				stream.pipe = function(resp) {
