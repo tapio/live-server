@@ -30,6 +30,14 @@ function escape(html){
 		.replace(/"/g, '&quot;');
 }
 
+function prefixSlash(part) {
+	if (!part || !part.length)
+		return "/";
+	else if (part[0] !== '/')
+		return "/" + part;
+	return part;
+}
+
 // Based on connect.static(), but streamlined and with added code injecter
 function staticServer(root) {
 	var isFile = false;
@@ -99,6 +107,25 @@ function staticServer(root) {
 }
 
 /**
+ * Check that the URL contains the required base and rewrite without it.
+ * @param staticHandler {function} Next handler
+ * @param base {string} Path prefix
+ */
+function baseHandler(staticHandler, base) {
+	if (!base) return staticHandler;
+	base = prefixSlash(base);
+	return function (req, res, next) {
+		if (req.url.lastIndexOf(base, 0) === 0) {
+			req.url = prefixSlash(req.url.substring(base.length));
+			staticHandler(req, res, next);
+			return;
+		}
+		req.url = "base_not_included"; // forcing a 404, maybe there is a better way?
+		staticHandler(req, res, next);
+	};
+}
+
+/**
  * Rewrite request URL and pass it back to the static handler.
  * @param staticHandler {function} Next handler
  * @param file {string} Path to the entry point file
@@ -123,6 +150,7 @@ function entryPoint(staticHandler, file) {
  * @param noCssInject Don't inject CSS changes, just reload as with any other file change
  * @param open {(string|string[])} Subpath(s) to open in browser, use false to suppress launch (default: server root)
  * @param mount {array} Mount directories onto a route, e.g. [['/components', './node_modules']].
+ * @param base {string} Base for all URLs on this site
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
@@ -134,6 +162,7 @@ LiveServer.start = function(options) {
 	var host = options.host || '0.0.0.0';
 	var port = options.port !== undefined ? options.port : 8080; // 0 means random
 	var root = options.root || process.cwd();
+	var base = options.base || null;
 	var mount = options.mount || [];
 	var watchPaths = options.watch || [root];
 	LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
@@ -223,7 +252,7 @@ LiveServer.start = function(options) {
 		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
 	});
-	app.use(staticServerHandler) // Custom static server
+	app.use(baseHandler(staticServerHandler, base)) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
 		.use(serveIndex(root, { icons: true }));
 
@@ -285,6 +314,10 @@ LiveServer.start = function(options) {
 					return protocol + "://" + addr.address + ":" + address.port;
 				});
 		}
+
+		// Open to base instead of root, if it exists
+		if (base)
+			openURL = openURL + prefixSlash(base);
 
 		// Output
 		if (LiveServer.logLevel >= 1) {
