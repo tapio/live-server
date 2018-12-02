@@ -317,7 +317,7 @@ LiveServer.start = function(options) {
 
 		// Open to base instead of root, if it exists
 		if (base)
-			openURL = openURL + prefixSlash(base);
+			openURL = openURL + prefixSlash(base) + "/";
 
 		// Output
 		if (LiveServer.logLevel >= 1) {
