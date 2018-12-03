@@ -22,6 +22,15 @@ if (fs.existsSync(configPath)) {
 	if (opts.ignorePattern) opts.ignorePattern = new RegExp(opts.ignorePattern);
 }
 
+var dir = opts.root = process.argv[2] || "";
+
+var projectConfigPath = path.join(dir, '.live-server.json');
+if (fs.existsSync(projectConfigPath)) {
+	var projectConfig = fs.readFileSync(projectConfigPath, 'utf8');
+	assign(opts, JSON.parse(projectConfig));
+	if (opts.ignorePattern) opts.ignorePattern = new RegExp(opts.ignorePattern);
+}
+
 for (var i = process.argv.length - 1; i >= 2; --i) {
 	var arg = process.argv[i];
 	if (arg.indexOf("--port=") > -1) {
@@ -158,7 +167,6 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 }
 
 // Patch paths
-var dir = opts.root = process.argv[2] || "";
 
 if (opts.watch) {
 	opts.watch = opts.watch.map(function(relativePath) {
