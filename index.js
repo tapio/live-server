@@ -42,7 +42,7 @@ function staticServer(root) {
 		if (req.method !== "GET" && req.method !== "HEAD") return next();
 		var reqpath = isFile ? "" : url.parse(req.url).pathname;
 		var hasNoOrigin = !req.headers.origin;
-		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>"), new RegExp("</head>", "i")];
+		var injectCandidates = [ "</body>", "</svg>", "</head>" ];
 		var injectTag = null;
 
 		function directory() {
@@ -58,16 +58,31 @@ function staticServer(root) {
 			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
+
+				// first looking for tags with high priority
 				for (var i = 0; i < injectCandidates.length; ++i) {
-					match = injectCandidates[i].exec(contents);
+					match = new RegExp(injectCandidates[i], "i").exec(contents);
 					if (match) {
 						injectTag = match[0];
 						break;
 					}
 				}
-				if (injectTag === null && LiveServer.logLevel >= 3) {
+
+				// if injectTag not found then trying to find at least one closing tag on the page.
+				if (injectTag === null) {
+					var start = contents.lastIndexOf('<')
+					var end = contents.lastIndexOf('>')
+
+					if (start !== -1 && end !== -1) {
+						injectTag = contents.slice(start, end + 1)
+					}
+				}
+
+				if (injectTag) {
+					console.log('Script is inject in the ' + injectTag + ' tag.')
+				} else {
 					console.warn("Failed to inject refresh script!".yellow,
-						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
+						"Couldn't find any of the tags from", filepath);
 				}
 			}
 		}
