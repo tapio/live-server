@@ -355,7 +355,7 @@ LiveServer.start = function(options) {
 			*/
 			var notDotfileOrCwd = /(^|[\/\\])\../;
 			var ignoreThisPath = options.watchDotfiles ? false : notDotfileOrCwd.test(path.basename(testPath));
-			if (LiveServer.logLevel >= 1)
+			if (ignoreThisPath && LiveServer.logLevel >= 1)
 				console.log('Watcher ignoring files in path beginning with ".": %s', path.basename(testPath));
 			return ignoreThisPath
 		}
