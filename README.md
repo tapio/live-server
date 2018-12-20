@@ -22,7 +22,7 @@ Installation
 
 You need node.js and npm. You should probably install this globally.
 
-**Npm way**
+**npm way**
 
 	npm install -g live-server
 
@@ -52,6 +52,7 @@ Command line parameters:
 * `--open=PATH` - launch browser to PATH instead of server root
 * `--watch=PATH` - comma-separated string of paths to exclusively watch for changes (default: watch everything)
 * `--ignore=PATH` - comma-separated string of paths to ignore ([anymatch](https://github.com/es128/anymatch)-compatible definition)
+* `--watch-dotfiles` - watch files whose paths include filenames beginning with `.` (dotfiles), rather than ignoring them (default: false)
 * `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`) (**DEPRECATED** in favor of `--ignore`)
 * `--no-css-inject` - reload page on CSS change, rather than injecting changed CSS
 * `--middleware=PATH` - path to .js file exporting a middleware function to add; can be a name without path nor extension to reference bundled middlewares in `middleware` folder
@@ -84,6 +85,7 @@ var params = {
 	root: "/public", // Set root directory that's being served. Defaults to cwd.
 	open: false, // When false, it won't load your browser by default.
 	ignore: 'scss,my/templates', // comma-separated string for paths to ignore
+	watchDotfiles: true // watch dotfiles, rather than ignoring them
 	file: "index.html", // When set, serve this file (server root relative) for every 404 (useful for single-page applications)
 	wait: 1000, // Waits for all changes, before reloading. Defaults to 0 sec.
 	mount: [['/components', './node_modules']], // Mount a directory to a route.
@@ -151,6 +153,8 @@ We welcome contributions! See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for det
 Version history
 ---------------
 
+* v1.3.1
+	- `--watch-dotfiles` to include file & directory names starting with `.` in the live-reload file watcher (@twome)
 * v1.2.1
 	- `--https-module=MODULE_NAME` to specify custom HTTPS module (e.g. `spdy`) (@pavel)
 	- `--no-css-inject` to reload page on css change instead of injecting the changes (@kylecordes)
