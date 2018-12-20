@@ -342,6 +342,7 @@ LiveServer.start = function(options) {
 		clients.push(ws);
 	});
 
+	var alreadyWarnedDotfiles = false
 	var ignoredPaths = [
 		function(testPath) { 
 			/*
@@ -356,7 +357,10 @@ LiveServer.start = function(options) {
 			var notDotfileOrCwd = /(^|[\/\\])\../;
 			var ignoreThisPath = options.watchDotfiles ? false : notDotfileOrCwd.test(path.basename(testPath));
 			if (ignoreThisPath && LiveServer.logLevel >= 1)
-				console.log('Watcher ignoring files in path beginning with ".": %s', path.basename(testPath));
+				if (alreadyWarnedDotfiles === false){
+					console.log('Ignoring files in paths beginning with ".", eg: %s\nUse "--watch-dotfiles" to instead watch these.', path.basename(testPath));
+					alreadyWarnedDotfiles = true
+				}
 			return ignoreThisPath
 		}
 	];
