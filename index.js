@@ -31,7 +31,7 @@ function escape(html){
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root) {
+function staticServer(root, closeOnExit) {
 	var isFile = false;
 	try { // For supporting mounting files instead of just directories
 		isFile = fs.statSync(root).isFile();
@@ -79,12 +79,18 @@ function staticServer(root) {
 
 		function inject(stream) {
 			if (injectTag) {
+				var inject=INJECTED_CODE;
+
+				closeOnExit=closeOnExit||false;
+				inject="<script>var __live_server_reload_on_close="+closeOnExit+";</script>\n"+inject;
+
 				// We need to modify the length given to browser
-				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
+				var len = inject.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
+				res.setHeader('Cache-Control','no-store, no-cache, must-revalidate');
 				var originalPipe = stream.pipe;
 				stream.pipe = function(resp) {
-					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(resp);
+					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), inject + injectTag)).pipe(resp);
 				};
 			}
 		}
@@ -134,6 +140,7 @@ LiveServer.start = function(options) {
 	var host = options.host || '0.0.0.0';
 	var port = options.port !== undefined ? options.port : 8080; // 0 means random
 	var root = options.root || process.cwd();
+	var closeOnExit = options.closeOnExit || false;
 	var mount = options.mount || [];
 	var watchPaths = options.watch || [root];
 	LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
@@ -141,7 +148,7 @@ LiveServer.start = function(options) {
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
-	var staticServerHandler = staticServer(root);
+	var staticServerHandler = staticServer(root, closeOnExit);
 	var wait = options.wait === undefined ? 100 : options.wait;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
