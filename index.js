@@ -79,10 +79,12 @@ function staticServer(root, closeOnExit) {
 
 		function inject(stream) {
 			if (injectTag) {
-				var inject=INJECTED_CODE;
-
-				closeOnExit=closeOnExit||false;
-				inject="<script>var __live_server_reload_on_close="+closeOnExit+";</script>\n"+inject;
+				closeOnExit = closeOnExit||false;
+				var injectCode = 
+					"<script>var __live_server_reload_on_close=" +
+					closeOnExit +
+					";</script>\n" +
+					INJECTED_CODE;
 
 				// We need to modify the length given to browser
 				var len = inject.length + res.getHeader('Content-Length');
@@ -90,7 +92,7 @@ function staticServer(root, closeOnExit) {
 				res.setHeader('Cache-Control','no-store, no-cache, must-revalidate');
 				var originalPipe = stream.pipe;
 				stream.pipe = function(resp) {
-					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), inject + injectTag)).pipe(resp);
+					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), injectCode + injectTag)).pipe(resp);
 				};
 			}
 		}
