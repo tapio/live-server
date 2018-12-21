@@ -146,9 +146,8 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.middleware.push(arg.substring(13));
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--closeOnExit=") > -1) {
-		if (arg.substring(14) === "true")
-			opts.closeOnExit = true;
+	else if (arg.indexOf("--closeOnExit") > -1) {
+		opts.closeOnExit = true;
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--help" || arg === "-h") {
