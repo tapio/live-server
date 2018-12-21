@@ -79,7 +79,7 @@ function staticServer(root, closeOnExit) {
 
 		function inject(stream) {
 			if (injectTag) {
-				closeOnExit = closeOnExit||false;
+				closeOnExit = closeOnExit || false;
 				var injectCode = 
 					"<script>var __live_server_reload_on_close=" +
 					closeOnExit +
@@ -87,7 +87,7 @@ function staticServer(root, closeOnExit) {
 					INJECTED_CODE;
 
 				// We need to modify the length given to browser
-				var len = inject.length + res.getHeader('Content-Length');
+				var len = injectCode.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
 				res.setHeader('Cache-Control','no-store, no-cache, must-revalidate');
 				var originalPipe = stream.pipe;
