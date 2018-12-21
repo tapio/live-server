@@ -24,8 +24,10 @@
 				if (msg.data == 'reload') window.location.reload();
 				else if (msg.data == 'refreshcss') refreshCSS();
 			};
-			console.log('Live reload enabled.');
+			// Live reload enabled
 		})();
+	} else {
+		console.error('Live reload not supported.');
 	}
 	// ]]>
 </script>
