@@ -62,4 +62,32 @@ describe('command line usage', function() {
 			done();
 		});
 	});
+	it('--proxy', function(done) {
+		exec_test([ "--proxy=/api:http://localhost/some-path", "--no-browser", "--test" ], function(error, stdout, stdin) {
+			assert(!error, error);
+			assert(stdout.indexOf("Mapping") >= 0, "proxy string not found");
+			assert(stdout.indexOf("/api") > 0, "route string not found");
+			assert(stdout.indexOf("http://localhost/some-path") > 0, "proxy URL string not found");
+			done();
+		});
+	});
+	it('--proxy-opt', function(done) {
+		exec_test([ "--proxy=/api:http://localhost/some-path", "--proxy-opt=preserveHost:false", "--no-browser", "--test" ], function(error, stdout, stdin) {
+			assert(!error, error);
+			assert(stdout.indexOf("Proxy options") >= 0, "proxy options string not found");
+			assert(stdout.indexOf("preserveHost") > 0, "option name string not found");
+			assert(stdout.indexOf("false") > 0, "option value string not found");
+			done();
+		});
+	});
+	it('--proxy-opt incorrect value', function(done) {
+		var optionValue = "preserveHost:fal";
+		exec_test([ "--proxy=/api:http://localhost/some-path", "--proxy-opt=" + optionValue, "--no-browser", "--test" ], function(error, stdout, stdin) {
+			assert(!error, error);
+			assert(stdout.indexOf("Value of proxy-opt option (" + optionValue + ") is not correct") >= 0, "error string not found");
+			assert(stdout.indexOf("preserveHost") > 0, "option name string not found");
+			assert(stdout.indexOf("true") > 0, "option value string not found");
+			done();
+		});
+	});
 });
