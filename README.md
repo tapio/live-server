@@ -1,37 +1,24 @@
-[![view on npm](http://img.shields.io/npm/v/live-server.svg)](https://www.npmjs.org/package/live-server)
-[![npm module downloads per month](http://img.shields.io/npm/dm/live-server.svg)](https://www.npmjs.org/package/live-server)
-[![build status](https://travis-ci.org/tapio/live-server.svg)](https://travis-ci.org/tapio/live-server)
-
 Live Server
 ===========
 
-This is a little development server with live reload capability. Use it for hacking your HTML/JavaScript/CSS files, but not for deploying the final site.
-
-There are two reasons for using this:
-
-1. AJAX requests don't work with the `file://` protocol due to security restrictions, i.e. you need a server if your site fetches content through JavaScript.
-2. Having the page reload automatically after changes to files can accelerate development.
-
-You don't need to install any browser plugins or manually add code snippets to your pages for the reload functionality to work, see "How it works" section below for more information. If you don't want/need the live reload, you should probably use something even simpler, like the following Python-based one-liner:
-
-	python -m SimpleHTTPServer
+Modified version of <a href="https://github.com/tapio/live-server">tapio/live-server</a> optimized for local npm install
 
 
 Installation
 ------------
 
-You need node.js and npm. You should probably install this globally.
+You need node.js and npm.
 
-**Npm way**
+You should probably install it locally:
 
-	npm install -g live-server
+	npm install github:yukulele/live-server
 
-**Manual way**
+Development
+------------
 
-	git clone https://github.com/tapio/live-server
+	git clone https://github.com/yukulele/live-server
 	cd live-server
-	npm install # Local dependencies if you want to hack
-	npm install -g # Install globally
+	npm install # Local dependencies
 
 
 Usage from command line
@@ -69,7 +56,7 @@ Command line parameters:
 
 Default options:
 
-If a file `~/.live-server.json` exists it will be loaded and used as default options for live-server on the command line. See "Usage from node" for option names.
+If a file `live-server.json` exists in current directory it will be loaded and used as default options for live-server on the command line. See "Usage from node" for option names.
 
 
 Usage from node
