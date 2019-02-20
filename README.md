@@ -130,6 +130,7 @@ Troubleshooting
 ---------------
 
 * No reload on changes
+    * Ensure that your index file has `html`, `head` and `body` tags 
 	* Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, [file an issue](https://github.com/tapio/live-server/issues).
 * Error: watch <PATH> ENOSPC
 	* See [this suggested solution](http://stackoverflow.com/questions/22475849/node-js-error-enospc/32600959#32600959).
