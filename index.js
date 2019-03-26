@@ -113,6 +113,24 @@ function entryPoint(staticHandler, file) {
 }
 
 /**
+ * Get the local ip
+ * @return {String} IP
+ */
+function getIPAdress(){
+	var interfaces = require('os').networkInterfaces();
+	for(var devName in interfaces) {
+		var iface = interfaces[devName];
+		for(var i=0;i<iface.length;i++) {
+			var alias = iface[i];
+			if(alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal){
+				return alias.address;
+			}
+		}
+	}
+	return '127.0.0.1';
+}
+
+/**
  * Start a live server with parameters given as an object
  * @param host {string} Address to bind to (default: 0.0.0.0)
  * @param port {number} Port number (default: 8080)
@@ -260,7 +278,7 @@ LiveServer.start = function(options) {
 
 		var address = server.address();
 		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
-		var openHost = host === "0.0.0.0" ? "127.0.0.1" : host;
+		var openHost = host === "0.0.0.0" ? getIPAdress() : host;
 
 		var serveURL = protocol + '://' + serveHost + ':' + address.port;
 		var openURL = protocol + '://' + openHost + ':' + address.port;
