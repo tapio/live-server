@@ -151,6 +151,7 @@ LiveServer.start = function(options) {
 	var middleware = options.middleware || [];
 	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
+	var beforeReload = options.beforeReload;
 
 	if (httpsModule) {
 		try {
@@ -357,13 +358,17 @@ LiveServer.start = function(options) {
 		ignored: ignored,
 		ignoreInitial: true
 	});
-	function handleChange(changePath) {
+	async function handleChange(changePath) {
 		var cssChange = path.extname(changePath) === ".css" && !noCssInject;
+
 		if (LiveServer.logLevel >= 1) {
 			if (cssChange)
 				console.log("CSS change detected".magenta, changePath);
 			else console.log("Change detected".cyan, changePath);
+
+			await beforeReload()
 		}
+
 		clients.forEach(function(ws) {
 			if (ws)
 				ws.send(cssChange ? 'refreshcss' : 'reload');
