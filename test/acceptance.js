@@ -5,6 +5,12 @@ var liveServer = require('..').start({
 	port: 0,
 	open: false
 });
+var liveServerInjectEOF = require('..').start({
+  root: path.join(__dirname, "data"),
+  port: 0,
+  open: false,
+  injectEOF: true
+});
 
 describe('basic functional tests', function(){
 	it('should respond with index.html', function(done){
@@ -35,16 +41,34 @@ describe('basic functional tests', function(){
 			.expect(/<script [^]+?live reload enabled[^]+?<\/script>/i)
 			.expect(200, done);
 	});
+  it('should inject at EOF if --inject-eof enabled', function(done){
+    request(liveServerInjectEOF)
+      .get('/index-eof.html')
+      .expect('Content-Type', 'text/html; charset=UTF-8')
+      .expect(/<script [^]+?live reload enabled[^]+?<\/script>/i)
+      .expect(200, done);
+  });
+  it('should NOT inject at EOF without --inject-eof enabled', function(done){
+    request(liveServer)
+      .get('/index-eof.html')
+      .expect('Content-Type', 'text/html; charset=UTF-8')
+      .expect(function(res) {
+        if (res.text.match(/<script [^]+?live reload enabled[^]+?<\/script>/i))
+          throw new Error("Found injection")
+      })
+      .expect(200, done);
+  });
 	it('should inject also svg files', function(done){
 		request(liveServer)
 			.get('/test.svg')
 			.expect('Content-Type', 'image/svg+xml')
 			.expect(function(res) {
-				if (res.body.toString().indexOf("Live reload enabled") == -1)
+				if (res.body.toString().indexOf("Live reload enabled") === -1)
 					throw new Error("injected code not found");
 			})
 			.expect(200, done);
 	});
+
 	it('should not inject html fragments', function(done){
 		request(liveServer)
 			.get('/fragment.html')

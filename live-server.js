@@ -147,7 +147,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg === "--help" || arg === "-h") {
-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--no-css-inject] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--https-module=MODULE_NAME] [--proxy=PATH] [PATH]');
+		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--no-css-inject] [--inject-eof] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--https-module=MODULE_NAME] [--proxy=PATH] [PATH]');
 		process.exit();
 	}
 	else if (arg === "--test") {
@@ -155,6 +155,13 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		setTimeout(liveServer.shutdown, 500);
 		process.argv.splice(i, 1);
 	}
+  else if (arg === "--inject-eof") {
+    // If no </body> or </head> is, inject at EOF
+    opts.injectEOF = true
+    process.argv.splice(i, 1);
+  }
+
+
 }
 
 // Patch paths
