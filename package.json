@@ -21,7 +21,7 @@
     "http-auth": "3.1.x",
     "morgan": "^1.9.1",
     "object-assign": "latest",
-    "opn": "latest",
+    "open": "latest",
     "proxy-middleware": "latest",
     "send": "latest",
     "serve-index": "^1.9.1"
@@ -45,7 +45,7 @@
     "url": "https://github.com/tapio/live-server.git"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=8.3.0"
   },
   "preferGlobal": true,
   "license": "MIT",
