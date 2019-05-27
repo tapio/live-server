@@ -151,6 +151,7 @@ LiveServer.start = function(options) {
 	var middleware = options.middleware || [];
 	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
+	var noDirectories = options.noDirectories || false;
 
 	if (httpsModule) {
 		try {
@@ -223,9 +224,14 @@ LiveServer.start = function(options) {
 		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
 	});
-	app.use(staticServerHandler) // Custom static server
-		.use(entryPoint(staticServerHandler, file))
-		.use(serveIndex(root, { icons: true }));
+	if (noDirectories) {
+		app.use(staticServerHandler) // Custom static server
+			.use(entryPoint(staticServerHandler, file));
+	} else {
+		app.use(staticServerHandler) // Custom static server
+			.use(entryPoint(staticServerHandler, file))
+			.use(serveIndex(root, { icons: true }));
+	}
 
 	var server, protocol;
 	if (https !== null) {
