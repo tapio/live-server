@@ -31,7 +31,7 @@ You need node.js and npm. You should probably install this globally.
 	git clone https://github.com/tapio/live-server
 	cd live-server
 	npm install # Local dependencies if you want to hack
-	npm install -g # Install globally
+	npm install -g # Install globally !
 
 
 Usage from command line
