@@ -315,6 +315,10 @@ LiveServer.start = function(options) {
 	// WebSocket
 	var clients = [];
 	server.addListener('upgrade', function(request, socket, head) {
+
+		// Ignore requests that are not from `/live-server-socket` URLs
+		if (!/\/live-server-socket$/.test(request.url)) return;
+
 		var ws = new WebSocket(request, socket, head);
 		ws.onopen = function() { ws.send('connected'); };
 
