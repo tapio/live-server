@@ -37,7 +37,7 @@ You need node.js and npm. You should probably install this globally.
 Usage from command line
 -----------------------
 
-Issue the command `live-server` in your project's directory. Alternatively you can add the path to serve as a command line parameter.
+Issue the command `live-server` in your project's directory and this will serve the current directory by default. Alternatively, you can specify the path to serve as a command line parameter like so `live-server path/to/serve`.
 
 This will automatically launch the default browser. When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
 
@@ -66,6 +66,7 @@ Command line parameters:
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
+* `[PATH]` - the directory which should be served, default: current working directory
 
 Default options:
 
