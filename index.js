@@ -186,7 +186,7 @@ LiveServer.start = function(options) {
 			if (ext !== ".js") {
 				mw = require(path.join(__dirname, "middleware", mw + ".js"));
 			} else {
-				mw = require(mw);
+				mw = require(process.cwd() + '/' + mw);
 			}
 		}
 		app.use(mw);
