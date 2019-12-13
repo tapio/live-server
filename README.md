@@ -55,6 +55,7 @@ Command line parameters:
 * `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`) (**DEPRECATED** in favor of `--ignore`)
 * `--no-css-inject` - reload page on CSS change, rather than injecting changed CSS
 * `--middleware=PATH` - path to .js file exporting a middleware function to add; can be a name without path nor extension to reference bundled middlewares in `middleware` folder
+* `--manual-hook=ROUTE?type=reload|refreshcss` - listens for reload requests, allowing triggering manual reloads 
 * `--entry-file=PATH` - serve this file (server root relative) in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--spa` - translate requests from /abc to /#/abc (handy for Single Page Apps)
@@ -88,7 +89,8 @@ var params = {
 	wait: 1000, // Waits for all changes, before reloading. Defaults to 0 sec.
 	mount: [['/components', './node_modules']], // Mount a directory to a route.
 	logLevel: 2, // 0 = errors only, 1 = some, 2 = lots
-	middleware: [function(req, res, next) { next(); }] // Takes an array of Connect-compatible middleware that are injected into the server middleware stack
+	middleware: [function(req, res, next) { next(); }], // Takes an array of Connect-compatible middleware that are injected into the server middleware stack
+	manualHook: "/manual-reload", // optional route for listening manual reload requests
 };
 liveServer.start(params);
 ```

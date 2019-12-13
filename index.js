@@ -128,6 +128,7 @@ function entryPoint(staticHandler, file) {
  * @param wait {number} Server will wait for all changes, before reloading
  * @param htpasswd {string} Path to htpasswd file to enable HTTP Basic authentication
  * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
+ * @param manualHook {string} URL form listening manual hooks
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -149,6 +150,7 @@ LiveServer.start = function(options) {
 	var https = options.https || null;
 	var proxy = options.proxy || [];
 	var middleware = options.middleware || [];
+	var manualHook = options.manualHook || null;
 	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
 
@@ -191,6 +193,31 @@ LiveServer.start = function(options) {
 		}
 		app.use(mw);
 	});
+
+	if (manualHook) {
+		app.use(function manualReloadMiddleware (req, res, next) {
+			var reqUrl = url.parse(req.url, true)
+
+			if( manualHook !== reqUrl.pathname ) return next()
+
+			var refreshCss = reqUrl.query.type === "refreshcss"
+
+			if (LiveServer.logLevel >= 1) {
+				console.log( refreshCss
+					? "manual CSS change".magenta
+					: "manual reload".cyan
+				);
+			}
+
+			clients.forEach(function(ws) {
+				if (ws)
+					ws.send(refreshCss ? "refreshcss" : "reload");
+			});
+
+			res.statusCode = 201
+			res.end('')
+		});
+	}
 
 	// Use http-auth if configured
 	if (htpasswd !== null) {
