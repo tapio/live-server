@@ -24,7 +24,7 @@ if (fs.existsSync(configPath)) {
 
 for (var i = process.argv.length - 1; i >= 2; --i) {
 	var arg = process.argv[i];
-	if (arg.indexOf("--port=") > -1) {
+	if (arg.includes("--port=")) {
 		var portString = arg.substring(7);
 		var portNumber = parseInt(portString, 10);
 		if (portNumber === +portString) {
@@ -32,11 +32,11 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 			process.argv.splice(i, 1);
 		}
 	}
-	else if (arg.indexOf("--host=") > -1) {
+	else if (arg.includes("--host=")) {
 		opts.host = arg.substring(7);
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--open=") > -1) {
+	else if (arg.includes("--open=")) {
 		var open = arg.substring(7);
 		if (open.indexOf('/') !== 0) {
 			open = '/' + open;
@@ -54,17 +54,17 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		}
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--watch=") > -1) {
+	else if (arg.includes("--watch=")) {
 		// Will be modified later when cwd is known
 		opts.watch = arg.substring(8).split(",");
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--ignore=") > -1) {
+	else if (arg.includes("--ignore=")) {
 		// Will be modified later when cwd is known
 		opts.ignore = arg.substring(9).split(",");
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--ignorePattern=") > -1) {
+	else if (arg.includes("--ignorePattern=")) {
 		opts.ignorePattern = new RegExp(arg.substring(16));
 		process.argv.splice(i, 1);
 	}
@@ -76,11 +76,11 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.open = false;
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--browser=") > -1) {
+	else if (arg.includes("--browser=")) {
 		opts.browser = arg.substring(10).split(",");
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--entry-file=") > -1) {
+	else if (arg.includes("--entry-file=")) {
 		var file = arg.substring(13);
 		if (file.length) {
 			opts.file = file;
@@ -99,7 +99,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.logLevel = 3;
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--mount=") > -1) {
+	else if (arg.includes("--mount=")) {
 		// e.g. "--mount=/components:./node_modules" will be ['/components', '<process.cwd()>/node_modules']
 		// split only on the first ":", as the path may contain ":" as well (e.g. C:\file.txt)
 		var match = arg.substring(8).match(/([^:]+):(.+)$/);
@@ -107,7 +107,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.mount.push([ match[1], match[2] ]);
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--wait=") > -1) {
+	else if (arg.includes("--wait=")) {
 		var waitString = arg.substring(7);
 		var waitNumber = parseInt(waitString, 10);
 		if (waitNumber === +waitString) {
@@ -120,7 +120,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		console.log(packageJson.name, packageJson.version);
 		process.exit();
 	}
-	else if (arg.indexOf("--htpasswd=") > -1) {
+	else if (arg.includes("--htpasswd=")) {
 		opts.htpasswd = arg.substring(11);
 		process.argv.splice(i, 1);
 	}
@@ -128,21 +128,21 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.cors = true;
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--https=") > -1) {
+	else if (arg.includes("--https=")) {
 		opts.https = arg.substring(8);
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--https-module=") > -1) {
+	else if (arg.includes("--https-module=")) {
 		opts.httpsModule = arg.substring(15);
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--proxy=") > -1) {
+	else if (arg.includes("--proxy=")) {
 		// split only on the first ":", as the URL will contain ":" as well
 		var match = arg.substring(8).match(/([^:]+):(.+)$/);
 		opts.proxy.push([ match[1], match[2] ]);
 		process.argv.splice(i, 1);
 	}
-	else if (arg.indexOf("--middleware=") > -1) {
+	else if (arg.includes("--middleware=")) {
 		opts.middleware.push(arg.substring(13));
 		process.argv.splice(i, 1);
 	}
