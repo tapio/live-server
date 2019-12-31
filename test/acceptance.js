@@ -40,7 +40,7 @@ describe('basic functional tests', function(){
 			.get('/test.svg')
 			.expect('Content-Type', 'image/svg+xml')
 			.expect(function(res) {
-				if (res.body.toString().indexOf("Live reload enabled") == -1)
+				if (!res.body.toString().includes("Live reload enabled"))
 					throw new Error("injected code not found");
 			})
 			.expect(200, done);
@@ -50,7 +50,7 @@ describe('basic functional tests', function(){
 			.get('/fragment.html')
 			.expect('Content-Type', 'text/html; charset=UTF-8')
 			.expect(function(res) {
-				if (res.text.toString().indexOf("Live reload enabled") > -1)
+				if (res.text.toString().includes("Live reload enabled"))
 					throw new Error("injected code should not be found");
 			})
 			.expect(200, done);
