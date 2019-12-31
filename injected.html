@@ -12,7 +12,7 @@
 					var rel = elem.rel;
 					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
 						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+						elem.href = url + (url.includes('?') ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
 					}
 					head.appendChild(elem);
 				}
