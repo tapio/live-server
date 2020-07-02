@@ -128,6 +128,7 @@ function entryPoint(staticHandler, file) {
  * @param wait {number} Server will wait for all changes, before reloading
  * @param htpasswd {string} Path to htpasswd file to enable HTTP Basic authentication
  * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
+ * @param mimetypes {object} MIME Types of extended files.
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -151,6 +152,7 @@ LiveServer.start = function(options) {
 	var middleware = options.middleware || [];
 	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
+	var mimetypes = options.mimetypes || {};
 
 	if (httpsModule) {
 		try {
@@ -191,6 +193,8 @@ LiveServer.start = function(options) {
 		}
 		app.use(mw);
 	});
+	// Set mimetypes
+	send.mime.define(mimetypes);
 
 	// Use http-auth if configured
 	if (htpasswd !== null) {

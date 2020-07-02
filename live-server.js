@@ -146,6 +146,13 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		opts.middleware.push(arg.substring(13));
 		process.argv.splice(i, 1);
 	}
+	else if (arg.indexOf("--mimetypes=") > -1) {
+		// e.g. --mimetypes='{\"application/wasm\": [\".wasm\"]}' or --mimetypes="{'application/wasm': ['.wasm']}"
+		var mimetypesString = arg.substring(12).replace(/'/g, '"');
+		var mimetypes = typeof opts.mimetypes === "object" && !(opts.mimetypes instanceof Array) ? opts.mimetypes : {};
+		opts.mimetypes = assign(mimetypes, JSON.parse(mimetypesString));
+		process.argv.splice(i, 1);
+	}
 	else if (arg === "--help" || arg === "-h") {
 		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--no-css-inject] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--https-module=MODULE_NAME] [--proxy=PATH] [PATH]');
 		process.exit();
