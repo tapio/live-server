@@ -55,7 +55,7 @@ Command line parameters:
 * `--ignorePattern=RGXP` - Regular expression of files to ignore (ie `.*\.jade`) (**DEPRECATED** in favor of `--ignore`)
 * `--no-css-inject` - reload page on CSS change, rather than injecting changed CSS
 * `--middleware=PATH` - path to .js file exporting a middleware function to add; can be a name without path nor extension to reference bundled middlewares in `middleware` folder
-* `--mimetypes=MIMETYPES` - specify an object string to set the mime extension type or overwrite default configuration. (e.g. `"{'application/wasm': ['wasm']}"`) (you can find the added mime type [here](https://github.com/broofa/mime/blob/v1.6.0/types.json))
+* `--mimetypes=MIMETYPES` - specify an object string to set the mime extension type or overwrite default configuration. (e.g. `"{'application/wasm': ['wasm']}"`) (you can find the default extended MIME type [here](https://github.com/broofa/mime/blob/v1.6.0/types.json))
 * `--entry-file=PATH` - serve this file (server root relative) in place of missing files (useful for single page apps)
 * `--mount=ROUTE:PATH` - serve the paths contents under the defined route (multiple definitions possible)
 * `--spa` - translate requests from /abc to /#/abc (handy for Single Page Apps)
