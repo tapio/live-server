@@ -147,7 +147,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 		process.argv.splice(i, 1);
 	}
 	else if (arg.indexOf("--mimetypes=") > -1) {
-		// e.g. --mimetypes='{\"application/wasm\": [\".wasm\"]}' or --mimetypes="{'application/wasm': ['.wasm']}"
+		// e.g. --mimetypes="{'application/wasm': ['wasm']}"
 		var mimetypesString = arg.substring(12).replace(/'/g, '"');
 		var mimetypes = typeof opts.mimetypes === "object" && !(opts.mimetypes instanceof Array) ? opts.mimetypes : {};
 		opts.mimetypes = assign(mimetypes, JSON.parse(mimetypesString));

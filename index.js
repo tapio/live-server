@@ -193,7 +193,17 @@ LiveServer.start = function(options) {
 		}
 		app.use(mw);
 	});
-	// Set mimetypes
+	// Clear the default duplicate configuration
+	var mimetypesKeys = Object.keys(mimetypes);
+	Object.keys(send.mime.types).forEach(function(typesKey) {
+		var typesValue = send.mime.types[typesKey];
+
+		if (mimetypesKeys.indexOf(typesValue) > -1) {
+			delete send.mime.types[typesKey];
+			delete send.mime.extensions[typesValue];
+		}
+	});
+	// Set extended mimetypes
 	send.mime.define(mimetypes);
 
 	// Use http-auth if configured
