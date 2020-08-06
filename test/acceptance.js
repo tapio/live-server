@@ -14,7 +14,14 @@ describe('basic functional tests', function(){
 			.expect(/hello world/i)
 			.expect(200, done);
 	});
-	it('should have injected script', function(done){
+	it('"/index" should respond with index.html', function(done){
+		request(liveServer)
+			.get('/index')
+			.expect('Content-Type', 'text/html; charset=UTF-8')
+			.expect(/hello world/i)
+			.expect(200, done);
+	});
+  it('should have injected script', function(done){
 		request(liveServer)
 			.get('/')
 			.expect('Content-Type', 'text/html; charset=UTF-8')
