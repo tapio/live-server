@@ -15,6 +15,7 @@ var fs = require('fs'),
 require('colors');
 
 var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
+var SUPPORTED_EXTENSIONS = ["html", "htm", "xhtml", "php", "svg"];
 
 var LiveServer = {
 	server: null,
@@ -53,9 +54,9 @@ function staticServer(root) {
 		}
 
 		function file(filepath /*, stat*/) {
-			var x = path.extname(filepath).toLocaleLowerCase(), match,
-					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
-			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
+			var extension = path.extname(filepath).match(/w*/)[0].toLocaleLowerCase(), match;
+
+			if (hasNoOrigin && !extension || SUPPORTED_EXTENSIONS.indexOf(extension) > -1) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
 				for (var i = 0; i < injectCandidates.length; ++i) {
@@ -89,7 +90,7 @@ function staticServer(root) {
 			}
 		}
 
-		send(req, reqpath, { root: root })
+		send(req, reqpath, { root: root, extensions: SUPPORTED_EXTENSIONS })
 			.on('error', error)
 			.on('directory', directory)
 			.on('file', file)
