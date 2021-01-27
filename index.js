@@ -357,17 +357,32 @@ LiveServer.start = function(options) {
 		ignored: ignored,
 		ignoreInitial: true
 	});
+
+
+
 	function handleChange(changePath) {
-		var cssChange = path.extname(changePath) === ".css" && !noCssInject;
-		if (LiveServer.logLevel >= 1) {
-			if (cssChange)
-				console.log("CSS change detected".magenta, changePath);
-			else console.log("Change detected".cyan, changePath);
+		function reload() {
+			var cssChange = path.extname(changePath) === ".css" && !noCssInject;
+			if (LiveServer.logLevel >= 1) {
+				if (cssChange)
+					console.log("CSS change detected".magenta, changePath);
+				else console.log("Change detected".cyan, changePath);
+			}
+			clients.forEach(function(ws) {
+				if (ws)
+					ws.send(cssChange ? 'refreshcss' : 'reload');
+			});
 		}
-		clients.forEach(function(ws) {
-			if (ws)
-				ws.send(cssChange ? 'refreshcss' : 'reload');
-		});
+		// Run beforeReload hook if set
+		if(options.beforeReload){
+			var updateResult = options.beforeReload(changePath)
+			// If beforeReload is a promise/async, wait
+			if(!!updateResult && typeof updateResult.then === 'function'){
+				updateResult.then(reload)
+				return
+			}
+		}
+		reload()
 	}
 	LiveServer.watcher
 		.on("change", handleChange)
