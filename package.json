@@ -23,6 +23,7 @@
     "object-assign": "latest",
     "opn": "latest",
     "proxy-middleware": "latest",
+    "qrcode-terminal": "^0.12.0",
     "send": "latest",
     "serve-index": "^1.9.1"
   },
