@@ -39,7 +39,7 @@ describe('command line usage', function() {
 		exec_test([ "--port=16123", "--no-browser", "--test" ], function(error, stdout, stdin) {
 			assert(!error, error);
 			assert(stdout.indexOf("Serving") >= 0, "serving string not found");
-			assert(stdout.indexOf("at http://127.0.0.1:16123") != -1, "port string not found");
+			assert(stdout.indexOf(":16123") != -1, "port string not found");
 			done();
 		});
 	});

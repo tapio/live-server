@@ -13,6 +13,7 @@ var fs = require('fs'),
 	os = require('os'),
 	chokidar = require('chokidar');
 require('colors');
+const qrcode = require('qrcode-terminal');
 
 var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
 
@@ -110,6 +111,24 @@ function entryPoint(staticHandler, file) {
 		req.url = "/" + file;
 		staticHandler(req, res, next);
 	};
+}
+
+/**
+ * Get the local ip
+ * @return {String} IP
+ */
+function getIPAdress(){
+	var interfaces = require('os').networkInterfaces();
+	for(var devName in interfaces) {
+		var iface = interfaces[devName];
+		for(var i=0;i<iface.length;i++) {
+			var alias = iface[i];
+			if(alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal){
+				return alias.address;
+			}
+		}
+	}
+	return '127.0.0.1';
 }
 
 /**
@@ -260,10 +279,14 @@ LiveServer.start = function(options) {
 
 		var address = server.address();
 		var serveHost = address.address === "0.0.0.0" ? "127.0.0.1" : address.address;
-		var openHost = host === "0.0.0.0" ? "127.0.0.1" : host;
+		var openHost = host === "0.0.0.0" ? getIPAdress() : host;
 
 		var serveURL = protocol + '://' + serveHost + ':' + address.port;
 		var openURL = protocol + '://' + openHost + ':' + address.port;
+
+		qrcode.generate(openURL, { small: true }, qrcode => {
+			console.log(qrcode)
+		});
 
 		var serveURLs = [ serveURL ];
 		if (LiveServer.logLevel > 2 && address.address === "0.0.0.0") {
