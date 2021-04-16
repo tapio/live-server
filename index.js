@@ -11,7 +11,8 @@ var fs = require('fs'),
 	open = require('opn'),
 	es = require("event-stream"),
 	os = require('os'),
-	chokidar = require('chokidar');
+	chokidar = require('chokidar'),
+	readline = require('readline');
 require('colors');
 
 var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
@@ -369,6 +370,23 @@ LiveServer.start = function(options) {
 				ws.send(cssChange ? 'refreshcss' : 'reload');
 		});
 	}
+
+	if (options.ibazelListener) {
+		var rl = readline.createInterface({
+			input: process.stdin,
+			terminal: false,
+		});
+
+		rl.on('line', function (line) {
+			if (line === 'IBAZEL_BUILD_COMPLETED SUCCESS') {
+				clients.forEach(function (ws) {
+					if (ws)
+						ws.send(cssChange ? 'refreshcss' : 'reload');
+				});
+			}
+		})
+	}
+
 	LiveServer.watcher
 		.on("change", handleChange)
 		.on("add", handleChange)
