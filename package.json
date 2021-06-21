@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "eslint": "^5.9.0",
+    "jsdom": "^16.6.0",
     "jshint": "^2.9.6",
     "mocha": "^5.2.0",
     "supertest": "^3.3.0"
