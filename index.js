@@ -146,6 +146,7 @@ LiveServer.start = function(options) {
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
 	var cors = options.cors || false;
+	var isolated = options.isolated || false;
 	var https = options.https || null;
 	var proxy = options.proxy || [];
 	var middleware = options.middleware || [];
@@ -206,6 +207,9 @@ LiveServer.start = function(options) {
 			origin: true, // reflecting request origin
 			credentials: true // allowing requests with credentials
 		}));
+	}
+	if (isolated) {
+		app.use(require("isolated-middleware")());
 	}
 	mount.forEach(function(mountRule) {
 		var mountPath = path.resolve(process.cwd(), mountRule[1]);
