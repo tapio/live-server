@@ -37,7 +37,17 @@ You need node.js and npm. You should probably install this globally.
 Usage from command line
 -----------------------
 
-Issue the command `live-server` in your project's directory. Alternatively you can add the path to serve as a command line parameter.
+Issue the command `live-server` in your project's directory. 
+
+```shell
+$ live-server
+```
+
+Alternatively you can add the path to serve as a command line parameter.
+
+```shell
+$ live-server ./html
+```
 
 This will automatically launch the default browser. When you make a change to any file, the browser will reload the page - unless it was a CSS file in which case the changes are applied without a reload.
 
