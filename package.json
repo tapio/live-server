@@ -13,7 +13,7 @@
   "author": "Tapio Vierros",
   "dependencies": {
     "chokidar": "^2.0.4",
-    "colors": "latest",
+    "colors": "1.4.0",
     "connect": "^3.6.6",
     "cors": "latest",
     "event-stream": "3.3.4",
