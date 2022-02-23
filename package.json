@@ -12,7 +12,7 @@
   ],
   "author": "Tapio Vierros",
   "dependencies": {
-    "chokidar": "^2.0.4",
+    "chokidar": "^3.5.3",
     "colors": "latest",
     "connect": "^3.6.6",
     "cors": "latest",
@@ -27,9 +27,9 @@
     "serve-index": "^1.9.1"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^8.9.0",
     "jshint": "^2.9.6",
-    "mocha": "^5.2.0",
+    "mocha": "^9.2.1",
     "supertest": "^3.3.0"
   },
   "scripts": {

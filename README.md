@@ -1,6 +1,6 @@
-[![view on npm](http://img.shields.io/npm/v/live-server.svg)](https://www.npmjs.org/package/live-server)
-[![npm module downloads per month](http://img.shields.io/npm/dm/live-server.svg)](https://www.npmjs.org/package/live-server)
-[![build status](https://travis-ci.org/tapio/live-server.svg)](https://travis-ci.org/tapio/live-server)
+Fork
+===========
+Fork of the original project so I can use it without getting spurious warnings about oudated dependencies.
 
 Live Server
 ===========
