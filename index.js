@@ -195,11 +195,12 @@ LiveServer.start = function(options) {
 	// Use http-auth if configured
 	if (htpasswd !== null) {
 		var auth = require('http-auth');
+		var authConnect = require("http-auth-connect");
 		var basic = auth.basic({
 			realm: "Please authorize",
 			file: htpasswd
 		});
-		app.use(auth.connect(basic));
+		app.use(authConnect(basic));
 	}
 	if (cors) {
 		app.use(require("cors")({
