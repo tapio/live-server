@@ -55,7 +55,7 @@ function staticServer(root) {
 		function file(filepath /*, stat*/) {
 			var x = path.extname(filepath).toLocaleLowerCase(), match,
 					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
-			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
+			if (hasNoOrigin && possibleExtensions.includes(x)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
 				for (var i = 0; i < injectCandidates.length; ++i) {
