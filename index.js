@@ -44,7 +44,7 @@ function staticServer(root) {
 		var hasNoOrigin = !req.headers.origin;
 		var injectCandidates = [ new RegExp("</body>", "i"), new RegExp("</svg>"), new RegExp("</head>", "i")];
 		var injectTag = null;
-
+    var fileExt = "";
 		function directory() {
 			var pathname = url.parse(req.originalUrl).pathname;
 			res.statusCode = 301;
@@ -53,9 +53,9 @@ function staticServer(root) {
 		}
 
 		function file(filepath /*, stat*/) {
-			var x = path.extname(filepath).toLocaleLowerCase(), match,
-					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
-			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
+      fileExt = path.extname(filepath).toLocaleLowerCase();
+      var match, possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
+			if (hasNoOrigin && (possibleExtensions.indexOf(fileExt) > -1)) {
 				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
 				for (var i = 0; i < injectCandidates.length; ++i) {
@@ -78,6 +78,9 @@ function staticServer(root) {
 		}
 
 		function inject(stream) {
+      if (fileExt == ".wasm") {
+        res.setHeader('Content-Type', 'application/wasm');
+      }
 			if (injectTag) {
 				// We need to modify the length given to browser
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
