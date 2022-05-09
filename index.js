@@ -73,7 +73,19 @@ function staticServer(root) {
 		}
 
 		function error(err) {
-			if (err.status === 404) return next();
+			if (err.status === 404) {
+				var accept = req.headers['accept'];
+				if (accept && accept.indexOf('text/html') >= 0) {
+					res.statusCode = 404;
+					res.end('<html><head><meta http-equiv="refresh" content="1"></head><body>404 not found - will attempt to reload in 1 second</body></html>');
+					return;
+				} else {
+					if (LiveServer.logLevel >= 3) {
+						console.warn("Didn't find text/html in ACCEPT header, so using default handler. ACCEPT header = ", accept);
+					}
+					return next();
+				}
+			}
 			next(err);
 		}
 
