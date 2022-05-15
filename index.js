@@ -11,7 +11,8 @@ var fs = require('fs'),
 	open = require('opn'),
 	es = require("event-stream"),
 	os = require('os'),
-	chokidar = require('chokidar');
+	chokidar = require('chokidar'),
+	assign = require('object-assign');
 require('colors');
 
 var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
@@ -128,6 +129,8 @@ function entryPoint(staticHandler, file) {
  * @param wait {number} Server will wait for all changes, before reloading
  * @param htpasswd {string} Path to htpasswd file to enable HTTP Basic authentication
  * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
+ * @param proxy {array} Proxify requests to a route to specified URL, e.g. [['/api', 'http://some.server.org/path']].
+ * @param proxyOpts {object} Change options for proxy middleware, e.g. {preserveHost: false, cookieRewrite: true} (default: {preserveHost: true, via: true}).
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -148,6 +151,7 @@ LiveServer.start = function(options) {
 	var cors = options.cors || false;
 	var https = options.https || null;
 	var proxy = options.proxy || [];
+	var proxyOptions = assign({preserveHost: true, via: true}, options.proxyOpts);
 	var middleware = options.middleware || [];
 	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
@@ -217,11 +221,9 @@ LiveServer.start = function(options) {
 	});
 	proxy.forEach(function(proxyRule) {
 		var proxyOpts = url.parse(proxyRule[1]);
-		proxyOpts.via = true;
-		proxyOpts.preserveHost = true;
-		app.use(proxyRule[0], require('proxy-middleware')(proxyOpts));
+		app.use(proxyRule[0], require('proxy-middleware')(assign({}, proxyOptions, proxyOpts)));
 		if (LiveServer.logLevel >= 1)
-			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
+			console.log('Mapping %s to "%s".', proxyRule[0], proxyRule[1], 'Proxy options:', proxyOptions);
 	});
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
