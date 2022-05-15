@@ -18,7 +18,7 @@
     "cors": "latest",
     "event-stream": "3.3.4",
     "faye-websocket": "0.11.x",
-    "http-auth": "3.1.x",
+    "http-auth": "^4.1.9",
     "morgan": "^1.9.1",
     "object-assign": "latest",
     "opn": "latest",
