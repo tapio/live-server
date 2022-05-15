@@ -186,7 +186,16 @@ LiveServer.start = function(options) {
 			if (ext !== ".js") {
 				mw = require(path.join(__dirname, "middleware", mw + ".js"));
 			} else {
-				mw = require(mw);
+				try {
+					// Resolve middleware relative to current working directory
+					mw = require(path.resolve(process.cwd(), mw));
+				} catch (e) {
+					if (e.code !== 'MODULE_NOT_FOUND') {
+						throw e;
+					}
+					// Utilize legacy resolution; relative to live-server directory
+					mw = require(mw);
+				}
 			}
 		}
 		app.use(mw);
