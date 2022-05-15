@@ -14,8 +14,7 @@ var opts = {
 	logLevel: 2,
 };
 
-var homeDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
-var configPath = path.join(homeDir, '.live-server.json');
+var configPath = path.resolve('live-server.json');
 if (fs.existsSync(configPath)) {
 	var userConfig = fs.readFileSync(configPath, 'utf8');
 	assign(opts, JSON.parse(userConfig));
@@ -158,7 +157,7 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
 }
 
 // Patch paths
-var dir = opts.root = process.argv[2] || "";
+var dir = opts.root = opts.root || process.argv[2] || "";
 
 if (opts.watch) {
 	opts.watch = opts.watch.map(function(relativePath) {
