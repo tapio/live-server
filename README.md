@@ -64,6 +64,7 @@ Command line parameters:
 * `--https=PATH` - PATH to a HTTPS configuration module
 * `--https-module=MODULE_NAME` - Custom HTTPS module (e.g. `spdy`)
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
+* `--proxy-unsecure` - don't check hostname for https proxy requests (prevents *Hostname / IP doesn't match certificate's altname* error)
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
 
@@ -167,6 +168,7 @@ Version history
 	- HTTPS configuration now also accepts a plain object (@pavel)
 	- Move `--spa` to a bundled middleware file
 	- New bundled `spa-no-assets` middleware that works like `spa` but ignores requests with extension
+  - Add `--proxy-unsecure` parameter to allow overriding hostname check for https proxy requests (@miqmago)
 	- Allow multiple `--open` arguments (@PirtleShell)
 	- Inject to `head` if `body` not found (@pmd1991)
 	- Update dependencies

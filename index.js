@@ -219,6 +219,13 @@ LiveServer.start = function(options) {
 		var proxyOpts = url.parse(proxyRule[1]);
 		proxyOpts.via = true;
 		proxyOpts.preserveHost = true;
+        if (options.unsecureProxy) {
+			process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+            proxyOpts.rejectUnauthorized = false;
+            proxyOpts.checkServerIdentity = function () {
+                return undefined;
+            };
+        }
 		app.use(proxyRule[0], require('proxy-middleware')(proxyOpts));
 		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
