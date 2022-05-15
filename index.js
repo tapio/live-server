@@ -31,7 +31,7 @@ function escape(html){
 }
 
 // Based on connect.static(), but streamlined and with added code injecter
-function staticServer(root) {
+function staticServer(root, injectEOF) {
 	var isFile = false;
 	try { // For supporting mounting files instead of just directories
 		isFile = fs.statSync(root).isFile();
@@ -56,8 +56,13 @@ function staticServer(root) {
 			var x = path.extname(filepath).toLocaleLowerCase(), match,
 					possibleExtensions = [ "", ".html", ".htm", ".xhtml", ".php", ".svg" ];
 			if (hasNoOrigin && (possibleExtensions.indexOf(x) > -1)) {
-				// TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
+        // TODO: Sync file read here is not nice, but we need to determine if the html should be injected or not
 				var contents = fs.readFileSync(filepath, "utf8");
+
+        if (injectEOF && contents.match(new RegExp("<!DOCTYPE html>", "i"))) {
+          return injectTag = "EOF"
+        }
+
 				for (var i = 0; i < injectCandidates.length; ++i) {
 					match = injectCandidates[i].exec(contents);
 					if (match) {
@@ -65,6 +70,7 @@ function staticServer(root) {
 						break;
 					}
 				}
+
 				if (injectTag === null && LiveServer.logLevel >= 3) {
 					console.warn("Failed to inject refresh script!".yellow,
 						"Couldn't find any of the tags ", injectCandidates, "from", filepath);
@@ -83,8 +89,15 @@ function staticServer(root) {
 				var len = INJECTED_CODE.length + res.getHeader('Content-Length');
 				res.setHeader('Content-Length', len);
 				var originalPipe = stream.pipe;
-				stream.pipe = function(resp) {
-					originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(resp);
+
+        stream.pipe = function(resp) {
+          if (injectTag === "EOF") {
+            originalPipe.call(stream, es.map(function (data, cb) {
+              cb(null, data + INJECTED_CODE)
+            })).pipe(resp)
+          } else {
+            originalPipe.call(stream, es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag)).pipe(resp);
+          };
 				};
 			}
 		}
@@ -141,7 +154,7 @@ LiveServer.start = function(options) {
 		"" : ((options.open === null || options.open === false) ? null : options.open);
 	if (options.noBrowser) openPath = null; // Backwards compatibility with 0.7.0
 	var file = options.file;
-	var staticServerHandler = staticServer(root);
+  var staticServerHandler = staticServer(root, options.injectEOF || false);
 	var wait = options.wait === undefined ? 100 : options.wait;
 	var browser = options.browser || null;
 	var htpasswd = options.htpasswd || null;
