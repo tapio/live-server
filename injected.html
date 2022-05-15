@@ -24,6 +24,10 @@
 				if (msg.data == 'reload') window.location.reload();
 				else if (msg.data == 'refreshcss') refreshCSS();
 			};
+			socket.onclose = function() {
+				if (__live_server_reload_on_close)
+					window.close();
+			};
 			console.log('Live reload enabled.');
 		})();
 	}
