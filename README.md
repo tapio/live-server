@@ -61,6 +61,7 @@ Command line parameters:
 * `--wait=MILLISECONDS` - (default 100ms) wait for all changes, before reloading
 * `--htpasswd=PATH` - Enables http-auth expecting htpasswd file located at PATH
 * `--cors` - Enables CORS for any origin (reflects request origin, requests with credentials are supported)
+* `--isolated` - Enable cross-origin isolation for using web features such as SharedArrayBuffer
 * `--https=PATH` - PATH to a HTTPS configuration module
 * `--https-module=MODULE_NAME` - Custom HTTPS module (e.g. `spdy`)
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
