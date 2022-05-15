@@ -218,7 +218,7 @@ LiveServer.start = function(options) {
 	proxy.forEach(function(proxyRule) {
 		var proxyOpts = url.parse(proxyRule[1]);
 		proxyOpts.via = true;
-		proxyOpts.preserveHost = true;
+		proxyOpts.preserveHost = false;
 		app.use(proxyRule[0], require('proxy-middleware')(proxyOpts));
 		if (LiveServer.logLevel >= 1)
 			console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
