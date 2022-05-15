@@ -174,7 +174,7 @@ LiveServer.start = function(options) {
 		}));
 	// Level 2 or above logs all requests
 	} else if (LiveServer.logLevel > 2) {
-		app.use(logger('dev'));
+		app.use(logger('combined'));
 	}
 	if (options.spa) {
 		middleware.push("spa");
