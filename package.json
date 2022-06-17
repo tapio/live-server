@@ -1,6 +1,6 @@
 {
   "name": "live-server",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "simple development http server with live reload capability",
   "keywords": [
     "front-end",
@@ -18,7 +18,6 @@
     "cors": "latest",
     "event-stream": "3.3.4",
     "faye-websocket": "0.11.x",
-    "http-auth": "3.1.x",
     "morgan": "^1.9.1",
     "object-assign": "latest",
     "open": "latest",

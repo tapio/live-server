@@ -126,7 +126,6 @@ function entryPoint(staticHandler, file) {
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
- * @param htpasswd {string} Path to htpasswd file to enable HTTP Basic authentication
  * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
  */
 LiveServer.start = function(options) {
@@ -144,7 +143,6 @@ LiveServer.start = function(options) {
 	var staticServerHandler = staticServer(root);
 	var wait = options.wait === undefined ? 100 : options.wait;
 	var browser = options.browser || null;
-	var htpasswd = options.htpasswd || null;
 	var cors = options.cors || false;
 	var https = options.https || null;
 	var proxy = options.proxy || [];
@@ -192,15 +190,6 @@ LiveServer.start = function(options) {
 		app.use(mw);
 	});
 
-	// Use http-auth if configured
-	if (htpasswd !== null) {
-		var auth = require('http-auth');
-		var basic = auth.basic({
-			realm: "Please authorize",
-			file: htpasswd
-		});
-		app.use(auth.connect(basic));
-	}
 	if (cors) {
 		app.use(require("cors")({
 			origin: true, // reflecting request origin
