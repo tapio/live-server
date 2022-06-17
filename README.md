@@ -14,7 +14,8 @@ There are two reasons for using this:
 
 You don't need to install any browser plugins or manually add code snippets to your pages for the reload functionality to work, see "How it works" section below for more information. If you don't want/need the live reload, you should probably use something even simpler, like the following Python-based one-liner:
 
-	python -m SimpleHTTPServer
+	python -m SimpleHTTPServer # for Python 2
+	python -m http.server # for Python 3, you may need to use python3 instead of python depending upon executable name
 
 
 Installation
