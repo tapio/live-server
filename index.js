@@ -3,8 +3,9 @@ var fs = require('fs'),
 	connect = require('connect'),
 	serveIndex = require('serve-index'),
 	logger = require('morgan'),
-	WebSocket = require('faye-websocket'),
+	WebSocket = require('faye-websocket'), 
 	path = require('path'),
+
 	url = require('url'),
 	http = require('http'),
 	send = require('send'),
@@ -356,16 +357,28 @@ LiveServer.start = function(options) {
 	LiveServer.watcher = chokidar.watch(watchPaths, {
 		ignored: ignored,
 		ignoreInitial: true
-	});
+	});  
+	var count = 0; //inialize counter
 	function handleChange(changePath) {
 		var cssChange = path.extname(changePath) === ".css" && !noCssInject;
-		if (LiveServer.logLevel >= 1) {
-			if (cssChange)
-				console.log("CSS change detected".magenta, changePath);
-			else console.log("Change detected".cyan, changePath);
-		}
-		clients.forEach(function(ws) {
-			if (ws)
+		       
+			if (LiveServer.logLevel >= 1) {
+				/* This feature is to let know the developers know when there is a change in code 
+									with a {unique number} that is i
+				   So that the developers can note at this number my code is change  while using live-server
+				*/
+				if (cssChange){       
+					count = count + 1
+					console.log("[".magenta + count+"]".magenta +  " CSS change detected".magenta, changePath); 
+				}else{   
+					count = count + 1
+					console.log("[".cyan+ count+"]".cyan + "Change detected".cyan, changePath);
+					
+				}
+		         
+			} 
+
+		clients.forEach(function(ws) { 
 				ws.send(cssChange ? 'refreshcss' : 'reload');
 		});
 	}
