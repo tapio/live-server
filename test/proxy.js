@@ -1,6 +1,6 @@
 var request = require("supertest");
 var path = require("path");
-var port = 40200;
+var port = 9000;
 
 describe("proxy tests", function () {
 	it("should respond with proxied content", function (done) {
@@ -13,11 +13,10 @@ describe("proxy tests", function () {
 					root: path.join(__dirname, "data"),
 					port: 0,
 					open: false,
-					proxy: [["/server1", "http://localhost:" + port]],
+					proxy: [["/server1", "http://127.0.0.1:" + port]],
 					callback: function () {
 						request(server2)
 							.get("/server1/index.html")
-							.expect("Content-Type", "text/html; charset=UTF-8")
 							.expect(/Hello world/i)
 							.expect(200, done);
 					},
