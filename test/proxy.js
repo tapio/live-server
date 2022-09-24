@@ -1,10 +1,10 @@
 var request = require("supertest");
 var path = require("path");
-var port = 40200;
+var port = 9000;
 
 describe("proxy tests", function () {
 	it("should respond with proxied content", function (done) {
-		var server1 = require("..").start({
+		require("..").start({
 			root: path.join(__dirname, "data"),
 			port: port,
 			open: false,
