@@ -127,6 +127,7 @@ function entryPoint(staticHandler, file) {
  * @param file {string} Path to the entry point file
  * @param wait {number} Server will wait for all changes, before reloading
  * @param middleware {array} Append middleware to stack, e.g. [function(req, res, next) { next(); }].
+ * @param callback {() => void} Run a callback after the server starts.
  */
 LiveServer.start = function(options) {
 	options = options || {};
@@ -149,6 +150,7 @@ LiveServer.start = function(options) {
 	var middleware = options.middleware || [];
 	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
+  var callback = options.callback || function(){};
 
 	if (httpsModule) {
 		try {
@@ -299,7 +301,7 @@ LiveServer.start = function(options) {
 	});
 
 	// Setup server to listen at port
-	server.listen(port, host);
+  server.listen(port, host, callback);
 
 	// WebSocket
 	var clients = [];
