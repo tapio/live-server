@@ -27,7 +27,7 @@
   "scripts": {
     "lint": "eslint live-server.js index.js",
     "hint": "jshint live-server.js index.js",
-    "test": "mocha test --exit && npm run lint"
+    "test": "mocha test --trace-warnings --exit && npm run lint"
   },
   "bin": {
     "live-server": "./live-server.js"

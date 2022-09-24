@@ -15,8 +15,6 @@ describe("proxy tests", function () {
 					open: false,
 					proxy: [["/server1", "http://localhost:" + port]],
 					callback: function () {
-            console.log('Server 1 is ', server1);
-            console.log('Server 2 is ', server2);
 						request(server2)
 							.get("/server1/index.html")
 							.expect("Content-Type", "text/html; charset=UTF-8")
