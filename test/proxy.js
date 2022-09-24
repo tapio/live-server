@@ -15,16 +15,10 @@ describe("proxy tests", function () {
 					open: false,
 					proxy: [["/server1", "http://localhost:" + port]],
 					callback: function () {
-						setTimeout(function () {
-							request(server2)
-								.get("/server1/index.html")
-								.expect(
-									"Content-Type",
-									"text/html; charset=UTF-8"
-								)
-								.expect(/Hello world/i)
-								.expect(200, done);
-						}, 500);
+						request(server2)
+							.get("/server1/index.html")
+							.expect(/Hello world/i)
+							.expect(200, done);
 					},
 				});
 			},
