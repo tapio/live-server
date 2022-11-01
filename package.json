@@ -12,14 +12,14 @@
   ],
   "author": "Tapio Vierros",
   "dependencies": {
-    "chokidar": "^2.0.4",
+    "chokidar": "^3.5.3",
     "colors": "1.4.0",
-    "connect": "^3.6.6",
+    "connect": "^3.7.0",
     "cors": "latest",
-    "event-stream": "3.3.4",
+    "event-stream": "4.0.1",
     "faye-websocket": "0.11.x",
-    "http-auth": "3.1.x",
-    "morgan": "^1.9.1",
+    "http-auth": "4.2.x",
+    "morgan": "^1.10.0",
     "object-assign": "latest",
     "opn": "latest",
     "proxy-middleware": "latest",
@@ -27,10 +27,10 @@
     "serve-index": "^1.9.1"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
-    "jshint": "^2.9.6",
-    "mocha": "^5.2.0",
-    "supertest": "^3.3.0"
+    "eslint": "^8.26.0",
+    "jshint": "^2.13.5",
+    "mocha": "^10.1.0",
+    "supertest": "^6.3.1"
   },
   "scripts": {
     "lint": "eslint live-server.js index.js",
