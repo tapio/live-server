@@ -64,6 +64,7 @@ Command line parameters:
 * `--https=PATH` - PATH to a HTTPS configuration module
 * `--https-module=MODULE_NAME` - Custom HTTPS module (e.g. `spdy`)
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
+* `--poll` - use polling for file watch
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
 
