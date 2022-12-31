@@ -64,6 +64,7 @@ Command line parameters:
 * `--https=PATH` - PATH to a HTTPS configuration module
 * `--https-module=MODULE_NAME` - Custom HTTPS module (e.g. `spdy`)
 * `--proxy=ROUTE:URL` - proxy all requests for ROUTE to URL
+* `--poll` - use polling to watch files
 * `--help | -h` - display terse usage hint and exit
 * `--version | -v` - display version and exit
 
@@ -88,7 +89,8 @@ var params = {
 	wait: 1000, // Waits for all changes, before reloading. Defaults to 0 sec.
 	mount: [['/components', './node_modules']], // Mount a directory to a route.
 	logLevel: 2, // 0 = errors only, 1 = some, 2 = lots
-	middleware: [function(req, res, next) { next(); }] // Takes an array of Connect-compatible middleware that are injected into the server middleware stack
+	middleware: [function(req, res, next) { next(); }], // Takes an array of Connect-compatible middleware that are injected into the server middleware stack
+	poll: true // When true, will use polling to watch files. 
 };
 liveServer.start(params);
 ```

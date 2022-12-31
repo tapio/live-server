@@ -151,6 +151,7 @@ LiveServer.start = function(options) {
 	var middleware = options.middleware || [];
 	var noCssInject = options.noCssInject;
 	var httpsModule = options.httpsModule;
+	var poll = options.poll || false;
 
 	if (httpsModule) {
 		try {
@@ -354,6 +355,7 @@ LiveServer.start = function(options) {
 	}
 	// Setup file watcher
 	LiveServer.watcher = chokidar.watch(watchPaths, {
+		usePolling: poll,
 		ignored: ignored,
 		ignoreInitial: true
 	});
