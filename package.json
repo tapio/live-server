@@ -3,7 +3,8 @@
   "version": "1.2.2",
   "description": "simple development http server with live reload capability",
   "keywords": ["front-end", "development", "tool", "server", "http", "cli"],
-  "author": "Tapio Vierros",
+  "author": "Joshua Hoeflich & Tapio Vierros",
+  "type": "commonjs",
   "dependencies": {
     "chokidar": "^3.5.3",
     "colors": "latest",
