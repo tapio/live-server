@@ -33,6 +33,10 @@ You need node.js and npm. You should probably install this globally.
 	npm install # Local dependencies if you want to hack
 	npm install -g # Install globally
 
+**Post install**
+
+	Insert <body></body> tags in your html document. This is required for the live-reload functionality to kick-in.
+
 
 Usage from command line
 -----------------------
@@ -131,6 +135,7 @@ Troubleshooting
 
 * No reload on changes
 	* Open your browser's console: there should be a message at the top stating that live reload is enabled. Note that you will need a browser that supports WebSockets. If there are errors, deal with them. If it's still not working, [file an issue](https://github.com/tapio/live-server/issues).
+	* No messages on the browser's console: Make sure you have <body></body> tags, else the script will not be inserted into the document causing the live reload to fail.
 * Error: watch <PATH> ENOSPC
 	* See [this suggested solution](http://stackoverflow.com/questions/22475849/node-js-error-enospc/32600959#32600959).
 * Reload works but changes are missing or outdated
