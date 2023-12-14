@@ -1,12 +1,12 @@
 {
-  "name": "@suji/live-server",
+  "name": "@suji/meld-server",
   "version": "2.0.0",
   "description": "Fork of Live-Server <simple development http server with live reload capability>",
   "type:": "module",
   "author": "Tapio Vierros",
-  "maintaner": "Susumu Fujii known as Sujii",
-  "fork:": {
-    "this": {
+  "maintaner": "Susumu Fujii usually known as Sujii",
+  "forks:": {
+    "thisFork": {
       "forked": {
         "DateTime": "2023-12-14",
         "verson": "1.2.2"
@@ -67,14 +67,5 @@
     "live-server": "./live-server.cjs"
   },
   "preferGlobal": true,
-  "license": "MIT",
-  "eslintConfig": {
-    "env": {
-      "node": true,
-      "es6": true
-    },
-    "rules": {
-      "no-console": "off"
-    }
-  }
+  "license": "MIT"
 }
