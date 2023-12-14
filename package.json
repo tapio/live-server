@@ -1,66 +1,80 @@
 {
-  "name": "live-server",
-  "version": "1.2.2",
-  "description": "simple development http server with live reload capability",
-  "keywords": [
-    "front-end",
-    "development",
-    "tool",
-    "server",
-    "http",
-    "cli"
-  ],
+  "name": "@suji/live-server",
+  "version": "2.0.0",
+  "description": "Fork of Live-Server <simple development http server with live reload capability>",
+  "type:": "module",
   "author": "Tapio Vierros",
+  "maintaner": "Susumu Fujii known as Sujii",
+  "fork:": {
+    "this": {
+      "forked": {
+        "DateTime": "2023-12-14",
+        "verson": "1.2.2"
+      }
+    }
+  },
+  "repositores": {
+    "type": "git",
+    "original": {
+      "url": "https://github.com/tapio/live-server.git"
+    },
+    "fork": {
+      "this": {
+        "url": "https://github.com/sujii/live-server.git"
+      }
+    }
+  },
   "dependencies": {
-    "chokidar": "^2.0.4",
+    "chokidar": "^3.5.3",
     "colors": "1.4.0",
-    "connect": "^3.6.6",
+    "connect": "^3.7.0",
     "cors": "latest",
-    "event-stream": "3.3.4",
-    "faye-websocket": "0.11.x",
-    "http-auth": "3.1.x",
-    "morgan": "^1.9.1",
+    "event-stream": "^4.0.1",
+    "faye-websocket": "^0.11.4",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "http-auth": "4.2.0",
+    "morgan": "^1.10.0",
     "object-assign": "latest",
-    "opn": "latest",
+    "opn": "^6.0.0",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
     "proxy-middleware": "latest",
-    "send": "latest",
-    "serve-index": "^1.9.1"
+    "send": "^0.18.0",
+    "serve-index": "^1.9.1",
+    "url": "^0.11.3"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "depcheck": "^1.4.7",
+    "eslint": "^8.55.0",
     "jshint": "^2.9.6",
-    "mocha": "^5.2.0",
-    "supertest": "^3.3.0"
+    "mocha": "^10.2.0",
+    "prettier": "^3.1.1",
+    "supertest": "^6.3.3"
   },
   "scripts": {
-    "lint": "eslint live-server.js index.js",
-    "hint": "jshint live-server.js index.js",
+    "format": "yarn format:eslint && yarn format:stylelint",
+    "format:eslint": "eslint \"./**/*.{js,cjs,mjs,ts}\" --ignore-path .gitignore . --fix",
+    "format:stylelint": "stylelint \"./**/*.{css,scss}\"  --ignore-path .gitignore --fix",
+    "prettier": "prettier --write '**/*.{js,ts,cjs,mjs,json,scss,css,jsx,tsx}' --ignore-path .gitignore",
+    "lint": "yarn lint:eslint && yarn lint:stylelint",
+    "lint:eslint": "eslint \"./**/*.{js,cjs,mjs,ts,jsx,tsx}\" --ignore-path .gitignore .",
+    "lint:stylelint": "stylelint \"./**/*.{css,scss\" --ignore-path .gitignore",
+    "hint": "jshint live-server.js index.cjs",
     "test": "mocha test --exit && npm run lint"
   },
   "bin": {
-    "live-server": "./live-server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tapio/live-server.git"
-  },
-  "engines": {
-    "node": ">=0.10.0"
+    "live-server": "./live-server.cjs"
   },
   "preferGlobal": true,
   "license": "MIT",
   "eslintConfig": {
     "env": {
-      "node": true
+      "node": true,
+      "es6": true
     },
     "rules": {
-      "quotes": 0,
-      "curly": 0,
-      "strict": 0,
-      "no-process-exit": 0,
-      "eqeqeq": 1,
-      "no-unused-vars": 1,
-      "no-shadow": 1
+      "no-console": "off"
     }
   }
 }

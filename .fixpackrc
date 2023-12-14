@@ -1,0 +1,59 @@
+{
+  "sortToTop": [
+    "name",
+    "version",
+    "description",
+    "keywords",
+    "homepage",
+    "bugs",
+    "license",
+    "author",
+    "files",
+    "main",
+    "bin",
+    "man",
+    "directories",
+    "repository",
+    "scripts",
+    "config",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "bundledDependencies",
+    "optionalDependencies",
+    "engines",
+    "os",
+    "cpu",
+    "private",
+    "publishConfig",
+    "vscode"
+  ],
+  "required": [
+    "name",
+    "version"
+  ],
+  "warn": [
+    "description",
+    "keywords",
+    "homepage",
+    "bugs",
+    "license",
+    "author",
+    "repository"
+  ],
+  "files": [
+    "package.json"
+  ],
+  "sortedSubItems": [
+    "files",
+    "vscode",
+    "directories",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "bundledDependencies",
+    "optionalDependencies"
+  ],
+  "newLine": null,
+  "finalNewLine": null
+}

@@ -1,0 +1,3 @@
+dist/**/*.css
+coverage/**
+.circleci/*
