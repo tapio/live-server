@@ -1,26 +1,20 @@
 {
-  "name": "@suji/meld-server",
-  "version": "2.0.0",
-  "description": "Fork of Live-Server <simple development http server with live reload capability>",
+  "name": "meld-server",
+  "version": "1.0.0",
+  "description": "Fork of live-server <simple development http server with live reload capability>",
   "type:": "module",
   "author": "Tapio Vierros",
-  "maintaner": "Susumu Fujii usually known as Sujii",
-  "forks:": {
-    "thisFork": {
-      "forked": {
-        "DateTime": "2023-12-14",
-        "verson": "1.2.2"
-      }
-    }
-  },
+  "modifier": "Susumu Fujii <usually known as Sujii>",
   "repositores": {
     "type": "git",
-    "original": {
+    "origin": {
       "url": "https://github.com/tapio/live-server.git"
     },
-    "fork": {
-      "this": {
-        "url": "https://github.com/sujii/live-server.git"
+    "this": {
+      "url": "https://github.com/sujii/meld-server.git",
+      "forked": {
+        "ForkedDateTime": "2023-12-14",
+        "ForedVerson": "1.2.2"
       }
     }
   },
