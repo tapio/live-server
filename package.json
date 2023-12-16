@@ -2,24 +2,25 @@
   "name": "meld-server",
   "version": "1.0.0",
   "description": "modify of https://github.com/tapio/live-server",
-  "type:": "module",
+  "license": "MIT",
   "author": "Susumu Fujii <usually known as Sujii>",
+  "bin": {
+    "live-server": "./live-server.cjs"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/sujii/meld-server.git"
   },
-  "fork": {
-    "from": {
-      "name": "live-server",
-      "version": "1.2.2",
-      "description": "simple development http server with live reload capability",
-      "author": "Tapio Vierros",
-      "repository": {
-        "type": "git",
-        "url": "https://github.com/tapio/live-server.git"
-      },
-      "date": "2023-12-14"
-    }
+  "scripts": {
+    "format": "yarn format:eslint && yarn format:stylelint",
+    "format:eslint": "eslint \"./**/*.{js,cjs,mjs,ts}\" --ignore-path .gitignore . --fix",
+    "format:stylelint": "stylelint \"./**/*.{css,scss}\"  --ignore-path .gitignore --fix",
+    "prettier": "prettier --write '**/*.{js,ts,cjs,mjs,json,scss,css,jsx,tsx}' --ignore-path .gitignore",
+    "lint": "yarn lint:eslint && yarn lint:stylelint",
+    "lint:eslint": "eslint \"./**/*.{js,cjs,mjs,ts,jsx,tsx}\" --ignore-path .gitignore .",
+    "lint:stylelint": "stylelint \"./**/*.{css,scss\" --ignore-path .gitignore",
+    "hint": "jshint live-server.js index.cjs",
+    "test": "mocha test --exit && npm run lint"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
@@ -44,25 +45,25 @@
   "devDependencies": {
     "depcheck": "^1.4.7",
     "eslint": "^8.55.0",
+    "fixpack": "^4.0.0",
     "jshint": "^2.9.6",
     "mocha": "^10.2.0",
     "prettier": "^3.1.1",
     "supertest": "^6.3.3"
   },
-  "scripts": {
-    "format": "yarn format:eslint && yarn format:stylelint",
-    "format:eslint": "eslint \"./**/*.{js,cjs,mjs,ts}\" --ignore-path .gitignore . --fix",
-    "format:stylelint": "stylelint \"./**/*.{css,scss}\"  --ignore-path .gitignore --fix",
-    "prettier": "prettier --write '**/*.{js,ts,cjs,mjs,json,scss,css,jsx,tsx}' --ignore-path .gitignore",
-    "lint": "yarn lint:eslint && yarn lint:stylelint",
-    "lint:eslint": "eslint \"./**/*.{js,cjs,mjs,ts,jsx,tsx}\" --ignore-path .gitignore .",
-    "lint:stylelint": "stylelint \"./**/*.{css,scss\" --ignore-path .gitignore",
-    "hint": "jshint live-server.js index.cjs",
-    "test": "mocha test --exit && npm run lint"
-  },
-  "bin": {
-    "live-server": "./live-server.cjs"
+  "forked": {
+    "from": {
+      "name": "live-server",
+      "version": "1.2.2",
+      "description": "simple development http server with live reload capability",
+      "author": "Tapio Vierros",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/tapio/live-server.git"
+      },
+      "date": "2023-12-14"
+    }
   },
   "preferGlobal": true,
-  "license": "MIT"
+  "type:": "module"
 }
