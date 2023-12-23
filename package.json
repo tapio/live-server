@@ -1,66 +1,76 @@
 {
-  "name": "live-server",
-  "version": "1.2.2",
-  "description": "simple development http server with live reload capability",
-  "keywords": [
-    "front-end",
-    "development",
-    "tool",
-    "server",
-    "http",
-    "cli"
-  ],
-  "author": "Tapio Vierros",
-  "dependencies": {
-    "chokidar": "^2.0.4",
-    "colors": "1.4.0",
-    "connect": "^3.6.6",
-    "cors": "latest",
-    "event-stream": "3.3.4",
-    "faye-websocket": "0.11.x",
-    "http-auth": "3.1.x",
-    "morgan": "^1.9.1",
-    "object-assign": "latest",
-    "opn": "latest",
-    "proxy-middleware": "latest",
-    "send": "latest",
-    "serve-index": "^1.9.1"
-  },
-  "devDependencies": {
-    "eslint": "^5.9.0",
-    "jshint": "^2.9.6",
-    "mocha": "^5.2.0",
-    "supertest": "^3.3.0"
-  },
-  "scripts": {
-    "lint": "eslint live-server.js index.js",
-    "hint": "jshint live-server.js index.js",
-    "test": "mocha test --exit && npm run lint"
-  },
+  "name": "meld-server",
+  "version": "1.0.0",
+  "description": "modify of https://github.com/tapio/meld-server",
+  "license": "MIT",
+  "author": "Susumu Fujii <usually known as Sujii>",
   "bin": {
-    "live-server": "./live-server.js"
+    "meld-server": "./meld-server.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tapio/live-server.git"
+    "url": "https://github.com/sujii/meld-server.git"
   },
-  "engines": {
-    "node": ">=0.10.0"
+  "scripts": {
+    "format": "yarn format:eslint && yarn format:stylelint",
+    "format:eslint": "eslint \"./**/*.{js,cjs,mjs,ts}\" --ignore-path .gitignore . --fix",
+    "format:stylelint": "stylelint \"./**/*.{js,cjs,mjs,json,css,scss}\" --ignore-path .gitignore . --fix",
+    "prettier": "prettier --write '**/*.{js,ts,cjs,mjs,json,scss,css,jsx,tsx}' --ignore-path .gitignore",
+    "lint": "yarn lint:eslint && yarn lint:stylelint",
+    "lint:eslint": "eslint \"./**/*.{js,cjs,mjs,ts,jsx,tsx}\" --ignore-path .gitignore .",
+    "lint:stylelint": "stylelint \"./**/*.{css,scss\" --ignore-path .gitignore",
+    "hint": "jshint meld-server.mjsindex.mjs",
+    "test": "mocha test --exit && npm run lint"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "colors": "1.4.0",
+    "connect": "^3.7.0",
+    "cors": "latest",
+    "event-stream": "^4.0.1",
+    "express": "^4.18.2",
+    "faye-websocket": "^0.11.4",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "http-auth": "4.2.0",
+    "morgan": "^1.10.0",
+    "object-assign": "latest",
+    "open": "^9.1.0",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
+    "proxy-middleware": "latest",
+    "send": "^0.18.0",
+    "serve-index": "^1.9.1",
+    "url": "^0.11.3"
+  },
+  "devDependencies": {
+    "@vercel/style-guide": "^5.1.0",
+    "depcheck": "^1.4.7",
+    "eslint": "^8.56.0",
+    "fixpack": "^4.0.0",
+    "jshint": "^2.9.6",
+    "mocha": "^10.2.0",
+    "prettier": "^3.1.1",
+    "stylelint": "^16.0.2",
+    "stylelint-config-recommended": "^14.0.0",
+    "supertest": "^6.3.3",
+    "ts-node": "^10.9.2",
+    "tsc": "^2.0.4",
+    "typescript": "^5.3.3"
+  },
+  "forked": {
+    "from": {
+      "name": "live-server",
+      "version": "1.2.2",
+      "description": "simple development http server with live reload capability",
+      "author": "Tapio Vierros",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/tapio/live-server.git"
+      }
+    },
+    "date": "2023-12-14"
   },
   "preferGlobal": true,
-  "license": "MIT",
-  "eslintConfig": {
-    "env": {
-      "node": true
-    },
-    "rules": {
-      "quotes": 0,
-      "curly": 0,
-      "strict": 0,
-      "no-process-exit": 0,
-      "eqeqeq": 1,
-      "no-unused-vars": 1,
-      "no-shadow": 1
-    }
-  }
+  "type:": "module"
 }
