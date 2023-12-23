@@ -6,10 +6,31 @@ const INJECTED_CODE = fs.readFileSync(
   "utf8",
 );
 
-const LiveServer = {
+const MeldServer = {
   server: null,
   watcher: null,
   logLevel: 2,
+};
+
+// Launch browser
+if (openPath !== null)
+  if (typeof openPath === "object") {
+    openPath.forEach(function (p) {
+      open(openURL + p, { app: browser });
+    });
+  } else {
+    open(openURL + openPath, { app: browser });
+  }
+
+MeldServer.shutdown = () => {
+  const watcher = MeldServer.watcher;
+  if (watcher) {
+    watcher.close();
+  }
+  const server = MeldServer.server;
+  if (server) {
+    server.close();
+  }
 };
 
 const escape = (html) =>
@@ -59,7 +80,7 @@ const staticServer = (root) => {
             break;
           }
         }
-        if (injectTag === null && LiveServer.logLevel >= 3) {
+        if (injectTag === null && MeldServer.logLevel >= 3) {
           // console.warn(
           //   "Failed to inject refresh script!".yellow,
           //   "Couldn't find any of the tags ",
@@ -86,10 +107,7 @@ const staticServer = (root) => {
           originalPipe
             .call(
               stream,
-              es.replace(
-                new RegExp(injectTag, "i"),
-                INJECTED_CODE + injectTag,
-              ),
+              es.replace(new RegExp(injectTag, "i"), INJECTED_CODE + injectTag),
             )
             .pipe(resp);
         };
@@ -104,7 +122,7 @@ const staticServer = (root) => {
       .pipe(res);
   };
 
-    // ... (End staticServer function body)
+  // ... (End staticServer function body)
 };
 
 const entryPoint = (staticHandler, file) => {
@@ -119,8 +137,8 @@ const entryPoint = (staticHandler, file) => {
   };
 };
 
-LiveServer.start = (options = {}) => {
-  // ... (LiveServer.start function body)
+MeldServer.start = (options = {}) => {
+  // ... (MeldServer.start function body)
 
   options = options || {};
   var host = options.host || "0.0.0.0";
@@ -128,7 +146,7 @@ LiveServer.start = (options = {}) => {
   var root = options.root || process.cwd();
   var mount = options.mount || [];
   var watchPaths = options.watch || [root];
-  LiveServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
+  MeldServer.logLevel = options.logLevel === undefined ? 2 : options.logLevel;
   var openPath =
     options.open === undefined || options.open === true
       ? ""
@@ -167,7 +185,7 @@ LiveServer.start = (options = {}) => {
   var app = connect();
 
   // Add logger. Level 2 logs only errors
-  if (LiveServer.logLevel === 2) {
+  if (MeldServer.logLevel === 2) {
     app.use(
       logger("dev", {
         skip: function (req, res) {
@@ -176,7 +194,7 @@ LiveServer.start = (options = {}) => {
       }),
     );
     // Level 2 or above logs all requests
-  } else if (LiveServer.logLevel > 2) {
+  } else if (MeldServer.logLevel > 2) {
     app.use(logger("dev"));
   }
   if (options.spa) {
@@ -218,15 +236,15 @@ LiveServer.start = (options = {}) => {
       // Auto add mount paths to wathing but only if exclusive path option is not given
       watchPaths.push(mountPath);
     app.use(mountRule[0], staticServer(mountPath));
-    // if (LiveServer.logLevel >= 1)
-      // console.log('Mapping %s to "%s"', mountRule[0], mountPath);
+    // if (MeldServer.logLevel >= 1)
+    // console.log('Mapping %s to "%s"', mountRule[0], mountPath);
   });
   proxy.forEach(function (proxyRule) {
     var proxyOpts = url.parse(proxyRule[1]);
     proxyOpts.via = true;
     proxyOpts.preserveHost = true;
     app.use(proxyRule[0], require("proxy-middleware")(proxyOpts));
-    // if (LiveServer.logLevel >= 1)
+    // if (MeldServer.logLevel >= 1)
     //   console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1]);
   });
   app
@@ -260,13 +278,13 @@ LiveServer.start = (options = {}) => {
       }, 1000);
     } else {
       // console.error(e.toString().red);
-      LiveServer.shutdown();
+      MeldServer.shutdown();
     }
   });
 
   // Handle successful server
   server.addListener("listening", function (/*e*/) {
-    LiveServer.server = server;
+    MeldServer.server = server;
 
     var address = server.address();
     var serveHost =
@@ -277,7 +295,7 @@ LiveServer.start = (options = {}) => {
     var openURL = protocol + "://" + openHost + ":" + address.port;
 
     var serveURLs = [serveURL];
-    if (LiveServer.logLevel > 2 && address.address === "0.0.0.0") {
+    if (MeldServer.logLevel > 2 && address.address === "0.0.0.0") {
       var ifaces = os.networkInterfaces();
       serveURLs = Object.keys(ifaces)
         .map(function (iface) {
@@ -300,7 +318,7 @@ LiveServer.start = (options = {}) => {
     }
 
     // Output
-    if (LiveServer.logLevel >= 1) {
+    if (MeldServer.logLevel >= 1) {
       if (serveURL === openURL)
         if (serveURLs.length === 1) {
           console.log('Serving "%s" at %s'.green, root, serveURLs[0]);
@@ -314,30 +332,9 @@ LiveServer.start = (options = {}) => {
       else
         console.log('Serving "%s" at %s (%s)'.green, root, openURL, serveURL);
     }
-
-    // Launch browser
-    if (openPath !== null)
-      if (typeof openPath === "object") {
-        openPath.forEach(function (p) {
-          open(openURL + p, { app: browser });
-        });
-      } else {
-        open(openURL + openPath, { app: browser });
-      }
   });
 
-  // ... (End LiveServer.start function body)
+  // ... (End MeldServer.start function body)
 };
 
-LiveServer.shutdown = () => {
-  const watcher = LiveServer.watcher;
-  if (watcher) {
-    watcher.close();
-  }
-  const server = LiveServer.server;
-  if (server) {
-    server.close();
-  }
-};
-
-export default LiveServer;
+export default MeldServer;

@@ -13,13 +13,13 @@ if ('WebSocket' in window) {
 
 		head.removeChild(elem);
 		if (elem.href && typeof rel !== "string" || rel.length === 0 || rel.toLowerCase() === "stylesheet") {
-		elem.href = `${url}${url.indexOf('?') >= 0 ? '&' : '?'}_cacheOverride=${new Date().valueOf()}`;
+		elem.href = `${url}${url.indexOf('?') >= 0 ? '&' : '?'00}_cacheOverride=${new Date().valueOf()}`;
 		}
 		head.appendChild(elem);
 	}
 	}
 
-	const protocol = window.location.protocol === "http:" ? "ws://" : "wss://";
+	const protocol = window.location.protocol === "http:" ? "ws://" : "wss://";protocolwindow.location.protocolprotocolwindow.location.protocol
 	const address = `${protocol}${window.location.host}${window.location.pathname}/ws`;
 	const socket = new WebSocket(address);
 

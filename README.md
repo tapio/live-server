@@ -2,7 +2,7 @@ Meld Server
 ===========
 
 ## about
-- modify of [@tapio/live-server](https://github.com/tapio/live-server)
+- modify of [@tapio/meld-server](https://github.com/tapio/meld-server)
 - [x] refact: up to ES6+
 - [ ] modify: re-wright to type-script
-- [ ] feature: etc...
+- [ ] feature: etc...Serveraboutmodifyof/meld-serverhttpsServeraboutmodifyof/meld-serverhttps

@@ -3,16 +3,16 @@ var path = require("path");
 // accept self-signed certificates
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-function tests(liveServer) {
+function tests(MeldServer) {
   it("should reply with a correct index file", function (done) {
-    request(liveServer)
+    request(MeldServer)
       .get("/index.html")
       .expect("Content-Type", "text/html; charset=UTF-8")
       .expect(/Hello world/i)
       .expect(200, done);
   });
   it("should support head request", function (done) {
-    request(liveServer)
+    request(MeldServer)
       .head("/index.html")
       .expect("Content-Type", "text/html; charset=UTF-8")
       .expect(200, done);
@@ -26,10 +26,10 @@ describe("https tests with external module", function () {
     open: false,
     https: path.join(__dirname, "conf/https.conf.js"),
   };
-  var liveServer = require("..").start(opts);
-  tests(liveServer);
+  var MeldServer = require("..").start(opts);
+  tests(MeldServer);
   after(function () {
-    liveServer.close();
+    MeldServer.close();
   });
 });
 
@@ -40,9 +40,9 @@ describe("https tests with object", function () {
     open: false,
     https: require(path.join(__dirname, "conf/https.conf.js")),
   };
-  var liveServer = require("..").start(opts);
-  tests(liveServer);
+  var MeldServer = require("..").start(opts);
+  tests(MeldServer);
   after(function () {
-    liveServer.close();
+    MeldServer.close();
   });
 });

@@ -1,6 +1,6 @@
 var request = require("supertest");
 var path = require("path");
-var liveServer = require("..").start({
+var MeldServer = require("..").start({
   root: path.join(__dirname, "data"),
   port: 0,
   open: false,
@@ -9,7 +9,7 @@ var liveServer = require("..").start({
 
 describe("cors tests", function () {
   it("should respond with appropriate header", function (done) {
-    request(liveServer)
+    request(MeldServer)
       .get("/index.html")
       .set("Origin", "http://example.com")
       .expect("Content-Type", "text/html; charset=UTF-8")
@@ -18,7 +18,7 @@ describe("cors tests", function () {
       .expect(200, done);
   });
   it("should support preflighted requests", function (done) {
-    request(liveServer)
+    request(MeldServer)
       .options("/index.html")
       .set("Origin", "http://example.com")
       .set("Access-Control-Request-Method", "POST")
@@ -29,7 +29,7 @@ describe("cors tests", function () {
       .expect(204, done);
   });
   it("should support requests with credentials", function (done) {
-    request(liveServer)
+    request(MeldServer)
       .options("/index.html")
       .set("Origin", "http://example.com")
       .set("Cookie", "foo=bar")
